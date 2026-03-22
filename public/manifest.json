@@ -1,0 +1,21 @@
+{
+  "name": "فورتي - خدمات النظافة ومكافحة الحشرات",
+  "short_name": "Forty",
+  "description": "أفضل خدمات التنظيف ومكافحة الحشرات في الكويت",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/images/circle-logo-111.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/circle-logo-111.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

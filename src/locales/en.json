@@ -1,0 +1,450 @@
+{
+  "seo": {
+    "home": {
+      "title": "Forty - Cleaning & Pest Control Services in Kuwait",
+      "description": "Leading company in Kuwait for general cleaning, home cleaning, and pest/rodent control with the highest quality standards."
+    },
+    "cleaning": {
+      "title": "General Cleaning Services in Kuwait - Forty",
+      "description": "The best home, apartment, office, and building cleaning services in Kuwait. Professional team and modern equipment."
+    },
+    "pest": {
+      "title": "Pest & Rodent Control in Kuwait - Forty",
+      "description": "Effective and safe solutions for cockroaches, termites, mice, and bed bugs with a 6-month guarantee. Call us now."
+    },
+    "offers": {
+      "title": "Cleaning & Pest Control Offers in Kuwait - Forty",
+      "description": "Take advantage of the best offers and discounts on home cleaning and pest control services in Kuwait."
+    },
+    "blog": {
+      "title": "Forty Blog - Cleaning & Pest Control Tips",
+      "description": "Educational articles and practical tips to keep your home clean and protected from pests in Kuwait climate."
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "cleaning": "Cleaning Services",
+    "pest": "Pest Control",
+    "offers": "Offers",
+    "blog": "Blog",
+    "contact": "Contact Us"
+  },
+  "hero": {
+    "title": "Forty - Integrated Cleaning & Control Solutions",
+    "subtitle": "Pest & Rodent Control – Home & Office Cleaning with Highest Quality Standards",
+    "cta_cleaning": "Cleaning Services",
+    "cta_pest": "Pest Control"
+  },
+  "calculator": {
+    "title": "Smart Price Calculator",
+    "subtitle": "Get an instant estimate for service cost",
+    "cleaning": "Cleaning",
+    "pest": "Pest Control",
+    "area": "Total Area (sqm)",
+    "floors": "Number of Floors",
+    "kitchens": "Number of Kitchens",
+    "bathrooms": "Number of Bathrooms",
+    "pest_type": "Pest Type",
+    "rooms": "Number of Rooms",
+    "halls": "Number of Halls",
+    "estimated_price": "Estimated Price Starts From",
+    "currency": "KWD",
+    "area_unit": "sqm",
+    "disclaimer": "* This price is estimated and may change after actual site inspection based on condition and exact area.",
+    "book_now": "Book with Estimated Price",
+    "note": "Final prices depend on inspection by a Forty specialist. Pest control starts from 25 KWD for an apartment (room & hall), and post-construction cleaning starts from 110 KWD per floor (up to 200m).",
+    "whatsapp_message": {
+      "intro": "Hello Forty, I used the price calculator on the website and got an estimated price",
+      "details_label": "Order Details",
+      "pest_request": "Pest control request",
+      "cleaning_request": "Post-construction cleaning request",
+      "rooms": "rooms",
+      "halls": "halls",
+      "bathrooms": "bathrooms",
+      "kitchens": "kitchens",
+      "floors": "floors",
+      "area": "area"
+    },
+    "pest_types": {
+      "general": "General Pest Control (Roaches, Ants)",
+      "termites": "Termites",
+      "rodents": "Rodents (Mice, Rats)",
+      "bedbugs": "Bed Bugs"
+    },
+    "booking": {
+      "select_date": "Select Inspection Date",
+      "select_time": "Select Suitable Time",
+      "selected_datetime": "Selected Appointment:",
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "times": {
+        "09_00": "09:00 AM",
+        "10_00": "10:00 AM",
+        "11_00": "11:00 AM",
+        "12_00": "12:00 PM",
+        "13_00": "01:00 PM",
+        "14_00": "02:00 PM",
+        "15_00": "03:00 PM",
+        "16_00": "04:00 PM",
+        "17_00": "05:00 PM",
+        "18_00": "06:00 PM",
+        "19_00": "07:00 PM",
+        "20_00": "08:00 PM",
+        "21_00": "09:00 PM",
+        "22_00": "10:00 PM"
+      }
+    }
+  },
+  "footer": {
+    "description": "A leading company in general cleaning services and pest control in Kuwait",
+    "quick_links": "Quick Links",
+    "our_services": "Our Services",
+    "contact_info": "Contact Information",
+    "address": "Al-Mirqab - Block 1 - Al-Wazzan St - Al-Adala Tower - 5th Floor - Office 1",
+    "rights": "© 2025 Forty Company. All rights reserved."
+  },
+  "about": {
+    "title": "About Us",
+    "cleaning_subtitle": "A leading cleaning services company in Kuwait",
+    "cleaning_description": "Forty is a leading general cleaning services company in Kuwait. We have long experience in the field and a specialized team of experts trained in the latest techniques.",
+    "pest_subtitle": "A leader in pest and rodent control in Kuwait",
+    "pest_description": "Forty is a leading pest and rodent control company in Kuwait. We use the best safe pesticides approved by relevant authorities.",
+    "years_exp": "Years Experience",
+    "happy_clients": "Happy Clients",
+    "features": {
+      "cleaning": [
+        "Highest level trained team",
+        "Modern equipment and advanced techniques",
+        "Safe and eco-friendly cleaning materials",
+        "Customer satisfaction guarantee"
+      ],
+      "pest": [
+        "Safe and approved pesticides",
+        "Specialized and trained team",
+        "6-month guarantee on all services",
+        "Free assessment visit"
+      ]
+    }
+  },
+  "services": {
+    "title_landing": "Our Featured Services",
+    "title_cleaning": "Cleaning Services",
+    "title_pest": "Pest Control Services",
+    "subtitle_landing": "We offer a comprehensive range of cleaning and pest control services",
+    "subtitle_cleaning": "We offer professional cleaning solutions for all needs",
+    "subtitle_pest": "Effective and safe solutions to eliminate all types of pests and rodents",
+    "cta": "Order Service",
+    "items": {
+      "home_cleaning": {
+        "title": "Home Cleaning",
+        "desc": "Comprehensive cleaning of kitchens, bathrooms, bedrooms, floors, and windows"
+      },
+      "pest_control": {
+        "title": "Pest Control",
+        "desc": "Control of cockroaches, termites, moths, and flies using safe pesticides"
+      },
+      "rodent_control": {
+        "title": "Rodent Control",
+        "desc": "Control of mice and rats with entry point identification and advanced trapping"
+      },
+      "office_cleaning": {
+        "title": "Office Cleaning",
+        "desc": "Daily or weekly cleaning, surface sterilization, and furniture cleaning"
+      },
+      "building_cleaning": {
+        "title": "Building Cleaning",
+        "desc": "Comprehensive cleaning for residential and commercial buildings with a specialized team"
+      },
+      "sterilization": {
+        "title": "Sterilization",
+        "desc": "Comprehensive sterilization services using the latest technology and safe materials"
+      },
+      "termite_control": {
+        "title": "Termite Control",
+        "desc": "Specialized solutions to eliminate termites and protect buildings"
+      },
+      "prevention": {
+        "title": "Periodic Prevention",
+        "desc": "Periodic prevention programs to prevent the return of pests with a 6-month guarantee"
+      }
+    }
+  },
+  "stats": {
+    "happy_clients": "Happy Clients",
+    "years_exp": "Years Experience",
+    "service_24_7": "24/7 Service",
+    "clean_homes": "Clean Homes",
+    "offices": "Offices",
+    "customer_satisfaction": "Customer Satisfaction",
+    "pest_operations": "Control Operations",
+    "guarantee": "Guarantee",
+    "guarantee_months": "Months",
+    "effectiveness": "Effectiveness"
+  },
+  "why_us": {
+    "title_landing": "Why Choose Forty?",
+    "title_cleaning": "Why Choose Cleaning Services from Forty?",
+    "title_pest": "Why Choose Pest Control from Forty?",
+    "subtitle": "We are characterized by quality and reliability in all our services",
+    "features": {
+      "service_24_7": {
+        "title": "24/7 Service",
+        "desc": "We are available around the clock to meet your emergency needs"
+      },
+      "guarantee_6_months": {
+        "title": "6-Month Guarantee",
+        "desc": "We guarantee permanent results with a comprehensive 6-month guarantee"
+      },
+      "specialized_team": {
+        "title": "Specialized Team",
+        "desc": "A team of experts trained in the latest control and cleaning techniques"
+      },
+      "safe_pesticides": {
+        "title": "Safe Pesticides",
+        "desc": "We use safe pesticides approved by relevant authorities"
+      },
+      "modern_equipment": {
+        "title": "Modern Equipment",
+        "desc": "We use the latest equipment and techniques to get the best results"
+      },
+      "quality_guarantee": {
+        "title": "Quality Guarantee",
+        "desc": "We guarantee your complete satisfaction with the possibility of free service re-execution"
+      },
+      "professional_team": {
+        "title": "Professional Team",
+        "desc": "A team trained to the highest level of efficiency and professionalism"
+      },
+      "punctual_timing": {
+        "title": "Punctual Timing",
+        "desc": "We adhere to specified schedules with flexibility in scheduling"
+      },
+      "free_visit": {
+        "title": "Free Visit",
+        "desc": "We offer a free assessment visit and provide appropriate solutions"
+      }
+    }
+  },
+  "contact": {
+    "title": "Contact Us Now",
+    "subtitle": "Do you have a pest problem or need deep cleaning? Contact us now",
+    "name": "Full Name",
+    "phone": "Phone Number",
+    "service_placeholder": "Select Service Type",
+    "message": "Your Message",
+    "submit": "Send Message",
+    "submitting": "Sending...",
+    "success": "Your request is ready! Redirecting to WhatsApp to complete sending...",
+    "whatsapp_message": {
+      "title": "New service request from the website:",
+      "name": "Name:",
+      "phone": "Phone Number:",
+      "service": "Service Requested:",
+      "message": "Message:",
+      "no_message": "None"
+    },
+    "info": {
+      "phone": "Phone",
+      "address": "Address",
+      "whatsapp": "WhatsApp",
+      "email": "Email"
+      },
+      "errors": {
+        "name_min": "Name must be at least 2 characters",
+        "invalid_phone": "Invalid phone number (must be 8 digits starting with 5, 6, 9, or 2)",
+        "select_service": "Please select a service type"
+      }
+    },
+    "offers": {
+    "title": "Forty Exclusive Offers",
+    "subtitle": "Choose the right offer for you and enjoy the highest standards of cleaning and control in Kuwait at unbeatable competitive prices.",
+    "badge_limited": "Exclusive discounts for a limited time",
+    "badges": {
+      "hot": "Special Offer",
+      "best": "Most Wanted",
+      "starter": "Price Starts From"
+    },
+    "categories": {
+      "cleaning": "Home Cleaning",
+      "office": "Monthly Office Cleaning",
+      "pest": "Pest Control"
+    },
+    "items": {
+      "apt_cleaning": {
+        "title": "Empty & New Apartment Cleaning",
+        "desc": "Comprehensive and deep cleaning of apartments before moving in, with floor polishing and window cleaning.",
+        "price_unit": "Starts from",
+        "subtext": "Final price is determined based on the number of rooms and apartment area.",
+        "btn": "Request Apartment Offer",
+        "wa": "I would like to book the empty apartment cleaning offer (30 KWD)",
+        "features": [
+          "Comprehensive cleaning of all rooms, halls, and kitchens.",
+          "Floor polishing (ceramic, marble, parquet) with the best materials.",
+          "Cleaning and sterilization of bathrooms and removal of construction/paint traces."
+        ]
+      },
+      "office_cleaning": {
+        "title": "Office Cleaning – 8 Visits per Month",
+        "desc": "A fixed monthly program that keeps your office clean throughout the week.",
+        "price_unit": "Monthly (8 visits)",
+        "subtext": "1 cleaner · 5 working hours per visit.",
+        "btn": "Request Office Offer",
+        "wa": "I would like to subscribe to the monthly office cleaning offer (100 KWD - 8 visits - 5 hours)",
+        "features": [
+          "Cleaning of offices, reception areas, and bathrooms.",
+          "Dust removal from surfaces, equipment, and libraries.",
+          "8 visits per month (approx. twice weekly) with flexible scheduling."
+        ]
+      },
+      "pest_control": {
+        "title": "Pest Control Offer",
+        "desc": "Effective and safe solutions to eliminate various types of pests and rodents.",
+        "price_unit": "Based on inspection",
+        "subtext": "Final price is determined after a free on-site assessment.",
+        "btn": "Book Inspection Now",
+        "wa": "I would like to book a pest control offer with an on-site assessment",
+        "features": [
+          "Safe and approved pesticides from relevant authorities in Kuwait.",
+          "Targeting cockroaches, termites, mosquitoes, rodents, and others.",
+          "Guarantee on effectiveness with follow-up programs when needed."
+        ]
+      }
+    }
+  },
+  "blog": {
+    "title": "Forty Blog",
+    "subtitle": "Articles and practical tips on house and office cleaning, sterilization, and pest and rodent control in all areas of Kuwait.",
+    "extra": "Here we publish short, spontaneous articles that provide practical value to the reader, away from the advertising style.",
+    "cta": "Go to articles",
+    "sidebar_title": "What will you find here?",
+    "sidebar_items": [
+      "Easy-to-apply daily tips for home and office.",
+      "Simple step-by-step guides for cleaning and sterilization tasks.",
+      "Practical solutions to common problems in pest and rodent control.",
+      "Fresh content suitable for Kuwait seasons and climate."
+    ],
+    "main_title": "Latest Blog Articles",
+    "main_desc": "All articles published in the Forty blog appear here and are constantly updated.",
+    "post_title": "Blog Posts",
+    "post_desc": "Latest posts are loaded automatically.",
+    "by_team": "By Forty Team",
+    "noscript": "To view the latest articles, enable JavaScript in your browser.",
+    "knowledge_tag": "Knowledge at your service",
+    "featured_topics": {
+      "cleaning": {
+        "title": "Cleaning Tips",
+        "desc": "How to keep your home bright all the time."
+      },
+      "pest": {
+        "title": "Pest Control",
+        "desc": "Preventive ways to protect your family from pests."
+      },
+      "solutions": {
+        "title": "Quick Solutions",
+        "desc": "Treat stains and emergency problems immediately."
+      }
+    },
+    "error": {
+      "failed_to_load": "Sorry, content failed to load",
+      "connection_issue": "There seems to be an issue connecting to the external blog. Please try again later.",
+      "reload": "Reload Page"
+    }
+  },
+  "coverage": {
+    "title": "Coverage Areas in Kuwait",
+    "subtitle": "Forty team is equipped to reach you in all governorates and areas of Kuwait quickly and professionally.",
+    "available": "Service available now",
+    "not_listed_title": "Is your area not listed?",
+    "not_listed_desc": "Don't worry, we are constantly expanding. Contact us and we will try to arrange an appointment for you as soon as possible.",
+    "inquire": "Inquire about your area",
+    "areas": {
+      "asima": {
+        "name": "Capital",
+        "sub": "Kuwait City, Rawda, Cordoba, Yarmouk, Khaldiya"
+      },
+      "hawalli": {
+        "name": "Hawalli",
+        "sub": "Salmiya, Jabriya, Mason, Mishref, South Surra"
+      },
+      "farwaniya": {
+        "name": "Farwaniya",
+        "sub": "Khaitan, Riggae, Andalus, Ishbiliya, Ardiya"
+      },
+      "ahmadi": {
+        "name": "Ahmadi",
+        "sub": "Mangaf, Fintas, Raqqa, Sabahiya, Ali Sabah Al-Salem"
+      },
+      "mubarak": {
+        "name": "Mubarak Al-Kabeer",
+        "sub": "Adan, Qusour, Qurain, Sabah Al-Salem, Messila"
+      },
+      "jahra": {
+        "name": "Jahra",
+        "sub": "Jahra City, Qasr, Waha, Oyoun, Naseem"
+      }
+    }
+  },
+  "before_after": {
+    "title": "Forty's Amazing Results",
+    "subtitle": "See the difference yourself before and after our specialist team's intervention. Accuracy and professionalism are our motto.",
+    "before": "Before Cleaning",
+    "after": "After Cleaning",
+    "cleaning": {
+      "title": "Floor & Marble Cleaning",
+      "desc": "We transform dull floors into crystal shine using the latest equipment."
+    },
+    "pest": {
+      "title": "Pest & Insect Control",
+      "desc": "Guaranteed results in eliminating pests and ensuring a clean environment."
+    }
+  },
+  "landing_cards": {
+    "title": "Choose the Right Service",
+    "subtitle": "We offer a comprehensive range of cleaning and pest control services with the highest quality standards",
+    "discover_more": "Discover More",
+    "cleaning": {
+      "title": "Cleaning Services",
+      "desc": "We provide comprehensive cleaning services for homes, offices, and buildings with the highest standards of quality and professionalism"
+    },
+    "pest": {
+      "title": "Pest Control",
+      "desc": "Effective and safe solutions to eliminate all types of pests and rodents with a 6-month guarantee"
+    }
+  },
+  "reviews": {
+    "title": "What Our Clients Say",
+    "subtitle": "We are proud of our clients' trust across Kuwait. Our real reviews reflect our commitment to quality.",
+    "google_rating": "Our Google Rating",
+    "based_on": "Based on over 500 real reviews",
+    "items": [
+      {
+        "name": "Ahmed Al-Shammari",
+        "text": "Excellent service and punctual. The pest control team was very professional, and the cockroach problem is completely gone.",
+        "rating": 5
+      },
+      {
+        "name": "Sara Al-Fadhli",
+        "text": "I requested post-construction cleaning and the result was amazing. The apartment looks brand new. Thank you Forty!",
+        "rating": 5
+      },
+      {
+        "name": "Mohammed Al-Kandari",
+        "text": "Best cleaning company I've dealt with in Kuwait. High quality and very competitive price.",
+        "rating": 5
+      }
+    ]
+  },
+  "gallery": {
+    "title": "Our Work Gallery",
+    "subtitle": "We are proud of our work and distinguished results",
+    "items": {
+      "cleaning_home": "Home Cleaning",
+      "cleaning_office": "Office Cleaning",
+      "cleaning_glass": "Glass Cleaning",
+      "pest_control": "Pest Control",
+      "pest_all": "Pest & Insect Control",
+      "pest_services": "Control Services"
+    }
+  }
+}
