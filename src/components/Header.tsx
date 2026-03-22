@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Phone, Menu, X, Globe } from 'lucide-react';
+import { Phone, Menu, X, Globe, Clock } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -101,12 +101,21 @@ const Header = ({ variant = 'landing' }: HeaderProps) => {
                 <Link
                   key={link.href}
                   to={link.href}
-                  className={`nav-link font-medium ${location.pathname === link.href ? 'nav-link-active' : ''}`}
+                  className={`nav-link font-medium ${location.pathname === link.href ? 'active' : ''}`}
                 >
                   {link.label}
                 </Link>
               )
             ))}
+            
+            {/* Call to Action Button */}
+            <Link 
+              to="/booking"
+              className="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-black shadow-lg shadow-blue-200 hover:bg-blue-700 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+            >
+              <Clock className="w-4 h-4" />
+              احجز الآن
+            </Link>
             
             {/* Language Switcher */}
             <button 

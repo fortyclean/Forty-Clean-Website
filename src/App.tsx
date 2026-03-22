@@ -8,6 +8,7 @@ const Pest = lazy(() => import('./pages/Pest'));
 const Offers = lazy(() => import('./pages/Offers'));
 const Blog = lazy(() => import('./pages/Blog'));
 const AdminLeads = lazy(() => import('./pages/AdminLeads'));
+const Booking = lazy(() => import('./pages/Booking'));
 
 // Loading component
 const PageLoader = () => (
@@ -45,6 +46,7 @@ function App() {
         <Route path="/offers" element={<Offers />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/admin-leads" element={<AdminLeads />} />
+        <Route path="/booking" element={<Booking />} />
       </Routes>
     </Suspense>
   );

@@ -1,4 +1,4 @@
-import { Phone, ArrowLeft, Sparkles, Bug } from 'lucide-react';
+import { Phone, ArrowLeft, Sparkles, Bug, Clock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useReveal } from '../../hooks/useReveal';
@@ -18,8 +18,8 @@ const HeroSection = ({ variant = 'landing' }: HeroSectionProps) => {
         title: t('hero.title'),
         subtitle: t('hero.subtitle'),
         buttons: [
-          { label: t('hero.cta_cleaning'), href: '/cleaning', icon: Sparkles, primary: true, isExternal: false },
-          { label: t('hero.cta_pest'), href: '/pest', icon: Bug, primary: false, isExternal: false },
+          { label: 'احجز موعدك الآن', href: '/booking', icon: Clock, primary: true, isExternal: false },
+          { label: 'تواصل واتساب', href: siteConfig.links.whatsapp(siteConfig.contact.cleaningPhone, ''), icon: Phone, primary: false, isExternal: true },
         ],
       };
     } else if (variant === 'cleaning') {

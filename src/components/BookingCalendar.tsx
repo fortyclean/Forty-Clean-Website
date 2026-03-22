@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Calendar } from './ui/calendar';
 import { Clock, Calendar as CalendarIcon, Check, ChevronRight, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ar, enUS } from 'date-fns/locale';
 
 interface BookingCalendarProps {
   selectedDate: Date | undefined;

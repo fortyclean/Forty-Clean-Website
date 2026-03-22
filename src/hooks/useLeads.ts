@@ -1,4 +1,16 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { 
+  collection, 
+  addDoc, 
+  getDocs, 
+  deleteDoc, 
+  doc, 
+  updateDoc, 
+  query, 
+  orderBy, 
+  onSnapshot 
+} from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 export interface Lead {
   id: string;
@@ -8,61 +20,69 @@ export interface Lead {
   details?: string;
   price?: number;
   timestamp: string;
-  source: 'contact_form' | 'price_calculator';
+  source: 'contact_form' | 'price_calculator' | 'booking_system';
   status: 'new' | 'contacted' | 'completed';
 }
 
-const STORAGE_KEY = 'forty_captured_leads';
-
 export const useLeads = () => {
-  const [leads, setLeads] = useState<Lead[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const saveLead = useCallback((leadData: Omit<Lead, 'id' | 'timestamp' | 'status'>) => {
-    const newLead: Lead = {
-      ...leadData,
-      id: crypto.randomUUID(),
-      timestamp: new Date().toISOString(),
-      status: 'new',
-    };
-
-    setLeads((prev) => {
-      const updated = [newLead, ...prev];
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      return updated;
+  useEffect(() => {
+    const q = query(collection(db, 'leads'), orderBy('timestamp', 'desc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const leadsData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Lead[];
+      setLeads(leadsData);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching leads:", error);
+      setLoading(false);
     });
 
-    return newLead;
+    return () => unsubscribe();
   }, []);
 
-  const deleteLead = useCallback((id: string) => {
-    setLeads((prev) => {
-      const updated = prev.filter((l) => l.id !== id);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      return updated;
-    });
+  const saveLead = useCallback(async (leadData: Omit<Lead, 'id' | 'timestamp' | 'status'>) => {
+    try {
+      const newLead = {
+        ...leadData,
+        timestamp: new Date().toISOString(),
+        status: 'new',
+      };
+      const docRef = await addDoc(collection(db, 'leads'), newLead);
+      return { id: docRef.id, ...newLead };
+    } catch (error) {
+      console.error("Error saving lead:", error);
+      throw error;
+    }
   }, []);
 
-  const updateLeadStatus = useCallback((id: string, status: Lead['status']) => {
-    setLeads((prev) => {
-      const updated = prev.map((l) => (l.id === id ? { ...l, status } : l));
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      return updated;
-    });
+  const deleteLead = useCallback(async (id: string) => {
+    try {
+      await deleteDoc(doc(db, 'leads', id));
+    } catch (error) {
+      console.error("Error deleting lead:", error);
+      throw error;
+    }
   }, []);
 
-  const clearAllLeads = useCallback(() => {
-    localStorage.removeItem(STORAGE_KEY);
-    setLeads([]);
+  const updateLeadStatus = useCallback(async (id: string, status: Lead['status']) => {
+    try {
+      await updateDoc(doc(db, 'leads', id), { status });
+    } catch (error) {
+      console.error("Error updating lead status:", error);
+      throw error;
+    }
   }, []);
 
   return {
     leads,
+    loading,
     saveLead,
     deleteLead,
     updateLeadStatus,
-    clearAllLeads,
   };
 };

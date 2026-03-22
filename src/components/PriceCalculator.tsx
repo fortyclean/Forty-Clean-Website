@@ -84,7 +84,7 @@ const PriceCalculator = ({ initialType = 'cleaning' }: PriceCalculatorProps) => 
         month: 'long',
         day: 'numeric'
       });
-      details += `\n📅 الموعد المختار: ${formattedDate} الساعة ${t(`booking.times.${selectedTime}`)}`;
+      details += `\n📅 الموعد المختار: ${formattedDate} الساعة ${t(`calculator.booking.times.${selectedTime}`)}`;
     }
 
     // Save Lead using hook
@@ -98,7 +98,7 @@ const PriceCalculator = ({ initialType = 'cleaning' }: PriceCalculatorProps) => 
     });
 
     let text = `${t('calculator.whatsapp_message.intro')} (${estimatedPrice} ${t('calculator.currency')}).\n\n*${t('calculator.whatsapp_message.details_label')}:*\n${details}\n\n*الاسم:* ${data.name}\n*الهاتف:* ${data.phone}`;
-    window.open(`https://wa.me/965${whatsappNumber}?text=${encodeURIComponent(text)}`, '_blank');
+    window.open(siteConfig.links.whatsapp(whatsappNumber, text), '_blank');
   };
 
   return (

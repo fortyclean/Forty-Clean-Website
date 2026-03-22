@@ -3,9 +3,10 @@ import { useLeads, type Lead } from '../hooks/useLeads';
 import Layout from '../components/Layout';
 import { Trash2, Clock, ExternalLink, Download, Lock, LogOut } from 'lucide-react';
 import { siteConfig } from '../config/site';
+import { cn } from '@/lib/utils';
 
 const AdminLeads = () => {
-  const { leads, deleteLead, updateLeadStatus, clearAllLeads } = useLeads();
+  const { leads, deleteLead, updateLeadStatus, loading } = useLeads();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -98,180 +99,137 @@ const AdminLeads = () => {
 
   const getStatusColor = (status: Lead['status']) => {
     switch (status) {
-      case 'new': return 'bg-blue-100 text-blue-700';
-      case 'contacted': return 'bg-yellow-100 text-yellow-700';
-      case 'completed': return 'bg-green-100 text-green-700';
-      default: return 'bg-gray-100 text-gray-700';
+      case 'new': return 'bg-blue-100 text-blue-700 border-blue-200';
+      case 'contacted': return 'bg-amber-100 text-amber-700 border-amber-200';
+      case 'completed': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+      default: return 'bg-gray-100 text-gray-700 border-gray-200';
     }
   };
 
   return (
     <Layout variant="landing">
-      <div className="pt-32 pb-20 bg-gray-50 min-h-screen">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-            <div>
-              <h1 className="text-3xl font-black text-blue-900">لوحة تحكم الطلبات (Leads)</h1>
-              <p className="text-gray-500">إدارة طلبات العملاء المحفوظة محلياً</p>
+      <div className="min-h-screen bg-gray-50 pt-28 pb-12 px-4">
+        <div className="max-w-6xl mx-auto space-y-6">
+          {/* Admin Header */}
+          <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-6">
+              <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                <Clock className="w-8 h-8" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-black text-blue-900">إدارة الطلبات</h1>
+                <p className="text-gray-500 font-bold">إجمالي الطلبات: {leads.length}</p>
+              </div>
             </div>
-            <div className="flex flex-wrap justify-center gap-3">
-              <button 
-                onClick={handleLogout}
-                className="flex items-center gap-2 bg-gray-100 text-gray-600 px-4 py-2 rounded-xl font-bold hover:bg-gray-200 transition-all"
-              >
-                <LogOut className="w-4 h-4" />
-                خروج
-              </button>
-              <button 
+            <div className="flex items-center gap-3">
+              <button
                 onClick={exportToCSV}
-                className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-emerald-700 transition-all"
+                className="flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100"
               >
-                <Download className="w-4 h-4" />
+                <Download className="w-5 h-5" />
                 تصدير Excel
               </button>
-              <button 
-                onClick={() => {
-                  if (window.confirm('هل أنت متأكد من حذف جميع الطلبات؟')) clearAllLeads();
-                }}
-                className="flex items-center gap-2 bg-red-100 text-red-600 px-4 py-2 rounded-xl font-bold hover:bg-red-200 transition-all"
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-600 rounded-2xl font-black hover:bg-gray-200 transition-all"
               >
-                <Trash2 className="w-4 h-4" />
-                حذف الكل
+                <LogOut className="w-5 h-5" />
+                خروج
               </button>
             </div>
           </div>
 
-          {leads.length === 0 ? (
-            <div className="bg-white rounded-3xl p-20 text-center shadow-sm">
-              <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Clock className="w-10 h-10 text-gray-300" />
+          {/* Leads Table */}
+          <div className="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden">
+            {loading ? (
+              <div className="p-20 text-center">
+                <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-gray-500 font-bold">جاري تحميل الطلبات...</p>
               </div>
-              <h2 className="text-2xl font-bold text-gray-400">لا توجد طلبات حالياً</h2>
-            </div>
-          ) : (
-            <>
-              {/* Desktop Table View */}
-              <div className="hidden md:block bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-right">
-                    <thead>
-                      <tr className="bg-gray-50 border-b border-gray-100">
-                        <th className="px-6 py-4 font-bold text-gray-600">التاريخ</th>
-                        <th className="px-6 py-4 font-bold text-gray-600">الاسم</th>
-                        <th className="px-6 py-4 font-bold text-gray-600">الهاتف</th>
-                        <th className="px-6 py-4 font-bold text-gray-600">الخدمة</th>
-                        <th className="px-6 py-4 font-bold text-gray-600">السعر</th>
-                        <th className="px-6 py-4 font-bold text-gray-600">الحالة</th>
-                        <th className="px-6 py-4 font-bold text-gray-600">إجراءات</th>
+            ) : leads.length === 0 ? (
+              <div className="p-20 text-center text-gray-400">
+                <ExternalLink className="w-16 h-16 mx-auto mb-4 opacity-20" />
+                <p className="text-xl font-bold">لا يوجد طلبات حالياً</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-right border-collapse">
+                  <thead>
+                    <tr className="bg-gray-50/50 border-b border-gray-100">
+                      <th className="px-8 py-6 text-blue-900 font-black">العميل</th>
+                      <th className="px-8 py-6 text-blue-900 font-black">الخدمة والسعر</th>
+                      <th className="px-8 py-6 text-blue-900 font-black">التفاصيل</th>
+                      <th className="px-8 py-6 text-blue-900 font-black">الحالة</th>
+                      <th className="px-8 py-6 text-blue-900 font-black">التاريخ</th>
+                      <th className="px-8 py-6 text-blue-900 font-black">إجراءات</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50">
+                    {leads.map((lead) => (
+                      <tr key={lead.id} className="hover:bg-blue-50/30 transition-colors">
+                        <td className="px-8 py-6">
+                          <div className="font-black text-blue-900">{lead.name}</div>
+                          <a 
+                            href={`tel:${lead.phone}`}
+                            className="text-blue-600 font-bold hover:underline flex items-center gap-1 mt-1"
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                            {lead.phone}
+                          </a>
+                        </td>
+                        <td className="px-8 py-6">
+                          <span className="font-bold text-gray-700">{lead.service === 'cleaning' ? 'نظافة' : 'مكافحة'}</span>
+                          {lead.price && (
+                            <div className="text-emerald-600 font-black">{lead.price} د.ك</div>
+                          )}
+                        </td>
+                        <td className="px-8 py-6 max-w-xs">
+                          <p className="text-gray-500 text-sm font-bold line-clamp-2" title={lead.details}>
+                            {lead.details || '-'}
+                          </p>
+                          <span className="text-[10px] bg-gray-100 px-2 py-0.5 rounded-full text-gray-400 uppercase font-black mt-2 inline-block">
+                            {lead.source.replace('_', ' ')}
+                          </span>
+                        </td>
+                        <td className="px-8 py-6">
+                          <select
+                            value={lead.status}
+                            onChange={(e) => updateLeadStatus(lead.id, e.target.value as Lead['status'])}
+                            className={cn(
+                              "px-4 py-2 rounded-xl font-black text-xs border outline-none transition-all cursor-pointer",
+                              getStatusColor(lead.status)
+                            )}
+                          >
+                            <option value="new">طلب جديد</option>
+                            <option value="contacted">تم التواصل</option>
+                            <option value="completed">تم التنفيذ</option>
+                          </select>
+                        </td>
+                        <td className="px-8 py-6 text-gray-400 text-sm font-bold">
+                          {new Date(lead.timestamp).toLocaleDateString('ar-KW')}
+                          <div className="text-[10px]">
+                            {new Date(lead.timestamp).toLocaleTimeString('ar-KW', { hour: '2-digit', minute: '2-digit' })}
+                          </div>
+                        </td>
+                        <td className="px-8 py-6">
+                          <button
+                            onClick={() => {
+                              if (window.confirm('هل أنت متأكد من حذف هذا الطلب؟')) {
+                                deleteLead(lead.id);
+                              }
+                            }}
+                            className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-50">
-                      {leads.map((lead) => (
-                        <tr key={lead.id} className="hover:bg-blue-50/30 transition-colors">
-                          <td className="px-6 py-4 text-sm text-gray-500">
-                            {new Date(lead.timestamp).toLocaleString('ar-KW')}
-                          </td>
-                          <td className="px-6 py-4 font-bold text-blue-900">{lead.name}</td>
-                          <td className="px-6 py-4">
-                            <a href={`tel:${lead.phone}`} className="text-blue-600 hover:underline flex items-center gap-1">
-                              {lead.phone}
-                              <ExternalLink className="w-3 h-3" />
-                            </a>
-                          </td>
-                          <td className="px-6 py-4 text-sm">
-                            <span className="bg-gray-100 px-2 py-1 rounded-lg">{lead.service}</span>
-                          </td>
-                          <td className="px-6 py-4 font-bold text-emerald-600">
-                            {lead.price ? `${lead.price} د.ك` : '-'}
-                          </td>
-                          <td className="px-6 py-4">
-                            <select 
-                              value={lead.status}
-                              onChange={(e) => updateLeadStatus(lead.id, e.target.value as any)}
-                              className={`text-xs font-bold px-2 py-1 rounded-full border-none outline-none ${getStatusColor(lead.status)}`}
-                            >
-                              <option value="new">جديد</option>
-                              <option value="contacted">تم الاتصال</option>
-                              <option value="completed">مكتمل</option>
-                            </select>
-                          </td>
-                          <td className="px-6 py-4">
-                            <button 
-                              onClick={() => deleteLead(lead.id)}
-                              className="p-2 text-red-400 hover:text-red-600 transition-colors"
-                            >
-                              <Trash2 className="w-5 h-5" />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-
-              {/* Mobile Card View */}
-              <div className="md:hidden space-y-4">
-                {leads.map((lead) => (
-                  <div key={lead.id} className="bg-white p-6 rounded-3xl shadow-md border border-gray-100 space-y-4">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="text-lg font-black text-blue-900">{lead.name}</h3>
-                        <p className="text-xs text-gray-400">{new Date(lead.timestamp).toLocaleString('ar-KW')}</p>
-                      </div>
-                      <button 
-                        onClick={() => deleteLead(lead.id)}
-                        className="p-2 text-red-400 hover:text-red-600 bg-red-50 rounded-xl"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-gray-50 p-3 rounded-2xl">
-                        <p className="text-[10px] text-gray-400 mb-1">الهاتف</p>
-                        <a href={`tel:${lead.phone}`} className="text-blue-600 font-bold flex items-center gap-1 text-sm">
-                          {lead.phone}
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
-                      </div>
-                      <div className="bg-gray-50 p-3 rounded-2xl">
-                        <p className="text-[10px] text-gray-400 mb-1">الخدمة</p>
-                        <span className="font-bold text-gray-700 text-sm">{lead.service}</span>
-                      </div>
-                      <div className="bg-gray-50 p-3 rounded-2xl">
-                        <p className="text-[10px] text-gray-400 mb-1">السعر</p>
-                        <span className="font-bold text-emerald-600 text-sm">{lead.price ? `${lead.price} د.ك` : '-'}</span>
-                      </div>
-                      <div className="bg-gray-50 p-3 rounded-2xl">
-                        <p className="text-[10px] text-gray-400 mb-1">المصدر</p>
-                        <span className="font-bold text-gray-500 text-sm">{lead.source}</span>
-                      </div>
-                    </div>
-
-                    <div className="pt-2">
-                      <select 
-                        value={lead.status}
-                        onChange={(e) => updateLeadStatus(lead.id, e.target.value as any)}
-                        className={`w-full text-center font-bold px-4 py-3 rounded-2xl border-none outline-none ${getStatusColor(lead.status)}`}
-                      >
-                        <option value="new">جديد</option>
-                        <option value="contacted">تم الاتصال</option>
-                        <option value="completed">مكتمل</option>
-                      </select>
-                    </div>
-                    
-                    {lead.details && (
-                      <div className="bg-blue-50/50 p-4 rounded-2xl text-xs text-blue-800 leading-relaxed">
-                        <p className="font-bold mb-1">التفاصيل:</p>
-                        {lead.details}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </Layout>
