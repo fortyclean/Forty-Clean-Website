@@ -68,6 +68,8 @@ const AboutSection = ({ variant = 'cleaning' }: AboutSectionProps) => {
               <img 
                 src={variant === 'cleaning' ? '/images/home-cleaning-kuwait.webp' : '/images/pest-control-kuwait.webp'} 
                 alt={t(`nav.${variant}`)} 
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-blue-900/40 to-transparent"></div>

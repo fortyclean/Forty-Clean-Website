@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Phone, MapPin, Mail } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Phone, MapPin, Mail, Moon, Sun } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { siteConfig } from '../config/site';
@@ -10,6 +10,22 @@ interface FooterProps {
 
 const Footer = ({ variant = 'landing' }: FooterProps) => {
   const { t, i18n } = useTranslation();
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem('theme') === 'dark' || 
+      (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  });
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
+
+  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
   const getLogoText = () => {
     const base = i18n.language === 'ar' ? siteConfig.nameAr : siteConfig.name;
@@ -57,7 +73,7 @@ const Footer = ({ variant = 'landing' }: FooterProps) => {
   return (
     <footer className="footer">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
           {/* Company Info */}
           <div className={`${i18n.language === 'ar' ? 'text-right' : 'text-left'}`}>
             <div className={`flex items-center gap-3 mb-4 ${i18n.language === 'ar' ? 'flex-row' : 'flex-row'}`}>
@@ -151,6 +167,20 @@ const Footer = ({ variant = 'landing' }: FooterProps) => {
                 </a>
               </li>
             </ul>
+          </div>
+          <div className={`${i18n.language === 'ar' ? 'text-right' : 'text-left'}`}>
+            <h4 className="text-lg font-bold text-white mb-4">{t('footer.settings')}</h4>
+            <button 
+              onClick={toggleDarkMode}
+              className="flex items-center gap-3 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all w-full mb-4"
+            >
+              {isDarkMode ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-blue-400" />}
+              <span className="font-bold">{isDarkMode ? 'الوضع النهاري' : 'الوضع الليلي'}</span>
+            </button>
+            <div className="flex items-center gap-3 text-gray-400 text-sm">
+              <div className={`w-3 h-3 rounded-full ${isDarkMode ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]'}`}></div>
+              <span>النظام يعمل بكفاءة</span>
+            </div>
           </div>
         </div>
 

@@ -51,7 +51,7 @@ const HeroSection = ({ variant = 'landing' }: HeroSectionProps) => {
         <div className="relative flex flex-col md:flex-row items-center gap-6 z-10">
           <Link to="/cleaning" className="relative group z-20">
             <div className="w-64 h-64 md:w-72 md:h-72 rounded-3xl overflow-hidden border-4 border-white/20 shadow-2xl animate-float transition-transform group-hover:scale-105 cursor-pointer">
-              <img src="/images/home-cleaning-kuwait.webp" alt={t('nav.cleaning')} className="w-full h-full object-cover" />
+              <img src="/images/home-cleaning-kuwait.webp" alt={t('nav.cleaning')} className="w-full h-full object-cover" loading="eager" fetchPriority="high" />
             </div>
             <div className="absolute -top-4 -right-4 w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl border border-white/20 flex items-center justify-center shadow-lg pointer-events-none">
               <Sparkles className="w-6 h-6 text-white" />
@@ -63,7 +63,7 @@ const HeroSection = ({ variant = 'landing' }: HeroSectionProps) => {
           
           <Link to="/pest" className="relative group md:mt-12 z-20">
             <div className="w-64 h-64 md:w-72 md:h-72 rounded-3xl overflow-hidden border-4 border-white/20 shadow-2xl animate-float transition-transform group-hover:scale-105 cursor-pointer" style={{ animationDelay: '0.7s' }}>
-              <img src="/images/pest-control-kuwait.webp" alt={t('nav.pest')} className="w-full h-full object-cover" />
+              <img src="/images/pest-control-kuwait.webp" alt={t('nav.pest')} className="w-full h-full object-cover" loading="eager" fetchPriority="high" />
             </div>
             <div className="absolute -bottom-4 -left-4 w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl border border-white/20 flex items-center justify-center shadow-lg pointer-events-none">
               <Bug className="w-6 h-6 text-white" />
@@ -80,8 +80,8 @@ const HeroSection = ({ variant = 'landing' }: HeroSectionProps) => {
     const Icon = variant === 'cleaning' ? Sparkles : Bug;
     return (
       <div className="relative z-10">
-        <div className="w-80 h-80 md:w-96 md:h-96 rounded-full overflow-hidden border-8 border-white/20 shadow-2xl animate-float">
-          <img src={imgSrc} alt={t(`nav.${variant}`)} className="w-full h-full object-cover" />
+        <div className="w-80 h-80 md:w-96 md:h-96 rounded-full overflow-hidden border-8 border-white/20 shadow-2xl animate-float text-[0]">
+          <img src={imgSrc} alt={t(`nav.${variant}`)} className="w-full h-full object-cover" loading="eager" fetchPriority="high" />
         </div>
         <div className="absolute -top-6 -right-6 w-24 h-24 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 flex items-center justify-center animate-float shadow-lg pointer-events-none">
           <Icon className="w-12 h-12 text-white" />
@@ -102,24 +102,24 @@ const HeroSection = ({ variant = 'landing' }: HeroSectionProps) => {
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className={`${i18n.language === 'ar' ? 'text-right' : 'text-left'} order-2 lg:order-1 relative z-10`}>
-            <h1 className="reveal text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+            <h1 className="reveal text-4xl md:text-5xl lg:text-7xl font-black text-white leading-tight mb-6">
               {content.title}
             </h1>
-            <p className="reveal text-xl text-white/90 mb-8 leading-relaxed" style={{ animationDelay: '0.2s' }}>
+            <p className="reveal text-xl md:text-2xl text-white/90 mb-10 leading-relaxed font-bold" style={{ animationDelay: '0.2s' }}>
               {content.subtitle}
             </p>
-            <div className="reveal flex flex-wrap gap-4" style={{ animationDelay: '0.4s' }}>
+            <div className="reveal flex flex-wrap gap-6" style={{ animationDelay: '0.4s' }}>
               {content.buttons.map((button, index) => (
                 button.isExternal ? (
-                  <a key={index} href={button.href} target="_blank" rel="noopener noreferrer" className={`${button.primary ? 'btn-white' : 'btn-secondary'} group`}>
-                    <button.icon className="w-5 h-5" />
+                  <a key={index} href={button.href} target="_blank" rel="noopener noreferrer" className={`${button.primary ? 'btn-white scale-110 shadow-2xl' : 'btn-secondary'} group py-5 px-8 text-xl font-black rounded-2xl transition-all`}>
+                    <button.icon className="w-6 h-6" />
                     <span>{button.label}</span>
                   </a>
                 ) : (
-                  <Link key={index} to={button.href} className={`${button.primary ? 'btn-white' : 'btn-secondary'} group`}>
-                    <button.icon className="w-5 h-5" />
+                  <Link key={index} to={button.href} className={`${button.primary ? 'btn-white scale-110 shadow-2xl' : 'btn-secondary'} group py-5 px-8 text-xl font-black rounded-2xl transition-all`}>
+                    <button.icon className="w-6 h-6" />
                     <span>{button.label}</span>
-                    {variant === 'landing' && <ArrowLeft className={`w-5 h-5 transition-transform ${i18n.language === 'ar' ? 'group-hover:-translate-x-1' : 'rotate-180 group-hover:translate-x-1'}`} />}
+                    {variant === 'landing' && <ArrowLeft className={`w-6 h-6 transition-transform ${i18n.language === 'ar' ? 'group-hover:-translate-x-2' : 'rotate-180 group-hover:translate-x-2'}`} />}
                   </Link>
                 )
               ))}

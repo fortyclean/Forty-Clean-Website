@@ -97,6 +97,8 @@ const BeforeAfterSection = () => {
               <img 
                 src={items[activeItem].after} 
                 alt="After" 
+                loading="lazy"
+                decoding="async"
                 className="absolute inset-0 w-full h-full object-cover"
               />
 
@@ -108,6 +110,8 @@ const BeforeAfterSection = () => {
                 <img 
                   src={items[activeItem].before} 
                   alt="Before" 
+                  loading="lazy"
+                  decoding="async"
                   className="absolute inset-0 w-full h-full object-cover grayscale"
                 />
               </div>

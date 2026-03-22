@@ -8,6 +8,7 @@ import PriceCalculator from '../components/PriceCalculator';
 import BeforeAfterSection from '../components/sections/BeforeAfterSection';
 import CoverageAreasSection from '../components/sections/CoverageAreasSection';
 import ReviewsSection from '../components/sections/ReviewsSection';
+import FAQSection from '../components/sections/FAQSection';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, Star, Clock, ArrowLeft, Check } from 'lucide-react';
 
@@ -91,6 +92,7 @@ const Home = () => {
       <BeforeAfterSection />
       <CoverageAreasSection />
       <ReviewsSection />
+      <FAQSection />
       <ContactSection variant="landing" />
     </Layout>
   );

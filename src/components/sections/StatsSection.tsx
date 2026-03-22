@@ -49,7 +49,7 @@ const StatsSection = ({ variant = 'landing' }: StatsSectionProps) => {
   };
 
   return (
-    <section ref={ref} className="py-24 bg-blue-dark relative overflow-hidden">
+    <section ref={ref} className="py-24 bg-blue-900 relative overflow-hidden">
       {/* Dynamic Background Elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <motion.div 

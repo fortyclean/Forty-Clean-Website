@@ -79,12 +79,12 @@ const ReviewsSection = () => {
               </p>
 
               <div className="flex items-center gap-4 border-t border-gray-50 pt-6">
-                <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xl">
+                <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-100">
                   {review.name.charAt(0)}
                 </div>
                 <div className={`${i18n.language === 'ar' ? 'text-right' : 'text-left'}`}>
                   <h4 className="font-black text-blue-900">{review.name}</h4>
-                  <p className="text-sm text-gray-400">عميل موثق</p>
+                  <p className="text-sm text-gray-400 font-bold">عميل موثق</p>
                 </div>
               </div>
             </motion.div>

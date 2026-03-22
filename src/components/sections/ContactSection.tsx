@@ -65,12 +65,15 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
     const serviceLabel = getServices().find(s => s.value === data.service)?.label || data.service;
     const whatsappText = `${t('contact.whatsapp_message.title')}\n\n*${t('contact.whatsapp_message.name')}* ${data.name}\n*${t('contact.whatsapp_message.phone')}* ${data.phone}\n*${t('contact.whatsapp_message.service')}* ${serviceLabel}\n*${t('contact.whatsapp_message.message')}* ${data.message || t('contact.whatsapp_message.no_message')}`;
     
+    // Construct Lead Details for database
+    const leadDetails = `الخدمة: ${serviceLabel} | الرسالة: ${data.message || 'بدون رسالة'}`;
+
     // Save to backup lead capture using hook
     saveLead({
       name: data.name,
       phone: data.phone,
       service: data.service,
-      details: data.message,
+      details: leadDetails,
       source: 'contact_form'
     });
     
