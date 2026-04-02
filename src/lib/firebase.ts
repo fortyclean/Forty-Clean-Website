@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { reportAppError } from './appError';
 
 const envConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string | undefined,
@@ -49,6 +50,35 @@ export const getFirebaseAuth = async () => {
   return authPromise;
 };
 
+export async function signInWithFirebaseCustomToken(customToken: string) {
+  const auth = await getFirebaseAuth();
+  const { signInWithCustomToken } = await import('firebase/auth');
+  return signInWithCustomToken(auth, customToken);
+}
+
+export type AdminClaims = {
+  isAdmin: boolean;
+  role: string | null;
+};
+
+export async function getAdminClaims(user?: import('firebase/auth').User | null): Promise<AdminClaims> {
+  const auth = await getFirebaseAuth();
+  const targetUser = user ?? auth.currentUser;
+
+  if (!targetUser) {
+    return { isAdmin: false, role: null };
+  }
+
+  const { getIdTokenResult } = await import('firebase/auth');
+  const tokenResult = await getIdTokenResult(targetUser);
+  const role = typeof tokenResult.claims.role === 'string' ? tokenResult.claims.role : null;
+
+  return {
+    isAdmin: tokenResult.claims.admin === true || role === 'admin',
+    role,
+  };
+}
+
 export async function createCustomer(name: string, phone: string) {
   const trimmedName = name.trim();
   const trimmedPhone = phone.trim();
@@ -57,40 +87,24 @@ export async function createCustomer(name: string, phone: string) {
     throw new Error('Customer name and phone are required.');
   }
 
-  try {
-    const auth = await getFirebaseAuth();
-    const currentUser = auth.currentUser;
+  const auth = await getFirebaseAuth();
+  const currentUser = auth.currentUser;
 
-    if (!currentUser) {
-      throw new Error('You must be signed in to create customers.');
-    }
-
-    const db = await getDb();
-    const { addDoc, collection, serverTimestamp } = await import('firebase/firestore');
-    const docRef = await addDoc(collection(db, 'customers'), {
-      name: trimmedName,
-      phone: trimmedPhone,
-      createdAt: serverTimestamp(),
-      userId: currentUser.uid,
-      status: 'new',
-    });
-
-    return docRef.id;
-  } catch (error) {
-    console.error('Error adding customer:', error);
-    throw error;
+  if (!currentUser) {
+    throw new Error('You must be signed in to create customers.');
   }
-}
 
-export async function addCustomer() {
-  try {
-    const docRefId = await createCustomer('Ahmed', '99999999');
-    console.log('Customer added with ID:', docRefId);
-    return docRefId;
-  } catch (error) {
-    console.error('Error adding customer:', error);
-    throw error;
-  }
+  const db = await getDb();
+  const { addDoc, collection, serverTimestamp } = await import('firebase/firestore');
+  const docRef = await addDoc(collection(db, 'customers'), {
+    name: trimmedName,
+    phone: trimmedPhone,
+    createdAt: serverTimestamp(),
+    userId: currentUser.uid,
+    status: 'new',
+  });
+
+  return docRef.id;
 }
 
 export async function getCustomers() {
@@ -121,10 +135,9 @@ export async function getCustomers() {
         return bCreatedAt - aCreatedAt;
       });
 
-    console.log('Customers:', customers);
     return customers;
   } catch (error) {
-    console.error('Error getting customers:', error);
+    reportAppError({ scope: 'firebase-get-customers', error });
     return [];
   }
 }

@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { reportAppError } from '@/lib/appError';
 import { getDb } from '@/lib/firebase';
 
 export interface Lead {
@@ -43,7 +44,7 @@ export const useLeads = ({ subscribe = false, limitCount = 100 }: UseLeadsOption
       })) as Lead[];
       setLeads(leadsData);
     } catch (error) {
-      console.error("Error fetching leads:", error);
+      reportAppError({ scope: 'leads-load', error });
     } finally {
       setIsFetching(false);
     }
@@ -51,8 +52,53 @@ export const useLeads = ({ subscribe = false, limitCount = 100 }: UseLeadsOption
 
   useEffect(() => {
     if (!subscribe) return;
-    loadLeads();
-  }, [loadLeads, subscribe]);
+
+    let isActive = true;
+    let unsubscribe: (() => void) | undefined;
+
+    setIsFetching(true);
+
+    void (async () => {
+      try {
+        const db = await getDb();
+        const { collection, limit, onSnapshot, orderBy, query } = await import('firebase/firestore');
+        const q = query(collection(db, 'leads'), orderBy('timestamp', 'desc'), limit(limitCount));
+
+        unsubscribe = onSnapshot(
+          q,
+          (snapshot) => {
+            if (!isActive) {
+              return;
+            }
+
+            const leadsData = snapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            })) as Lead[];
+
+            setLeads(leadsData);
+            setIsFetching(false);
+          },
+          (error) => {
+            reportAppError({ scope: 'leads-subscribe', error });
+            if (isActive) {
+              setIsFetching(false);
+            }
+          }
+        );
+      } catch (error) {
+        reportAppError({ scope: 'leads-subscribe-init', error });
+        if (isActive) {
+          setIsFetching(false);
+        }
+      }
+    })();
+
+    return () => {
+      isActive = false;
+      unsubscribe?.();
+    };
+  }, [limitCount, subscribe]);
 
   const saveLead = useCallback(async (leadData: Omit<Lead, 'id' | 'timestamp' | 'status' | 'trackingCode'>) => {
     try {
@@ -67,7 +113,7 @@ export const useLeads = ({ subscribe = false, limitCount = 100 }: UseLeadsOption
       const docRef = await addDoc(collection(db, 'leads'), newLead);
       return { id: docRef.id, ...newLead };
     } catch (error) {
-      console.error("Error saving lead:", error);
+      reportAppError({ scope: 'leads-save', error });
       throw error;
     }
   }, []);
@@ -78,7 +124,7 @@ export const useLeads = ({ subscribe = false, limitCount = 100 }: UseLeadsOption
       const { deleteDoc, doc } = await import('firebase/firestore');
       await deleteDoc(doc(db, 'leads', id));
     } catch (error) {
-      console.error("Error deleting lead:", error);
+      reportAppError({ scope: 'leads-delete', error });
       throw error;
     }
   }, []);
@@ -89,7 +135,7 @@ export const useLeads = ({ subscribe = false, limitCount = 100 }: UseLeadsOption
       const { updateDoc, doc } = await import('firebase/firestore');
       await updateDoc(doc(db, 'leads', id), { status });
     } catch (error) {
-      console.error("Error updating lead status:", error);
+      reportAppError({ scope: 'leads-status', error });
       throw error;
     }
   }, []);

@@ -8,7 +8,10 @@ service cloud.firestore {
 
     function isAdmin() {
       return request.auth != null
-        && request.auth.token.email == "forty@fortyclean.com";
+        && (
+          request.auth.token.admin == true
+          || request.auth.token.role == "admin"
+        );
     }
 
     function isSafeString(value, maxLength) {
@@ -41,9 +44,9 @@ service cloud.firestore {
       && (!('details' in request.resource.data) || (request.resource.data.details is string && request.resource.data.details.size() <= 1000))
       && (!('price' in request.resource.data) || request.resource.data.price is number);
 
-      allow read, delete: if isSignedIn();
+      allow read, delete: if isAdmin();
 
-      allow update: if isSignedIn()
+      allow update: if isAdmin()
       && request.resource.data.diff(resource.data).changedKeys().hasOnly(['status'])
       && isValidLeadStatus();
     }
