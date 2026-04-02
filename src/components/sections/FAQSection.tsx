@@ -54,7 +54,7 @@ const FAQSection = () => {
                   </span>
                 </div>
                 <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${
-                  activeIndex === index ? 'border-blue-600 bg-blue-600 text-white rotate-90' : 'border-gray-200 dark:border-slate-700 text-gray-400 dark:text-slate-500'
+                  activeIndex === index ? 'border-blue-600 bg-blue-600 text-white rotate-90' : 'border-gray-200 text-gray-500 dark:border-slate-700 dark:text-slate-300'
                 }`}>
                   {activeIndex === index ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                 </div>

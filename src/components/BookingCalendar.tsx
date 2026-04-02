@@ -1,9 +1,7 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Calendar } from './ui/calendar';
-import { Clock, Calendar as CalendarIcon, Check, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Clock, Calendar as CalendarIcon, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { ar } from 'date-fns/locale/ar';
-import { enUS } from 'date-fns/locale/en-US';
 
 interface BookingCalendarProps {
   selectedDate: Date | undefined;
@@ -20,6 +18,28 @@ const timeSlots = [
   '21_00', '22_00'
 ];
 
+const DATE_OPTIONS_COUNT = 14;
+
+const startOfDay = (date: Date) => {
+  const normalized = new Date(date);
+  normalized.setHours(0, 0, 0, 0);
+  return normalized;
+};
+
+const toDateValue = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const fromDateValue = (value: string) => {
+  if (!value) return undefined;
+  const [year, month, day] = value.split('-').map(Number);
+  if (!year || !month || !day) return undefined;
+  return new Date(year, month - 1, day);
+};
+
 export const BookingCalendar = ({
   selectedDate,
   onDateSelect,
@@ -30,74 +50,94 @@ export const BookingCalendar = ({
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString(isRTL ? 'ar-KW' : 'en-US', {
+  const availableDates = useMemo(() => {
+    const dates: Date[] = [];
+    const today = startOfDay(new Date());
+    const cursor = new Date(today);
+
+    while (dates.length < DATE_OPTIONS_COUNT) {
+      if (cursor.getDay() !== 5) {
+        dates.push(new Date(cursor));
+      }
+      cursor.setDate(cursor.getDate() + 1);
+    }
+
+    return dates;
+  }, []);
+
+  const minimumDate = availableDates[0];
+  const maximumDate = availableDates[availableDates.length - 1];
+  const selectedDateValue = selectedDate ? toDateValue(selectedDate) : '';
+
+  const formatDate = (date: Date) =>
+    date.toLocaleDateString(isRTL ? 'ar-KW' : 'en-US', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
+
+  const isSelectableDate = (candidate: Date) => {
+    const normalizedCandidate = startOfDay(candidate);
+    return availableDates.some((date) => date.getTime() === normalizedCandidate.getTime());
+  };
+
+  const handleDateInputChange = (value: string) => {
+    const parsedDate = fromDateValue(value);
+    if (!parsedDate || !isSelectableDate(parsedDate)) {
+      return;
+    }
+    onDateSelect(parsedDate);
   };
 
   return (
-    <div className={cn("space-y-6", className)} dir={isRTL ? "rtl" : "ltr"}>
+    <div className={cn("space-y-6", className)} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="flex flex-col md:flex-row gap-6 items-start">
-        {/* Date Selection */}
         <div className="w-full md:w-1/2 space-y-3">
           <div className="flex items-center gap-2 text-blue-900 dark:text-white font-bold">
             <CalendarIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             <span className="text-lg">{t('calculator.booking.select_date')}</span>
           </div>
-          <div className="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-xl overflow-hidden flex justify-center mx-auto w-full transition-all hover:border-blue-100 dark:hover:border-blue-900">
-            <Calendar
-              mode="single"
-              locale={isRTL ? ar : enUS}
-              selected={selectedDate}
-              onSelect={onDateSelect}
-              disabled={(date) => {
-                const now = new Date();
-                now.setHours(0, 0, 0, 0);
-                return date < now || date.getDay() === 5;
-              }}
-              className="p-0 border-none w-full flex justify-center scale-90"
-              classNames={{
-                months: "flex flex-col space-y-2 w-full items-center",
-                month: "space-y-4 w-full max-w-sm",
-                month_caption: "flex justify-center pt-1 relative items-center mb-4 w-full",
-                caption_label: "text-lg font-black text-blue-900 dark:text-white tracking-tight",
-                nav: "flex items-center justify-between absolute inset-x-0 z-10 w-full px-1",
-                button_previous: cn(
-                  "h-8 w-8 bg-gray-50 dark:bg-slate-700 rounded-lg flex items-center justify-center text-blue-600 dark:text-blue-400 hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white transition-all shadow-sm"
-                ),
-                button_next: cn(
-                  "h-8 w-8 bg-gray-50 dark:bg-slate-700 rounded-lg flex items-center justify-center text-blue-600 dark:text-blue-400 hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white transition-all shadow-sm"
-                ),
-                table: "w-full border-collapse",
-                weekdays: "flex justify-between mb-2 border-b border-gray-50 dark:border-slate-700 pb-1",
-                weekday: "text-gray-400 dark:text-slate-500 font-bold text-[0.75rem] uppercase flex-1 text-center",
-                week: "flex w-full mt-1 justify-between",
-                day: cn(
-                  "h-10 w-10 p-0 font-black transition-all rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 aspect-square flex items-center justify-center text-blue-900/80 dark:text-slate-300 text-sm"
-                ),
-                selected: "bg-blue-600 text-white hover:bg-blue-700 hover:text-white shadow-lg shadow-blue-200 dark:shadow-blue-900/40 scale-105",
-                today: "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 ring-2 ring-emerald-100 dark:ring-emerald-900/50",
-                outside: "text-gray-200 dark:text-slate-700 opacity-30",
-                disabled: "text-gray-200 dark:text-slate-700 opacity-20 cursor-not-allowed",
-                hidden: "invisible",
-              }}
-              components={{
-                Chevron: (props) => {
-                  if (props.orientation === 'left') {
-                    return isRTL ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />;
-                  }
-                  return isRTL ? <ChevronLeft className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />;
-                }
-              }}
+
+          <div className="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-xl space-y-4 transition-all hover:border-blue-100 dark:hover:border-blue-900">
+            <input
+              type="date"
+              value={selectedDateValue}
+              min={toDateValue(minimumDate)}
+              max={toDateValue(maximumDate)}
+              onChange={(event) => handleDateInputChange(event.target.value)}
+              className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-blue-900 font-bold outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:bg-slate-900/50 dark:border-slate-700 dark:text-white"
             />
+
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {availableDates.map((date) => {
+                const isSelected = selectedDate ? startOfDay(selectedDate).getTime() === date.getTime() : false;
+
+                return (
+                  <button
+                    key={date.toISOString()}
+                    type="button"
+                    onClick={() => onDateSelect(date)}
+                    className={cn(
+                      "rounded-2xl border-2 px-4 py-3 text-start font-black transition-all",
+                      isSelected
+                        ? "border-blue-600 bg-blue-600 text-white shadow-lg shadow-blue-200 dark:shadow-blue-900/40"
+                        : "border-gray-100 bg-gray-50 text-blue-900 hover:border-blue-200 hover:bg-blue-50 dark:border-slate-700 dark:bg-slate-900/50 dark:text-white dark:hover:border-blue-900 dark:hover:bg-blue-900/20"
+                    )}
+                  >
+                    <span className="block text-sm opacity-80">
+                      {date.toLocaleDateString(isRTL ? 'ar-KW' : 'en-US', { weekday: 'long' })}
+                    </span>
+                    <span className="block text-base">
+                      {date.toLocaleDateString(isRTL ? 'ar-KW' : 'en-US', { day: 'numeric', month: 'long' })}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
-        {/* Time Selection */}
         <div className="w-full md:w-1/2 space-y-3">
           <div className="flex items-center gap-2 text-blue-900 dark:text-white font-bold">
             <Clock className="w-4 h-4 text-blue-600 dark:text-blue-400" />
@@ -108,6 +148,7 @@ export const BookingCalendar = ({
               {timeSlots.map((time) => (
                 <button
                   key={time}
+                  type="button"
                   onClick={() => onTimeSelect(time)}
                   className={cn(
                     "py-3 px-2 rounded-2xl text-xs font-black transition-all border-2 flex flex-col items-center justify-center gap-1",
@@ -125,7 +166,6 @@ export const BookingCalendar = ({
         </div>
       </div>
 
-      {/* Selected Summary */}
       {selectedDate && selectedTime && (
         <div className="bg-emerald-50 dark:bg-emerald-900/20 p-8 rounded-[2.5rem] border-2 border-emerald-100 dark:border-emerald-900/50 flex flex-col sm:flex-row items-center justify-between gap-6 animate-in fade-in slide-in-from-bottom-6 duration-700 shadow-xl shadow-emerald-50 dark:shadow-none">
           <div className="flex items-center gap-5 w-full">
@@ -133,7 +173,9 @@ export const BookingCalendar = ({
               <Check className="w-10 h-10" />
             </div>
             <div className={isRTL ? "text-right" : "text-left"}>
-              <p className="text-sm text-emerald-600 dark:text-emerald-400 font-black mb-1 uppercase tracking-widest">{t('calculator.booking.selected_datetime')}</p>
+              <p className="text-sm text-emerald-600 dark:text-emerald-400 font-black mb-1 uppercase tracking-widest">
+                {t('calculator.booking.selected_datetime')}
+              </p>
               <p className="text-blue-900 dark:text-white text-xl md:text-2xl font-black">
                 {formatDate(selectedDate)} <span className="text-emerald-300 dark:text-emerald-800 mx-3">|</span> {t(`calculator.booking.times.${selectedTime}`)}
               </p>
@@ -144,4 +186,3 @@ export const BookingCalendar = ({
     </div>
   );
 };
-

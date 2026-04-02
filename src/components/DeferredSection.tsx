@@ -6,6 +6,7 @@ interface DeferredSectionProps {
   fallback?: ReactNode;
   minHeight?: number;
   rootMargin?: string;
+  idleDelayMs?: number;
 }
 
 const DeferredSection = ({
@@ -13,6 +14,7 @@ const DeferredSection = ({
   fallback = null,
   minHeight = 320,
   rootMargin = '300px 0px',
+  idleDelayMs = 1200,
 }: DeferredSectionProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -36,6 +38,18 @@ const DeferredSection = ({
 
     return () => observer.disconnect();
   }, [isVisible, rootMargin]);
+
+  useEffect(() => {
+    if (isVisible) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setIsVisible(true);
+    }, idleDelayMs);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [idleDelayMs, isVisible]);
 
   return (
     <div

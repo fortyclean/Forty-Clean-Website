@@ -41,12 +41,12 @@ const BeforeAfterSection = () => {
   };
 
   return (
-    <section ref={sectionRef} className="py-24 bg-white overflow-hidden">
+    <section ref={sectionRef} className="py-24 bg-white dark:bg-slate-900 overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <div className="reveal h-1 w-16 bg-gradient-to-r from-blue-600 to-cyan-500 mx-auto mb-6 rounded-full"></div>
-          <h2 className="reveal text-3xl md:text-5xl font-black text-blue-900 mb-4">{t('before_after.title')}</h2>
-          <p className="reveal text-gray-500 text-lg max-w-2xl mx-auto font-medium" style={{ transitionDelay: '0.1s' }}>
+          <h2 className="reveal text-3xl md:text-5xl font-black text-blue-900 dark:text-white mb-4">{t('before_after.title')}</h2>
+          <p className="reveal text-gray-500 dark:text-slate-400 text-lg max-w-2xl mx-auto font-medium" style={{ transitionDelay: '0.1s' }}>
             {t('before_after.subtitle')}
           </p>
         </div>
@@ -60,12 +60,12 @@ const BeforeAfterSection = () => {
                 className={`reveal block w-full text-right p-6 rounded-[2rem] transition-all border-2 ${
                   activeItem === index
                     ? 'bg-blue-600 text-white border-blue-600 shadow-2xl scale-105 z-10'
-                    : 'bg-gray-50 text-gray-500 border-transparent hover:bg-gray-100'
+                    : 'bg-gray-50 dark:bg-slate-800 text-gray-500 dark:text-slate-300 border-transparent dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-700'
                 }`}
                 style={{ transitionDelay: `${0.08 * (index + 1)}s` }}
               >
                 <h3 className="text-xl font-black mb-2">{item.title}</h3>
-                <p className={`text-sm font-medium ${activeItem === index ? 'text-blue-100' : 'text-gray-400'}`}>
+                <p className={`text-sm font-medium ${activeItem === index ? 'text-blue-100 dark:text-slate-100' : 'text-gray-500 dark:text-slate-300'}`}>
                   {item.description}
                 </p>
               </button>
@@ -75,7 +75,7 @@ const BeforeAfterSection = () => {
           <div className="lg:col-span-8">
             <div
               ref={containerRef}
-              className="reveal relative aspect-video rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl cursor-col-resize select-none border-[6px] md:border-[12px] border-white bg-gray-100 group"
+              className="reveal relative aspect-video rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl cursor-col-resize select-none border-[6px] md:border-[12px] border-white dark:border-slate-800 bg-gray-100 dark:bg-slate-800 group"
               style={{ transitionDelay: '0.12s' }}
               onMouseMove={(e) => e.buttons === 1 && handleInteraction(e)}
               onTouchMove={handleInteraction}
@@ -108,7 +108,7 @@ const BeforeAfterSection = () => {
                 </div>
               </div>
 
-              <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-5 py-2 rounded-2xl text-blue-900 text-sm font-black z-20 shadow-lg border border-white/20">
+              <div className="absolute top-6 left-6 bg-white/90 dark:bg-slate-900/85 backdrop-blur-md px-5 py-2 rounded-2xl text-blue-900 dark:text-white text-sm font-black z-20 shadow-lg border border-white/20 dark:border-slate-700">
                 {t('before_after.after')}
               </div>
               <div className="absolute top-6 right-6 bg-blue-900/90 backdrop-blur-md px-5 py-2 rounded-2xl text-white text-sm font-black z-20 shadow-lg border border-white/10">

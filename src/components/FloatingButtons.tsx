@@ -28,15 +28,15 @@ const FloatingButtons = () => {
   const whatsappText = t('contact.success');
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-4">
+    <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-3 md:bottom-6 md:right-6 md:gap-4">
       {/* Scroll to Top */}
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="w-12 h-12 bg-white text-blue-medium rounded-full shadow-lg flex items-center justify-center hover:bg-blue-medium hover:text-white transition-all duration-300 animate-fadeIn"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white text-blue-medium shadow-lg transition-all duration-300 hover:bg-blue-medium hover:text-white dark:border-slate-700 dark:bg-slate-900 dark:text-blue-300 md:h-12 md:w-12 animate-fadeIn"
           title="Scroll to Top"
         >
-          <ChevronUp className="w-6 h-6" />
+          <ChevronUp className="h-5 w-5 md:h-6 md:w-6" />
         </button>
       )}
 
@@ -45,19 +45,19 @@ const FloatingButtons = () => {
         href={siteConfig.links.whatsapp(whatsappNumber, whatsappText)}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-14 h-14 bg-[#25d366] text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform duration-300"
+        className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25d366] text-white shadow-lg transition-transform duration-300 hover:scale-110 md:h-14 md:w-14"
         title="WhatsApp Us"
       >
-        <MessageCircle className="w-8 h-8" />
+        <MessageCircle className="h-7 w-7 md:h-8 md:w-8" />
       </a>
 
       {/* Call Button */}
       <a
         href={siteConfig.links.phone(whatsappNumber)}
-        className="w-14 h-14 bg-blue-medium text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform duration-300"
+        className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-medium text-white shadow-lg transition-transform duration-300 hover:scale-110 md:h-14 md:w-14"
         title="Call Us"
       >
-        <Phone className="w-7 h-7" />
+        <Phone className="h-6 w-6 md:h-7 md:w-7" />
       </a>
     </div>
   );

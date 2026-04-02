@@ -3,82 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://www.googletagmanager.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; frame-src https://app.trysoro.com; worker-src 'self';">
-  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#2563eb" />
-  <meta name="p:domain_verify" content="b70a1866c78138be75abd124287f220d"/>
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://googleads.g.doubleclick.net https://apis.google.com; connect-src 'self' https://app.trysoro.com https://*.google-analytics.com https://www.googletagmanager.com https://www.google.com https://*.google.com https://*.google.com.kw https://www.googleadservices.com https://googleads.g.doubleclick.net https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; frame-src https://app.trysoro.com https://*.google.com https://*.firebaseapp.com; worker-src 'self';"
+  >
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="p:domain_verify" content="b70a1866c78138be75abd124287f220d">
 
-  <!-- Google tag (gtag.js) -->
+  <title>فورتي | خدمات التنظيف ومكافحة الحشرات في الكويت</title>
+  <meta
+    name="description"
+    content="فورتي لخدمات التنظيف ومكافحة الحشرات والقوارض في الكويت. احجز الخدمة المناسبة بسرعة، وتابع طلبك بسهولة، واحصل على تجربة واضحة واحترافية من أول زيارة."
+  >
+  <meta
+    name="keywords"
+    content="شركة تنظيف الكويت, مكافحة حشرات الكويت, تنظيف منازل, تنظيف مكاتب, مكافحة القوارض, مكافحة النمل الأبيض, تعقيم المنازل, فورتي الكويت"
+  >
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ar_KW">
+  <meta property="og:title" content="فورتي | خدمات التنظيف ومكافحة الحشرات في الكويت">
+  <meta
+    property="og:description"
+    content="منصة فورتي لحجز خدمات التنظيف ومكافحة الحشرات في الكويت بسرعة ووضوح وتجربة متابعة سهلة."
+  >
+  <meta property="og:url" content="https://forty-kw.com/">
+  <meta property="og:image" content="https://forty-kw.com/images/circle-logo-111.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="فورتي | خدمات التنظيف ومكافحة الحشرات في الكويت">
+  <meta
+    name="twitter:description"
+    content="احجز خدمة التنظيف أو مكافحة الحشرات في الكويت مع تجربة واضحة وسريعة من فورتي."
+  >
+  <meta name="twitter:image" content="https://forty-kw.com/images/circle-logo-111.png">
+
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BVNQG23CHQ"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
-    
-    // Config with flags to reduce aborted requests
-    gtag('config', 'G-BVNQG23CHQ', { 'send_page_view': true, 'transport_type': 'beacon' });
-    gtag('config', 'AW-17620396216', { 'transport_type': 'beacon' });
+    gtag('config', 'G-BVNQG23CHQ', { send_page_view: true, transport_type: 'beacon' });
+    gtag('config', 'AW-17620396216', { transport_type: 'beacon' });
   </script>
-
   <script>
     function gtag_report_conversion(url) {
       if (typeof gtag !== 'function') return false;
       var callback = function () {
-        if (typeof(url) != 'undefined') {
+        if (typeof url !== 'undefined') {
           window.location = url;
         }
       };
       gtag('event', 'conversion', {
-          'send_to': 'AW-17620396216/tO5kCPGH6v0bELjRh9JB',
-          'event_callback': callback
+        send_to: 'AW-17620396216/tO5kCPGH6v0bELjRh9JB',
+        event_callback: callback
       });
       return false;
     }
   </script>
 
-  <title>فورتي - خدمات النظافة ومكافحة الحشرات في الكويت</title>
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "LocalBusiness",
-        "name": "Forty Cleaning & Pest Control",
-        "image": "https://forty-kw.com/logo.png",
-        "description": "أفضل شركة تنظيف منازل ومكافحة حشرات في الكويت. خدمات احترافية بضمان 6 أشهر.",
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Kuwait City",
-          "addressCountry": "KW"
-        },
-        "geo": {
-          "@type": "GeoCoordinates",
-          "latitude": "29.3759",
-          "longitude": "47.9774"
-        },
-        "url": "https://forty-kw.com",
-        "telephone": "+96550000000",
-        "priceRange": "$$",
-        "openingHoursSpecification": {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Saturday",
-            "Sunday"
-          ],
-          "opens": "08:00",
-          "closes": "22:00"
-        }
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Forty Cleaning & Pest Control",
+      "image": "https://forty-kw.com/images/circle-logo-111.png",
+      "description": "شركة فورتي لخدمات تنظيف المنازل ومكافحة الحشرات في الكويت بخدمة احترافية وتجربة حجز واضحة وسريعة.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Kuwait City",
+        "addressCountry": "KW"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "29.3759",
+        "longitude": "47.9774"
+      },
+      "url": "https://forty-kw.com",
+      "telephone": "+96550000000",
+      "priceRange": "$$",
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "08:00",
+        "closes": "22:00"
       }
-    </script>
-    <meta name="description" content="شركة فورتي لخدمات النظافة ومكافحة الحشرات والقوارض في دولة الكويت. نخدم جميع مناطق الكويت: العاصمة، حولي، الفروانية، الجهراء، مبارك الكبير، الأحمدي. حجوزات سريعة وخدمة مضمونة.">
-    <meta name="keywords" content="شركة تنظيف في الكويت, شركة مكافحة حشرات في الكويت, تنظيف منازل, تنظيف مكاتب, مكافحة القوارض, مكافحة النمل الأبيض, تعقيم المنازل, فورتي الكويت">
-    
-    <link rel="icon" type="image/png" href="/images/circle-logo-111.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    }
+  </script>
+
+  <link rel="icon" type="image/png" href="/images/circle-logo-111.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
   <div id="root"></div>

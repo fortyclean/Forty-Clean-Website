@@ -14,7 +14,7 @@ export const siteConfig = {
     instagram: 'fortyclean_kw',
     x: 'CleanForty',
     threads: 'fortyclean_kw',
-    snapchat: 'fortyclean.kw',
+    snapchat: 'forty.kw',
     linkedin: 'fortyclean',
     pinterest: 'forty0854',
     tiktok: 'forty.kw',
@@ -23,5 +23,5 @@ export const siteConfig = {
     whatsapp: (phone: string, text: string) => `https://wa.me/965${phone}?text=${encodeURIComponent(text)}`,
     phone: (phone: string) => `tel:${phone}`,
     email: (email: string) => `mailto:${email}`,
-  }
+  },
 };

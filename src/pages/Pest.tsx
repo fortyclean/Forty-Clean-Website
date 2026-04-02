@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
+import Seo from '../components/Seo';
 import HeroSection from '../components/sections/HeroSection';
 import ServicesSection from '../components/sections/ServicesSection';
 import PriceCalculator from '../components/PriceCalculator';
@@ -28,10 +28,7 @@ const Pest = () => {
 
   return (
     <Layout variant="pest">
-      <Helmet>
-        <title>{t('seo.pest.title')}</title>
-        <meta name="description" content={t('seo.pest.description')} />
-      </Helmet>
+      <Seo title={t('seo.pest.title')} description={t('seo.pest.description')} />
       <HeroSection variant="pest" />
       <ServicesSection variant="pest" />
       <PriceCalculator initialType="pest" />

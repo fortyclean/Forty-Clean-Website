@@ -82,6 +82,13 @@ body {
   background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-light) 100%);
 }
 
+.dark .gradient-bg {
+  background:
+    radial-gradient(circle at top right, rgba(56, 189, 248, 0.16), transparent 28%),
+    radial-gradient(circle at bottom left, rgba(34, 211, 238, 0.12), transparent 26%),
+    linear-gradient(135deg, #0f172a 0%, #0b1120 55%, #172554 100%);
+}
+
 .gradient-bg-reverse {
   background: linear-gradient(135deg, var(--blue-light) 0%, var(--blue-dark) 100%);
 }
@@ -278,9 +285,21 @@ body {
   gap: 8px;
 }
 
+.dark .btn-secondary {
+  color: #e2e8f0;
+  border-color: rgba(148, 163, 184, 0.4);
+  background: rgba(15, 23, 42, 0.24);
+  backdrop-filter: blur(10px);
+}
+
 .btn-secondary:hover {
   background: white;
   color: var(--blue-dark);
+}
+
+.dark .btn-secondary:hover {
+  background: rgba(30, 41, 59, 0.92);
+  color: #f8fafc;
 }
 
 .btn-white {
@@ -297,9 +316,19 @@ body {
   gap: 8px;
 }
 
+.dark .btn-white {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
 .btn-white:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+}
+
+.dark .btn-white:hover {
+  background: #ffffff;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.32);
 }
 
 /* Form Styles */
@@ -312,6 +341,7 @@ body {
   font-size: 16px;
   transition: all 0.3s ease;
   background: white;
+  color: var(--blue-dark);
 }
 
 .form-input:focus {
@@ -322,6 +352,16 @@ body {
 
 .form-input::placeholder {
   color: var(--gray-medium);
+}
+
+.dark .form-input {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+.dark .form-input::placeholder {
+  color: #64748b;
 }
 
 /* WhatsApp Float Button */
@@ -452,11 +492,22 @@ body {
   text-align: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
+  border: 1px solid transparent;
 }
 
 .feature-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.dark .feature-card {
+  background: #0f172a;
+  border-color: #1e293b;
+  box-shadow: none;
+}
+
+.dark .feature-card:hover {
+  box-shadow: 0 15px 30px rgba(2, 8, 23, 0.4);
 }
 
 /* Stat Card */
@@ -492,11 +543,22 @@ body {
   gap: 15px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
+  border: 1px solid transparent;
 }
 
 .contact-card:hover {
   transform: translateX(-5px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dark .contact-card {
+  background: #0f172a;
+  border-color: #1e293b;
+  box-shadow: none;
+}
+
+.dark .contact-card:hover {
+  box-shadow: 0 10px 25px rgba(2, 8, 23, 0.35);
 }
 
 .contact-icon {
@@ -527,12 +589,25 @@ body {
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 }
 
+.dark .header.scrolled {
+  background: rgba(15, 23, 42, 0.94);
+  box-shadow: 0 2px 20px rgba(2, 8, 23, 0.45);
+}
+
 .header.scrolled .nav-link {
   color: var(--gray-dark);
 }
 
 .header.scrolled .logo-text {
   color: var(--blue-dark);
+}
+
+.dark .header.scrolled .nav-link {
+  color: #e2e8f0;
+}
+
+.dark .header.scrolled .logo-text {
+  color: #f8fafc;
 }
 
 .nav-link {

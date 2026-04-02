@@ -55,7 +55,7 @@ const StatsSection = ({ variant = 'landing' }: StatsSectionProps) => {
                 <span className="text-cyan-400">{stat.suffix}</span>
               </div>
               <div className="h-1.5 w-12 bg-gradient-to-r from-cyan-400 to-blue-400 mx-auto mb-6 rounded-full group-hover:w-24 transition-all duration-500"></div>
-              <div className="stat-label text-blue-100/80 text-lg md:text-xl font-bold uppercase tracking-widest">
+              <div className="stat-label text-lg font-bold uppercase tracking-widest text-blue-50 md:text-xl dark:text-slate-100">
                 {stat.label}
               </div>
               <div className="absolute inset-0 -m-8 bg-white/5 rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-sm scale-95 group-hover:scale-100"></div>

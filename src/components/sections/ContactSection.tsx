@@ -51,12 +51,15 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
   const [submitMessage, setSubmitMessage] = useState('');
 
   useEffect(() => {
-    localStorage.setItem('contact_form_draft', JSON.stringify({
-      name: formData.name || '',
-      phone: formData.phone || '',
-      service: formData.service || '',
-      message: formData.message || '',
-    }));
+    localStorage.setItem(
+      'contact_form_draft',
+      JSON.stringify({
+        name: formData.name || '',
+        phone: formData.phone || '',
+        service: formData.service || '',
+        message: formData.message || '',
+      })
+    );
   }, [formData]);
 
   const validateForm = () => {
@@ -86,14 +89,17 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
 
     const serviceLabel = getServices().find((service) => service.value === formData.service)?.label || formData.service;
     let whatsappText = `${t('contact.whatsapp_message.title')}\n\n*${t('contact.whatsapp_message.name')}* ${formData.name.trim()}\n*${t('contact.whatsapp_message.phone')}* ${formData.phone.trim()}\n*${t('contact.whatsapp_message.service')}* ${serviceLabel}\n*${t('contact.whatsapp_message.message')}* ${formData.message || t('contact.whatsapp_message.no_message')}`;
-    const leadDetails = `الخدمة: ${serviceLabel} | الرسالة: ${formData.message || 'بدون رسالة'}`;
+    const leadDetails = [
+      `${t('contact.whatsapp_message.service')} ${serviceLabel}`,
+      `${t('contact.whatsapp_message.message')} ${formData.message || t('contact.whatsapp_message.no_message')}`,
+    ].join(' | ');
 
     const savedLead = await saveLead({
       name: formData.name.trim(),
       phone: formData.phone.trim(),
       service: formData.service,
       details: leadDetails,
-      source: 'contact_form'
+      source: 'contact_form',
     });
     whatsappText += `\n*${t('tracking.title')}:* ${savedLead.trackingCode}`;
 
@@ -104,7 +110,8 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
       conversionReporter();
     }
 
-    const isCleaningService = formData.service === 'cleaning' ||
+    const isCleaningService =
+      formData.service === 'cleaning' ||
       formData.service === 'home' ||
       formData.service === 'office' ||
       formData.service === 'building' ||
@@ -159,21 +166,21 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
   };
 
   return (
-    <section id="contact" ref={sectionRef} className="section-padding bg-white">
+    <section id="contact" ref={sectionRef} className="section-padding bg-white dark:bg-slate-900">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <div className="reveal w-16 h-1 bg-gradient-to-r from-blue-medium to-cyan-brand mx-auto mb-6 rounded-full"></div>
-          <h2 className="reveal text-3xl md:text-4xl font-bold text-blue-dark mb-4" style={{ animationDelay: '0.1s' }}>
+          <h2 className="reveal text-3xl md:text-4xl font-bold text-blue-dark dark:text-white mb-4" style={{ animationDelay: '0.1s' }}>
             {t('contact.title')}
           </h2>
-          <p className="reveal text-gray-medium text-lg max-w-2xl mx-auto" style={{ animationDelay: '0.2s' }}>
+          <p className="reveal mx-auto max-w-2xl text-lg text-gray-medium dark:text-slate-300" style={{ animationDelay: '0.2s' }}>
             {t('contact.subtitle')}
           </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12">
           <div className="reveal" style={{ animationDelay: '0.3s' }}>
-            <form onSubmit={onSubmit} className="bg-gray-light rounded-3xl p-8">
+            <form onSubmit={onSubmit} className="bg-gray-light dark:bg-slate-800 rounded-3xl p-8 border border-transparent dark:border-slate-700">
               <div className="space-y-6">
                 <div>
                   <input
@@ -257,7 +264,7 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="gradient-btn w-full text-white py-4 rounded-full font-semibold flex items-center justify-center gap-2 disabled:opacity-70"
+                  className="gradient-btn flex w-full items-center justify-center gap-2 rounded-full py-4 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   {isSubmitting ? (
                     <span>{t('contact.submitting')}</span>
@@ -269,7 +276,7 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
                   )}
                 </button>
                 {submitMessage && (
-                  <div className="text-center text-green-600 font-medium animate-fadeIn">
+                  <div className="animate-fadeIn text-center font-medium text-green-600 dark:text-emerald-300">
                     {submitMessage}
                   </div>
                 )}
@@ -283,8 +290,8 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
                 <Phone className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
-                <h4 className="font-bold text-blue-dark mb-1">{t('contact.info.phone')}</h4>
-                <p className="text-gray-medium group-hover:text-blue-medium transition-colors">69988979</p>
+                <h4 className="font-bold text-blue-dark dark:text-white mb-1">{t('contact.info.phone')}</h4>
+                <p className="text-gray-medium transition-colors group-hover:text-blue-medium dark:text-slate-300 dark:group-hover:text-blue-400">69988979</p>
               </div>
             </a>
 
@@ -293,8 +300,8 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
                 <MapPin className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
-                <h4 className="font-bold text-blue-dark mb-1">{t('contact.info.address')}</h4>
-                <p className="text-gray-medium">{t('footer.address')}</p>
+                <h4 className="font-bold text-blue-dark dark:text-white mb-1">{t('contact.info.address')}</h4>
+                <p className="text-gray-medium dark:text-slate-300">{t('footer.address')}</p>
               </div>
             </div>
 
@@ -303,8 +310,8 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
                 <MessageCircle className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
-                <h4 className="font-bold text-blue-dark mb-1">{t('contact.info.whatsapp')}</h4>
-                <p className="text-gray-medium group-hover:text-blue-medium transition-colors">96569988979</p>
+                <h4 className="font-bold text-blue-dark dark:text-white mb-1">{t('contact.info.whatsapp')}</h4>
+                <p className="text-gray-medium transition-colors group-hover:text-blue-medium dark:text-slate-300 dark:group-hover:text-blue-400">96569988979</p>
               </div>
             </a>
 
@@ -313,8 +320,8 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
                 <Mail className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
-                <h4 className="font-bold text-blue-dark mb-1">{t('contact.info.email')}</h4>
-                <p className="text-gray-medium group-hover:text-blue-medium transition-colors">forty@fortyclean.com</p>
+                <h4 className="font-bold text-blue-dark dark:text-white mb-1">{t('contact.info.email')}</h4>
+                <p className="text-gray-medium transition-colors group-hover:text-blue-medium dark:text-slate-300 dark:group-hover:text-blue-400">forty@fortyclean.com</p>
               </div>
             </a>
           </div>

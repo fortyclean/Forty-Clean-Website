@@ -16,18 +16,18 @@ const CoverageAreasSection = () => {
   ];
 
   return (
-    <section ref={sectionRef} className="py-24 bg-gray-50 overflow-hidden relative">
+    <section ref={sectionRef} className="py-24 bg-gray-50 dark:bg-slate-950 overflow-hidden relative">
       {/* Background Decorative Circles */}
-      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[600px] h-[600px] bg-blue-100/30 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-cyan-100/30 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[600px] h-[600px] bg-blue-100/30 dark:bg-blue-900/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-cyan-100/30 dark:bg-cyan-900/20 rounded-full blur-3xl pointer-events-none"></div>
       
       <div className="container mx-auto px-4 relative">
         <div className="text-center mb-16">
           <div className="reveal h-1 w-16 bg-gradient-to-r from-blue-600 to-cyan-500 mx-auto mb-6 rounded-full"></div>
-          <h2 className="reveal text-4xl md:text-5xl font-black text-blue-900 mb-4">
+          <h2 className="reveal text-4xl md:text-5xl font-black text-blue-900 dark:text-white mb-4">
             {t('coverage.title')}
           </h2>
-          <p className="reveal text-gray-500 text-lg max-w-2xl mx-auto font-medium" style={{ transitionDelay: '0.1s' }}>
+          <p className="reveal text-gray-500 dark:text-slate-400 text-lg max-w-2xl mx-auto font-medium" style={{ transitionDelay: '0.1s' }}>
             {t('coverage.subtitle')}
           </p>
         </div>
@@ -36,24 +36,24 @@ const CoverageAreasSection = () => {
           {areas.map((area, index) => (
             <div 
               key={index} 
-              className="reveal bg-white p-8 rounded-[2.5rem] shadow-xl hover:shadow-2xl transition-all border border-blue-50/50 group hover:-translate-y-2 duration-500"
+              className="reveal bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-xl hover:shadow-2xl transition-all border border-blue-50/50 dark:border-slate-800 group hover:-translate-y-2 duration-500"
               style={{ transitionDelay: `${0.08 * (index + 1)}s` }}
             >
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500 shadow-sm group-hover:shadow-blue-200">
+                <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500 shadow-sm group-hover:shadow-blue-200 dark:group-hover:shadow-none">
                   <MapPin className="w-7 h-7" />
                 </div>
-                <h3 className="text-2xl font-black text-blue-900 group-hover:text-blue-600 transition-colors duration-300">{area.name}</h3>
+                <h3 className="text-2xl font-black text-blue-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">{area.name}</h3>
               </div>
-              <p className="text-gray-500 text-base leading-relaxed mb-8 font-medium">
+              <p className="text-gray-500 dark:text-slate-400 text-base leading-relaxed mb-8 font-medium">
                 {area.sub}
               </p>
-              <div className="flex items-center justify-between pt-6 border-t border-gray-50">
+              <div className="flex items-center justify-between pt-6 border-t border-gray-50 dark:border-slate-800">
                 <div className="flex items-center gap-2 text-emerald-600 font-black text-sm">
                   <CheckCircle className="w-5 h-5" />
                   <span>{t('coverage.available')}</span>
                 </div>
-                <Navigation className="w-5 h-5 text-blue-200 group-hover:text-blue-600 group-hover:rotate-12 transition-all duration-500" />
+                <Navigation className="w-5 h-5 text-blue-200 dark:text-slate-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 group-hover:rotate-12 transition-all duration-500" />
               </div>
             </div>
           ))}

@@ -121,7 +121,7 @@ const ServicesSection = ({ variant = 'landing' }: ServicesSectionProps) => {
             {getTitle()}
           </h2>
           <p
-            className="reveal text-gray-500 dark:text-slate-400 text-lg max-w-2xl mx-auto font-medium px-4"
+            className="reveal mx-auto max-w-2xl px-4 text-lg font-medium text-gray-500 dark:text-slate-300"
             style={{ transitionDelay: '0.1s' }}
           >
             {getSubtitle()}
@@ -140,7 +140,7 @@ const ServicesSection = ({ variant = 'landing' }: ServicesSectionProps) => {
                 <service.icon className="w-7 h-7" />
               </div>
               <h3 className="text-2xl font-black text-blue-900 dark:text-white mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{service.title}</h3>
-              <p className="text-gray-500 dark:text-slate-400 mb-8 leading-relaxed font-medium">{service.description}</p>
+              <p className="mb-8 font-medium leading-relaxed text-gray-500 dark:text-slate-300">{service.description}</p>
               <a
                 href={service.link}
                 className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 font-black text-sm group-hover:gap-4 transition-all"

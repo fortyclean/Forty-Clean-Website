@@ -1,12 +1,11 @@
 import { lazy, Suspense } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Star, Clock, ArrowLeft, Check } from 'lucide-react';
+import { ArrowLeft, Check, Clock, ShieldCheck, Star } from 'lucide-react';
 import Layout from '../components/Layout';
+import Seo from '../components/Seo';
 import HeroSection from '../components/sections/HeroSection';
 import WhyUsSection from '../components/sections/WhyUsSection';
-import DeferredSection from '../components/DeferredSection';
 
 const PriceCalculator = lazy(() => import('../components/PriceCalculator'));
 const OrderTracking = lazy(() => import('../components/OrderTracking'));
@@ -16,9 +15,21 @@ const ReviewsSection = lazy(() => import('../components/sections/ReviewsSection'
 const FAQSection = lazy(() => import('../components/sections/FAQSection'));
 const ContactSection = lazy(() => import('../components/sections/ContactSection'));
 
+const socialProofProfiles = ['NA', 'SA', 'MK', 'FA'];
+
 const SectionLoader = () => (
-  <div className="py-10 flex justify-center">
-    <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+  <div className="flex justify-center py-10">
+    <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+  </div>
+);
+
+const SectionCardLoader = ({ minHeight = 320 }: { minHeight?: number }) => (
+  <div className="px-4 py-8">
+    <div className="mx-auto max-w-6xl rounded-[2rem] border border-gray-100 bg-white/80 shadow-sm dark:border-slate-800 dark:bg-slate-900/80" style={{ minHeight }}>
+      <div className="flex h-full items-center justify-center py-12">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+      </div>
+    </div>
   </div>
 );
 
@@ -26,33 +37,46 @@ const Home = () => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
 
+  const trustLabels = isRTL
+    ? {
+        licensed: 'مرخص ومؤمن',
+        rating: 'تقييم 4.9 على جوجل',
+        availability: 'خدمة على مدار الساعة',
+        certified: 'معايير جودة معتمدة',
+        socialProof: '+1,500 عميل سعيد في الكويت',
+      }
+    : {
+        licensed: 'Licensed & Insured',
+        rating: '4.9 Google Rating',
+        availability: '24/7 Availability',
+        certified: 'ISO Certified',
+        socialProof: '+1,500 happy clients in Kuwait',
+      };
+
   return (
     <Layout variant="landing">
-      <Helmet>
-        <title>{t('seo.home.title')}</title>
-        <meta name="description" content={t('seo.home.description')} />
-      </Helmet>
+      <Seo title={t('seo.home.title')} description={t('seo.home.description')} />
 
       <HeroSection variant="landing" />
 
-      <div className="bg-white border-y border-gray-100 py-10 overflow-hidden">
+      <div className="overflow-hidden border-y border-gray-100 bg-white py-10 dark:border-slate-800 dark:bg-slate-900">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-20 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
-            <div className="flex items-center gap-3 font-black text-xl text-blue-900">
-              <ShieldCheck className="w-8 h-8 text-blue-600" />
-              LICENSED & INSURED
+          <div className="flex flex-wrap items-center justify-center gap-8 opacity-75 transition-all duration-500 hover:opacity-100 md:gap-20 dark:opacity-100">
+            <div className="flex items-center gap-3 text-xl font-black text-blue-900 dark:text-slate-100">
+              <ShieldCheck className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              {trustLabels.licensed}
             </div>
-            <div className="flex items-center gap-3 font-black text-xl text-blue-900">
-              <Star className="w-8 h-8 text-yellow-500 fill-yellow-500" />
-              4.9 GOOGLE RATING
+            <div className="flex items-center gap-3 text-xl font-black text-blue-900 dark:text-slate-100">
+              <Star className="h-8 w-8 fill-yellow-500 text-yellow-500" />
+              {trustLabels.rating}
             </div>
-            <div className="flex items-center gap-3 font-black text-xl text-blue-900">
-              <Clock className="w-8 h-8 text-emerald-500" />
-              24/7 AVAILABILITY
+            <div className="flex items-center gap-3 text-xl font-black text-blue-900 dark:text-slate-100">
+              <Clock className="h-8 w-8 text-emerald-500 dark:text-emerald-400" />
+              {trustLabels.availability}
             </div>
-            <div className="flex items-center gap-3 font-black text-xl text-blue-900">
-              <Check className="w-8 h-8 text-blue-600" />
-              ISO CERTIFIED
+            <div className="flex items-center gap-3 text-xl font-black text-blue-900 dark:text-slate-100">
+              <Check className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              {trustLabels.certified}
             </div>
           </div>
         </div>
@@ -60,69 +84,64 @@ const Home = () => {
 
       <WhyUsSection variant="landing" />
 
-      <section className="py-24 bg-blue-900 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-400 rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-400 rounded-full blur-[120px]" />
+      <section className="relative overflow-hidden bg-blue-900 py-24">
+        <div className="pointer-events-none absolute inset-0 opacity-10">
+          <div className="absolute top-0 right-0 h-96 w-96 rounded-full bg-blue-400 blur-[120px]" />
+          <div className="absolute bottom-0 left-0 h-96 w-96 rounded-full bg-emerald-400 blur-[120px]" />
         </div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h2 className="text-4xl md:text-6xl font-black text-white leading-tight">
-              جاهز للحصول على منزل نظيف وبيئة آمنة؟
-            </h2>
-            <p className="text-blue-100 text-xl md:text-2xl font-bold opacity-80">
-              استخدم نظام الحجز الذكي الخاص بنا واحصل على تأكيد فوري في أقل من دقيقة
+        <div className="container relative z-10 mx-auto px-4">
+          <div className="mx-auto max-w-4xl space-y-8 text-center">
+            <h2 className="text-4xl font-black leading-tight text-white md:text-6xl">{t('contact.title')}</h2>
+            <p className="text-xl font-bold text-blue-100 md:text-2xl dark:text-slate-100">
+              {isRTL
+                ? 'خطوات بسيطة تفصلك عن الحصول على خدمة النظافة أو مكافحة الحشرات المناسبة في الكويت.'
+                : 'Simple steps separate you from getting the right cleaning or pest control service in Kuwait.'}
             </p>
-            <div className="pt-8 flex flex-col md:flex-row items-center justify-center gap-6">
+            <div className="flex flex-col items-center justify-center gap-6 pt-8 md:flex-row">
               <Link
                 to="/booking"
-                className="w-full md:w-auto bg-white text-blue-900 px-12 py-8 rounded-[2rem] text-2xl font-black shadow-2xl hover:bg-blue-50 transition-all flex items-center justify-center gap-3 group"
+                className="group flex w-full items-center justify-center gap-3 rounded-[2rem] bg-white px-12 py-8 text-2xl font-black text-blue-900 shadow-2xl transition-all hover:bg-blue-50 dark:bg-slate-100 dark:hover:bg-white md:w-auto"
               >
-                احجز موعدك الآن
+                {t('hero.cta_booking')}
                 {isRTL ? (
-                  <ArrowLeft className="w-8 h-8 group-hover:-translate-x-2 transition-transform" />
+                  <ArrowLeft className="h-8 w-8 transition-transform group-hover:-translate-x-2" />
                 ) : (
-                  <ArrowLeft className="w-8 h-8 group-hover:translate-x-2 transition-transform rotate-180" />
+                  <ArrowLeft className="h-8 w-8 rotate-180 transition-transform group-hover:translate-x-2" />
                 )}
               </Link>
-              <div className="flex items-center gap-4 text-white font-bold">
+              <div className="flex items-center gap-4 font-bold text-white">
                 <div className="flex -space-x-3 rtl:space-x-reverse">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="w-12 h-12 rounded-full border-4 border-blue-900 bg-gray-200 overflow-hidden shadow-lg">
-                      <img src={`https://i.pravatar.cc/150?u=${i}`} alt="user" />
+                  {socialProofProfiles.map((profile) => (
+                    <div
+                      key={profile}
+                      className="flex h-12 w-12 items-center justify-center rounded-full border-4 border-blue-900 bg-gradient-to-br from-blue-200 via-white to-emerald-200 text-sm font-black text-blue-900 shadow-lg"
+                    >
+                      {profile}
                     </div>
                   ))}
                 </div>
-                <span className="text-lg">+1,500 عميل سعيد في الكويت</span>
+                <span className="text-lg">{trustLabels.socialProof}</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <DeferredSection fallback={<SectionLoader />} minHeight={420}>
-        <Suspense fallback={<SectionLoader />}>
-          <PriceCalculator initialType="cleaning" />
-        </Suspense>
-      </DeferredSection>
-      <DeferredSection fallback={<SectionLoader />} minHeight={360}>
-        <Suspense fallback={<SectionLoader />}>
-          <OrderTracking />
-        </Suspense>
-      </DeferredSection>
-      <DeferredSection fallback={<SectionLoader />} minHeight={1200}>
-        <Suspense fallback={<SectionLoader />}>
-          <BeforeAfterSection />
-          <CoverageAreasSection />
-          <ReviewsSection />
-          <FAQSection />
-        </Suspense>
-      </DeferredSection>
-      <DeferredSection fallback={<SectionLoader />} minHeight={520}>
-        <Suspense fallback={<SectionLoader />}>
-          <ContactSection variant="landing" />
-        </Suspense>
-      </DeferredSection>
+      <Suspense fallback={<SectionCardLoader minHeight={420} />}>
+        <PriceCalculator initialType="cleaning" />
+      </Suspense>
+      <Suspense fallback={<SectionCardLoader minHeight={360} />}>
+        <OrderTracking />
+      </Suspense>
+      <Suspense fallback={<SectionLoader />}>
+        <BeforeAfterSection />
+        <CoverageAreasSection />
+        <ReviewsSection />
+        <FAQSection />
+      </Suspense>
+      <Suspense fallback={<SectionCardLoader minHeight={520} />}>
+        <ContactSection variant="landing" />
+      </Suspense>
     </Layout>
   );
 };

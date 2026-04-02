@@ -10,11 +10,9 @@ interface LayoutProps {
 
 const Layout = ({ children, variant = 'landing' }: LayoutProps) => {
   return (
-    <div className="min-h-screen bg-gray-light transition-colors duration-300">
+    <div className="min-h-screen bg-gray-light text-slate-700 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
       <Header variant={variant === 'offers' || variant === 'blog' ? 'landing' : variant} />
-      <main>
-        {children}
-      </main>
+      <main>{children}</main>
       <Footer variant={variant === 'offers' || variant === 'blog' ? 'landing' : variant} />
       <FloatingButtons />
     </div>

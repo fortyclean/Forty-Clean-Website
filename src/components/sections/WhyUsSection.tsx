@@ -95,15 +95,15 @@ const WhyUsSection = ({ variant = 'landing' }: WhyUsSectionProps) => {
   const features = getFeatures();
 
   return (
-    <section id="why-us" ref={sectionRef} className="section-padding bg-white overflow-hidden">
+    <section id="why-us" ref={sectionRef} className="section-padding bg-white dark:bg-slate-900 overflow-hidden">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-16">
           <div className="reveal h-1 w-16 bg-gradient-to-r from-blue-medium to-cyan-brand mx-auto mb-6 rounded-full"></div>
-          <h2 className="reveal text-3xl md:text-4xl font-bold text-blue-dark mb-4">
+          <h2 className="reveal text-3xl md:text-4xl font-bold text-blue-dark dark:text-white mb-4">
             {getTitle()}
           </h2>
-          <p className="reveal text-gray-medium text-lg max-w-2xl mx-auto" style={{ transitionDelay: '0.1s' }}>
+          <p className="reveal mx-auto max-w-2xl text-lg text-gray-medium dark:text-slate-300" style={{ transitionDelay: '0.1s' }}>
             {t('why_us.subtitle')}
           </p>
         </div>
@@ -116,11 +116,11 @@ const WhyUsSection = ({ variant = 'landing' }: WhyUsSectionProps) => {
               className="feature-card group reveal"
               style={{ transitionDelay: `${0.08 * (index + 1)}s` }}
             >
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-medium/10 to-cyan-brand/10 flex items-center justify-center mx-auto mb-5 group-hover:from-blue-medium group-hover:to-cyan-brand transition-all duration-300">
-                <feature.icon className="w-8 h-8 text-blue-medium group-hover:text-white transition-colors" />
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-medium/10 to-cyan-brand/10 dark:from-blue-900/30 dark:to-cyan-900/20 flex items-center justify-center mx-auto mb-5 group-hover:from-blue-medium group-hover:to-cyan-brand transition-all duration-300">
+                <feature.icon className="w-8 h-8 text-blue-medium dark:text-blue-400 group-hover:text-white transition-colors" />
               </div>
-              <h3 className="text-lg font-bold text-blue-medium mb-3">{feature.title}</h3>
-              <p className="text-gray-medium leading-relaxed">{feature.description}</p>
+              <h3 className="text-lg font-bold text-blue-medium dark:text-white mb-3">{feature.title}</h3>
+              <p className="leading-relaxed text-gray-medium dark:text-slate-300">{feature.description}</p>
             </div>
           ))}
         </div>

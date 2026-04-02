@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Phone, Menu, X, Globe, Clock } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Clock, Globe, Menu, Moon, Phone, Sun, X } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -10,15 +10,15 @@ interface HeaderProps {
 const Header = ({ variant = 'landing' }: HeaderProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>(() =>
+    document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+  );
   const location = useLocation();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -29,8 +29,15 @@ const Header = ({ variant = 'landing' }: HeaderProps) => {
   }, [i18n.language]);
 
   const toggleLanguage = () => {
-    const newLang = i18n.language === 'ar' ? 'en' : 'ar';
-    i18n.changeLanguage(newLang);
+    const nextLanguage = i18n.language === 'ar' ? 'en' : 'ar';
+    void i18n.changeLanguage(nextLanguage);
+  };
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.classList.toggle('dark', nextTheme === 'dark');
+    localStorage.setItem('theme', nextTheme);
+    setTheme(nextTheme);
   };
 
   const navLinks = [
@@ -49,52 +56,56 @@ const Header = ({ variant = 'landing' }: HeaderProps) => {
     return `${base} - ${t('nav.pest')}`;
   };
 
-  const getLogoColor = () => {
-    if (isScrolled || location.pathname !== '/') return 'text-blue-dark';
-    return 'text-white';
-  };
-
   const handleNavClick = (href: string, isAnchor: boolean) => {
     setIsMobileMenuOpen(false);
-    if (isAnchor) {
-      if (location.pathname !== '/') {
-        navigate('/');
-        setTimeout(() => {
-          const element = document.querySelector(href);
-          if (element) element.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-      } else {
+
+    if (!isAnchor) {
+      return;
+    }
+
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
         const element = document.querySelector(href);
-        if (element) element.scrollIntoView({ behavior: 'smooth' });
-      }
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+      return;
+    }
+
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
+  const isSolidHeader = isScrolled || location.pathname !== '/';
+  const controlClasses = isSolidHeader
+    ? 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800'
+    : 'border-white/30 bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm';
+
+  const logoColor = isSolidHeader ? 'text-blue-900 dark:text-white' : 'text-white';
+
   return (
-    <header className={`header ${isScrolled || location.pathname !== '/' ? 'scrolled' : ''}`}>
+    <header className={`header ${isSolidHeader ? 'scrolled' : ''}`}>
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
+        <div className="flex h-20 items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <img 
-              src="/images/forty-clean-logo.png" 
-              alt={getLogoText()} 
-              className="w-12 h-12 rounded-full object-cover shadow-lg border-2 border-white/20"
+            <img
+              src="/images/forty-clean-logo.png"
+              alt={getLogoText()}
+              className="h-12 w-12 rounded-full border-2 border-white/20 object-cover shadow-lg"
             />
-            <span className={`text-2xl font-bold ${getLogoColor()} logo-text transition-colors duration-300`}>
+            <span className={`logo-text text-2xl font-bold transition-colors duration-300 ${logoColor}`}>
               {getLogoText()}
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-6">
-            {navLinks.map((link) => (
+          <nav className="hidden items-center gap-4 lg:flex">
+            {navLinks.map((link) =>
               link.isAnchor ? (
-                <button
-                  key={link.href}
-                  onClick={() => handleNavClick(link.href, true)}
-                  className="nav-link font-medium"
-                >
+                <button key={link.href} onClick={() => handleNavClick(link.href, true)} className="nav-link font-medium">
                   {link.label}
                 </button>
               ) : (
@@ -106,82 +117,89 @@ const Header = ({ variant = 'landing' }: HeaderProps) => {
                   {link.label}
                 </Link>
               )
-            ))}
-            
-            {/* Call to Action Button */}
-            <Link 
-              to="/booking"
-              className="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-black shadow-lg shadow-blue-200 hover:bg-blue-700 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+            )}
+
+            <button
+              onClick={toggleTheme}
+              className={`flex items-center gap-2 rounded-xl border px-3 py-2 transition-all ${controlClasses}`}
+              aria-label="Toggle Theme"
             >
-              <Clock className="w-4 h-4" />
-              {t('calculator.book_now')}
-            </Link>
-            
-            {/* Language Switcher */}
-            <button 
+              {theme === 'dark' ? <Sun className="h-4 w-4 text-yellow-400" /> : <Moon className="h-4 w-4" />}
+              <span className="text-sm font-bold">{theme === 'dark' ? t('footer.light_mode') : t('footer.dark_mode')}</span>
+            </button>
+
+            <button
               onClick={toggleLanguage}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all ${
-                isScrolled || location.pathname !== '/' 
-                ? 'border-gray-200 text-gray-700 hover:bg-gray-50' 
-                : 'border-white/30 text-white hover:bg-white/10'
-              }`}
+              className={`flex items-center gap-2 rounded-xl border px-3 py-2 transition-all ${controlClasses}`}
             >
-              <Globe className="w-4 h-4" />
+              <Globe className="h-4 w-4" />
               <span className="text-sm font-bold">{i18n.language === 'ar' ? 'English' : 'العربية'}</span>
             </button>
+
+            <Link
+              to="/booking"
+              className="flex items-center gap-2 rounded-2xl bg-blue-600 px-6 py-3 font-black text-white shadow-lg shadow-blue-200 transition-all hover:scale-105 hover:bg-blue-700 active:scale-95 dark:shadow-blue-950/40"
+            >
+              <Clock className="h-4 w-4" />
+              {t('calculator.book_now')}
+            </Link>
           </nav>
 
-          {/* Phone Button */}
-          <a
-            href="tel:69988979"
-            className="hidden lg:flex gradient-btn text-white px-6 py-3 rounded-full items-center gap-2 font-semibold"
-          >
-            <Phone className="w-5 h-5" />
+          <a href="tel:69988979" className="gradient-btn hidden items-center gap-2 rounded-full px-6 py-3 font-semibold text-white lg:flex">
+            <Phone className="h-5 w-5" />
             <span>69988979</span>
           </a>
 
-          {/* Mobile Menu Button */}
           <div className="flex items-center gap-3 lg:hidden">
-            {/* Mobile Language Switcher */}
-            <button 
-              onClick={(e) => {
-                e.stopPropagation();
+            <button
+              onClick={(event) => {
+                event.stopPropagation();
+                toggleTheme();
+              }}
+              className={`flex items-center gap-2 rounded-xl border px-3 py-2 transition-all active:scale-95 ${controlClasses}`}
+              aria-label="Toggle Theme"
+            >
+              {theme === 'dark' ? <Sun className="h-5 w-5 text-yellow-400" /> : <Moon className="h-5 w-5" />}
+            </button>
+
+            <button
+              onClick={(event) => {
+                event.stopPropagation();
                 toggleLanguage();
               }}
-              className={`flex items-center gap-2 px-3 py-2 rounded-xl border transition-all active:scale-95 ${
-                isScrolled || location.pathname !== '/' 
-                ? 'border-blue-100 bg-blue-50/50 text-blue-700 shadow-sm' 
-                : 'border-white/40 bg-white/10 text-white backdrop-blur-sm shadow-lg'
-              }`}
+              className={`flex items-center gap-2 rounded-xl border px-3 py-2 transition-all active:scale-95 ${controlClasses}`}
               aria-label="Toggle Language"
             >
-              <Globe className="w-5 h-5" />
+              <Globe className="h-5 w-5" />
               <span className="text-sm font-bold">{i18n.language === 'ar' ? 'EN' : 'AR'}</span>
             </button>
-            
+
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`p-2.5 rounded-xl transition-all active:scale-95 ${
-                isScrolled || location.pathname !== '/' 
-                ? 'bg-blue-600 text-white shadow-md' 
-                : 'bg-white/10 text-white backdrop-blur-sm border border-white/20'
+              className={`rounded-xl p-2.5 transition-all active:scale-95 ${
+                isSolidHeader
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'border border-white/20 bg-white/10 text-white backdrop-blur-sm'
               }`}
               aria-label="Toggle Menu"
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        <div className={`lg:hidden bg-white rounded-2xl shadow-xl mt-2 p-6 transition-all duration-300 ${isMobileMenuOpen ? 'block opacity-100' : 'hidden opacity-0'}`}>
+        <div
+          className={`mt-2 rounded-2xl border border-gray-100 bg-white p-6 shadow-xl transition-all duration-300 dark:border-slate-800 dark:bg-slate-900 lg:hidden ${
+            isMobileMenuOpen ? 'block opacity-100' : 'hidden opacity-0'
+          }`}
+        >
           <nav className="flex flex-col gap-4">
-            {navLinks.map((link) => (
+            {navLinks.map((link) =>
               link.isAnchor ? (
                 <button
                   key={link.href}
                   onClick={() => handleNavClick(link.href, true)}
-                  className="text-right text-gray-700 hover:text-blue-600 font-medium py-2"
+                  className="py-2 text-right font-medium text-gray-700 hover:text-blue-600 dark:text-slate-200 dark:hover:text-blue-400"
                 >
                   {link.label}
                 </button>
@@ -190,30 +208,41 @@ const Header = ({ variant = 'landing' }: HeaderProps) => {
                   key={link.href}
                   to={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`text-right text-gray-700 hover:text-blue-600 font-medium py-2 ${location.pathname === link.href ? 'text-blue-600 font-bold' : ''}`}
+                  className={`py-2 text-right font-medium text-gray-700 hover:text-blue-600 dark:text-slate-200 dark:hover:text-blue-400 ${
+                    location.pathname === link.href ? 'font-bold text-blue-600 dark:text-blue-400' : ''
+                  }`}
                 >
                   {link.label}
                 </Link>
               )
-            ))}
-            
-            {/* Mobile Menu Language Toggle */}
-            <button 
-              onClick={() => {
-                toggleLanguage();
-                setIsMobileMenuOpen(false);
-              }}
-              className="flex items-center justify-between w-full text-right text-gray-700 dark:text-slate-300 font-medium py-3 border-t border-gray-50 dark:border-slate-800 mt-2"
-            >
-              <span className="text-blue-600 dark:text-blue-400 font-bold">{i18n.language === 'ar' ? 'English' : 'العربية'}</span>
-              <Globe className="w-5 h-5 text-blue-600" />
-            </button>
+            )}
 
-            <a
-              href="tel:69988979"
-              className="gradient-btn text-white px-6 py-3 rounded-full flex items-center justify-center gap-2 font-semibold mt-2"
-            >
-              <Phone className="w-5 h-5" />
+            <div className="mt-2 grid grid-cols-2 gap-3 border-t border-gray-50 pt-3 dark:border-slate-800">
+              <button
+                onClick={() => {
+                  toggleTheme();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="flex items-center justify-center gap-2 rounded-xl bg-gray-50 px-4 py-3 font-bold text-gray-700 dark:bg-slate-800 dark:text-slate-200"
+              >
+                {theme === 'dark' ? <Sun className="h-4 w-4 text-yellow-400" /> : <Moon className="h-4 w-4" />}
+                <span>{theme === 'dark' ? t('footer.light_mode') : t('footer.dark_mode')}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  toggleLanguage();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="flex items-center justify-center gap-2 rounded-xl bg-gray-50 px-4 py-3 font-bold text-gray-700 dark:bg-slate-800 dark:text-slate-200"
+              >
+                <Globe className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                <span>{i18n.language === 'ar' ? 'English' : 'العربية'}</span>
+              </button>
+            </div>
+
+            <a href="tel:69988979" className="gradient-btn mt-2 flex items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold text-white">
+              <Phone className="h-5 w-5" />
               <span>69988979</span>
             </a>
           </nav>

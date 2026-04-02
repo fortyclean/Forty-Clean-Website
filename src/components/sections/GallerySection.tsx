@@ -12,16 +12,16 @@ interface GallerySectionProps {
 
 const GallerySection = ({ title, subtitle, items }: GallerySectionProps) => {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-white dark:bg-slate-900">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <div className="w-16 h-1 bg-gradient-to-r from-blue-600 to-cyan-500 mx-auto mb-6 rounded-full"></div>
-          <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4">{title}</h2>
-          <p className="text-gray-500 text-lg max-w-2xl mx-auto">{subtitle}</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-blue-900 dark:text-white mb-4">{title}</h2>
+          <p className="text-gray-500 dark:text-slate-400 text-lg max-w-2xl mx-auto">{subtitle}</p>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           {items.map((item, index) => (
-            <div key={index} className="rounded-2xl overflow-hidden shadow-lg group bg-gray-100">
+            <div key={index} className="rounded-2xl overflow-hidden shadow-lg group bg-gray-100 dark:bg-slate-800 border border-transparent dark:border-slate-700">
               <picture>
                 <source srcSet={item.webp} type="image/webp" />
                 <source srcSet={item.png} type="image/png" />

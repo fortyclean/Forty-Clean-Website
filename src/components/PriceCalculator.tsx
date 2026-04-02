@@ -1,6 +1,7 @@
 import { lazy, Suspense, useMemo, useState } from 'react';
 import { Calculator, Sparkles, Bug, Info, MessageCircle, User, Phone, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { reportAppError } from '../lib/appError';
 import { useLeads } from '../hooks/useLeads';
 import { calculatePrice } from '../services/priceService';
 import { siteConfig } from '../config/site';
@@ -43,6 +44,8 @@ const PriceCalculator = ({ initialType = 'cleaning' }: PriceCalculatorProps) => 
   const [pestType, setPestType] = useState('general');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const estimatedPrice = useMemo(() => {
     const options = serviceType === 'pest'
@@ -67,44 +70,54 @@ const PriceCalculator = ({ initialType = 'cleaning' }: PriceCalculatorProps) => 
   };
 
   const onSubmit = async () => {
-    if (!validateForm()) return;
+    if (!validateForm() || isSubmitting) return;
 
-    const conversionReporter = (window as Window & { gtag_report_conversion?: () => void }).gtag_report_conversion;
-    if (typeof conversionReporter === 'function') {
-      conversionReporter();
-    }
+    setIsSubmitting(true);
+    setSubmitError('');
 
-    const whatsappNumber = serviceType === 'cleaning' ? siteConfig.contact.cleaningPhone : siteConfig.contact.pestPhone;
-    let details = '';
-    const currentPestLabel = t(`calculator.pest_types.${pestType}`);
+    try {
+      const conversionReporter = (window as Window & { gtag_report_conversion?: () => void }).gtag_report_conversion;
+      if (typeof conversionReporter === 'function') {
+        conversionReporter();
+      }
 
-    if (serviceType === 'pest') {
-      details = `${t('calculator.whatsapp_message.pest_request')} (${currentPestLabel}): ${rooms} ${t('calculator.whatsapp_message.rooms')}, ${halls} ${t('calculator.whatsapp_message.halls')}, ${bathrooms} ${t('calculator.whatsapp_message.bathrooms')}.`;
-    } else {
-      details = `${t('calculator.whatsapp_message.cleaning_request')}: ${floors} ${t('calculator.whatsapp_message.floors')}, ${t('calculator.whatsapp_message.area')} ${area}m, ${kitchens} ${t('calculator.whatsapp_message.kitchens')}, ${bathrooms} ${t('calculator.whatsapp_message.bathrooms')}.`;
-    }
+      const whatsappNumber = serviceType === 'cleaning' ? siteConfig.contact.cleaningPhone : siteConfig.contact.pestPhone;
+      let details = '';
+      const currentPestLabel = t(`calculator.pest_types.${pestType}`);
 
-    if (selectedDate && selectedTime) {
-      const formattedDate = selectedDate.toLocaleDateString(i18n.language === 'ar' ? 'ar-KW' : 'en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+      if (serviceType === 'pest') {
+        details = `${t('calculator.whatsapp_message.pest_request')} (${currentPestLabel}): ${rooms} ${t('calculator.whatsapp_message.rooms')}, ${halls} ${t('calculator.whatsapp_message.halls')}, ${bathrooms} ${t('calculator.whatsapp_message.bathrooms')}.`;
+      } else {
+        details = `${t('calculator.whatsapp_message.cleaning_request')}: ${floors} ${t('calculator.whatsapp_message.floors')}, ${t('calculator.whatsapp_message.area')} ${area}m, ${kitchens} ${t('calculator.whatsapp_message.kitchens')}, ${bathrooms} ${t('calculator.whatsapp_message.bathrooms')}.`;
+      }
+
+      if (selectedDate && selectedTime) {
+        const formattedDate = selectedDate.toLocaleDateString(i18n.language === 'ar' ? 'ar-KW' : 'en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        details += `\n- ${t('booking.whatsapp.selected_time')}: ${formattedDate} ${t('booking.whatsapp.at_time')} ${t(`calculator.booking.times.${selectedTime}`)}`;
+      }
+
+      const savedLead = await saveLead({
+        name: formData.name.trim(),
+        phone: formData.phone.trim(),
+        price: estimatedPrice,
+        service: serviceType,
+        details,
+        source: 'price_calculator'
       });
-      details += `\n- ${t('booking.whatsapp.selected_time')}: ${formattedDate} ${t('booking.whatsapp.at_time')} ${t(`calculator.booking.times.${selectedTime}`)}`;
+
+      const text = `${t('calculator.whatsapp_message.intro')} (${estimatedPrice} ${t('calculator.currency')}).\n\n*${t('calculator.whatsapp_message.details_label')}:*\n${details}\n\n*${t('booking.whatsapp.name')}:* ${formData.name.trim()}\n*${t('booking.whatsapp.phone')}:* ${formData.phone.trim()}\n*${t('tracking.title')}:* ${savedLead.trackingCode}`;
+      window.open(siteConfig.links.whatsapp(whatsappNumber, text), '_blank');
+    } catch (error) {
+      reportAppError({ scope: 'price-calculator-submit', error });
+      setSubmitError(t('common.error_saving'));
+    } finally {
+      setIsSubmitting(false);
     }
-
-    const savedLead = await saveLead({
-      name: formData.name.trim(),
-      phone: formData.phone.trim(),
-      price: estimatedPrice,
-      service: serviceType,
-      details,
-      source: 'price_calculator'
-    });
-
-    const text = `${t('calculator.whatsapp_message.intro')} (${estimatedPrice} ${t('calculator.currency')}).\n\n*${t('calculator.whatsapp_message.details_label')}:*\n${details}\n\n*${t('booking.whatsapp.name')}:* ${formData.name.trim()}\n*${t('booking.whatsapp.phone')}:* ${formData.phone.trim()}\n*${t('tracking.title')}:* ${savedLead.trackingCode}`;
-    window.open(siteConfig.links.whatsapp(whatsappNumber, text), '_blank');
   };
 
   return (
@@ -129,7 +142,7 @@ const PriceCalculator = ({ initialType = 'cleaning' }: PriceCalculatorProps) => 
                   className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all ${
                     serviceType === 'cleaning'
                     ? 'bg-blue-medium text-white shadow-lg'
-                    : 'bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-600'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600'
                   }`}
                 >
                   <Sparkles className="w-5 h-5" />
@@ -140,7 +153,7 @@ const PriceCalculator = ({ initialType = 'cleaning' }: PriceCalculatorProps) => 
                   className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all ${
                     serviceType === 'pest'
                     ? 'bg-blue-medium text-white shadow-lg'
-                    : 'bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-600'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600'
                   }`}
                 >
                   <Bug className="w-5 h-5" />
@@ -241,13 +254,16 @@ const PriceCalculator = ({ initialType = 'cleaning' }: PriceCalculatorProps) => 
 
               <div className="mt-8 pt-8 border-t border-gray-100 dark:border-slate-700 grid md:grid-cols-2 gap-4">
                 <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <User className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500 dark:text-slate-300" />
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => {
                       const name = e.target.value;
                       setFormData((current) => ({ ...current, name }));
+                      if (submitError) {
+                        setSubmitError('');
+                      }
                       if (errors.name) {
                         setErrors((current) => ({ ...current, name: undefined }));
                       }
@@ -263,13 +279,16 @@ const PriceCalculator = ({ initialType = 'cleaning' }: PriceCalculatorProps) => 
                   )}
                 </div>
                 <div className="relative">
-                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Phone className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500 dark:text-slate-300" />
                   <input
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => {
                       const phone = e.target.value;
                       setFormData((current) => ({ ...current, phone }));
+                      if (submitError) {
+                        setSubmitError('');
+                      }
                       if (errors.phone) {
                         setErrors((current) => ({ ...current, phone: undefined }));
                       }
@@ -289,23 +308,29 @@ const PriceCalculator = ({ initialType = 'cleaning' }: PriceCalculatorProps) => 
 
             <div className="bg-blue-dark dark:bg-slate-900 p-8 md:w-1/3 text-white flex flex-col justify-center relative overflow-hidden border-l border-gray-100 dark:border-slate-700">
               <div className="relative z-10 text-center">
-                <h3 className="text-lg font-medium opacity-80 mb-2">{t('calculator.estimated_price')}</h3>
+                <h3 className="mb-2 text-lg font-medium text-slate-100">{t('calculator.estimated_price')}</h3>
                 <div className="text-4xl font-black text-white mb-1">
                   {estimatedPrice} <span className="text-lg font-bold">{t('calculator.currency')}</span>
                 </div>
-                <p className="text-white/60 text-[10px] md:text-xs font-medium max-w-[200px] mx-auto leading-tight mb-8">
+                <p className="mx-auto mb-8 max-w-[200px] text-[10px] font-medium leading-tight text-slate-200 md:text-xs">
                   {t('calculator.disclaimer')}
                 </p>
 
                 <button
                   onClick={onSubmit}
-                  className="w-full bg-white text-blue-dark py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-cyan-brand hover:text-white transition-all shadow-xl group relative z-10"
+                  disabled={isSubmitting}
+                  className="relative z-10 flex w-full items-center justify-center gap-2 rounded-2xl bg-white py-4 font-black text-blue-dark shadow-xl transition-all hover:bg-cyan-brand hover:text-white disabled:cursor-not-allowed disabled:opacity-70 dark:bg-slate-100"
                 >
-                  <span>{t('calculator.book_now')}</span>
+                  <span>{isSubmitting ? (i18n.language === 'ar' ? 'جارٍ الإرسال...' : 'Sending...') : t('calculator.book_now')}</span>
                   <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 </button>
+                {submitError ? (
+                  <div className="mt-4 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-center dark:border-red-900/40 dark:bg-red-950/30">
+                    <p className="text-sm font-bold text-red-600 dark:text-red-300">{submitError}</p>
+                  </div>
+                ) : null}
 
-                <div className="mt-6 flex items-center justify-center gap-2 opacity-60 relative z-10">
+                <div className="relative z-10 mt-6 flex items-center justify-center gap-2 text-slate-200">
                   <Info className="w-4 h-4" />
                   <span className="text-[10px]">{t('calculator.note')}</span>
                 </div>
