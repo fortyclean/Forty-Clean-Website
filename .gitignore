@@ -1,1 +1,10 @@
 node_modules
+dist
+review-screenshots
+.env
+*.pid
+*.log
+.devserver*
+review-devserver*
+.ftpquota
+forty-clean-firebase-adminsdk-*.json
