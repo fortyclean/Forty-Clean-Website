@@ -59,63 +59,88 @@
     ]
   },
   "booking": {
-      "steps": {
-        "service": "Service",
-        "datetime": "Appointment",
-        "info": "Information"
+    "page": {
+      "title": "Book Now - Forty Cleaning & Pest Control Services",
+      "description": "Book your appointment now with Forty for general cleaning and pest control services in Kuwait through a fast and simple booking flow.",
+      "heading": "Smart Booking System",
+      "subtitle": "Simple steps separate you from getting the right cleaning or pest control service in Kuwait.",
+      "trust": {
+        "guarantee": {
+          "title": "100% Guarantee",
+          "description": "We stand behind service quality and your satisfaction, with free re-service if the outcome falls short."
+        },
+        "team": {
+          "title": "Certified Team",
+          "description": "Every technician is trained and qualified to deliver service to a consistent professional standard."
+        },
+        "timing": {
+          "title": "Punctual Appointments",
+          "description": "We respect your time and aim to arrive on schedule without the usual vague time windows."
+        }
       },
-      "titles": {
-        "select_service": "Select Your Preferred Service",
-        "select_subtitle": "We offer the best cleaning and control services in Kuwait",
-        "details_title": "Schedule & Details",
-        "details_subtitle": "Choose what suits you best",
-        "contact_title": "Contact Information",
-        "contact_subtitle": "To confirm your request immediately",
-        "success_title": "Your request is being processed!",
-        "success_subtitle": "Thank you for trusting Forty. Booking details have been sent via WhatsApp and we will contact you now."
-      },
-      "services": {
-        "cleaning": "Full Cleaning",
-        "pest": "Pest Control",
-        "price_from": "From"
-      },
-      "summary": {
-        "title": "Booking Summary",
-        "service_label": "Service",
-        "guarantee_label": "Guarantee",
-        "guarantee_value": "6 Months",
-        "estimated_price": "Estimated Price",
-        "confirm_date": "Confirm Appointment",
-        "confirm_final": "Final Booking Confirmation",
-        "response_time": "We will respond in less than 5 minutes",
-        "customize": "Customize Service",
-        "approx_area": "Approximate Area"
-      },
-      "fields": {
-        "name": "Name",
-        "name_placeholder": "Example: Ahmed Mohamed",
-        "phone": "Phone Number",
-        "phone_placeholder": "5xxxxxxx",
-        "address": "Detailed Address",
-        "address_placeholder": "Area, Block, Street, House number...",
-        "back_home": "Back to Home"
-      },
-      "whatsapp": {
-        "new_booking": "New booking request from website:",
-        "service": "Service",
-        "cleaning": "Cleaning",
-        "pest": "Pest Control",
-        "details": "Details",
-        "appointment": "Appointment",
-        "name": "Name",
-        "phone": "Phone",
-        "address": "Address",
-        "price": "Estimated Price",
-        "selected_time": "Selected Time",
-        "at_time": "at"
+      "badges": {
+        "knet": "K-Net Accepted",
+        "iso": "ISO Certified",
+        "licensed": "Ministry Licensed"
       }
     },
-    "tracking": {
+    "steps": {
+      "service": "Service",
+      "datetime": "Appointment",
+      "info": "Information"
+    },
+    "titles": {
+      "select_service": "Select Your Preferred Service",
+      "select_subtitle": "We offer the best cleaning and control services in Kuwait",
+      "details_title": "Schedule & Details",
+      "details_subtitle": "Choose what suits you best",
+      "contact_title": "Contact Information",
+      "contact_subtitle": "To confirm your request immediately",
+      "success_title": "Your request is being processed!",
+      "success_subtitle": "Thank you for trusting Forty. Booking details have been sent via WhatsApp and we will contact you now."
+    },
+    "services": {
+      "cleaning": "Full Cleaning",
+      "pest": "Pest Control",
+      "price_from": "From"
+    },
+    "summary": {
+      "title": "Booking Summary",
+      "service_label": "Service",
+      "guarantee_label": "Guarantee",
+      "guarantee_value": "6 Months",
+      "estimated_price": "Estimated Price",
+      "confirm_date": "Confirm Appointment",
+      "confirm_final": "Final Booking Confirmation",
+      "response_time": "We will respond in less than 5 minutes",
+      "customize": "Customize Service",
+      "approx_area": "Approximate Area"
+    },
+    "fields": {
+      "name": "Name",
+      "name_placeholder": "Example: Ahmed Mohamed",
+      "phone": "Phone Number",
+      "phone_placeholder": "5xxxxxxx",
+      "address": "Detailed Address",
+      "address_placeholder": "Area, Block, Street, House number...",
+      "back_home": "Back to Home"
+    },
+    "whatsapp": {
+      "new_booking": "New booking request from website:",
+      "service": "Service",
+      "cleaning": "Cleaning",
+      "pest": "Pest Control",
+      "details": "Details",
+      "appointment": "Appointment",
+      "name": "Name",
+      "phone": "Phone",
+      "address": "Address",
+      "price": "Estimated Price",
+      "selected_time": "Selected Time",
+      "at_time": "at"
+    }
+  },
+  "tracking": {
     "title": "Track Your Orders",
     "subtitle": "Enter your registered phone number to follow your booking status",
     "phone_placeholder": "Phone Number (8 digits)",
@@ -133,6 +158,15 @@
     "cta_whatsapp": "Contact WhatsApp",
     "cta_cleaning": "Cleaning Services",
     "cta_pest": "Pest Control"
+  },
+  "home": {
+    "trust": {
+      "licensed": "Licensed & Insured",
+      "rating": "4.9 Google Rating",
+      "availability": "24/7 Availability",
+      "certified": "ISO Certified"
+    },
+    "social_proof": "+1,500 happy clients in Kuwait"
   },
   "calculator": {
     "title": "Smart Price Calculator",
@@ -198,6 +232,7 @@
   "footer": {
     "description": "A leading company in general cleaning services and pest control in Kuwait",
     "quick_links": "Quick Links",
+    "services": "Services",
     "our_services": "Our Services",
     "contact_info": "Contact Information",
     "settings": "Settings",
@@ -352,14 +387,14 @@
       "address": "Address",
       "whatsapp": "WhatsApp",
       "email": "Email"
-      },
-      "errors": {
-        "name_min": "Name must be at least 2 characters",
-        "invalid_phone": "Invalid phone number (must be 8 digits starting with 5, 6, 9, or 2)",
-        "select_service": "Please select a service type"
-      }
     },
-    "offers": {
+    "errors": {
+      "name_min": "Name must be at least 2 characters",
+      "invalid_phone": "Invalid phone number (must be 8 digits starting with 5, 6, 9, or 2)",
+      "select_service": "Please select a service type"
+    }
+  },
+  "offers": {
     "title": "Forty Exclusive Offers",
     "subtitle": "Choose the right offer for you and enjoy the highest standards of cleaning and control in Kuwait at unbeatable competitive prices.",
     "badge_limited": "Exclusive discounts for a limited time",
