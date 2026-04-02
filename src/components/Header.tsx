@@ -114,7 +114,7 @@ const Header = ({ variant = 'landing' }: HeaderProps) => {
               className="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-black shadow-lg shadow-blue-200 hover:bg-blue-700 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
             >
               <Clock className="w-4 h-4" />
-              احجز الآن
+              {t('calculator.book_now')}
             </Link>
             
             {/* Language Switcher */}
@@ -203,9 +203,9 @@ const Header = ({ variant = 'landing' }: HeaderProps) => {
                 toggleLanguage();
                 setIsMobileMenuOpen(false);
               }}
-              className="flex items-center justify-between w-full text-right text-gray-700 font-medium py-3 border-t border-gray-50 mt-2"
+              className="flex items-center justify-between w-full text-right text-gray-700 dark:text-slate-300 font-medium py-3 border-t border-gray-50 dark:border-slate-800 mt-2"
             >
-              <span className="text-blue-600 font-bold">{i18n.language === 'ar' ? 'English Language' : 'اللغة العربية'}</span>
+              <span className="text-blue-600 dark:text-blue-400 font-bold">{i18n.language === 'ar' ? 'English' : 'العربية'}</span>
               <Globe className="w-5 h-5 text-blue-600" />
             </button>
 

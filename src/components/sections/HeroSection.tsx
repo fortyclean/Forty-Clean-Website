@@ -18,8 +18,8 @@ const HeroSection = ({ variant = 'landing' }: HeroSectionProps) => {
         title: t('hero.title'),
         subtitle: t('hero.subtitle'),
         buttons: [
-          { label: 'احجز موعدك الآن', href: '/booking', icon: Clock, primary: true, isExternal: false },
-          { label: 'تواصل واتساب', href: siteConfig.links.whatsapp(siteConfig.contact.cleaningPhone, ''), icon: Phone, primary: false, isExternal: true },
+          { label: t('hero.cta_booking'), href: '/booking', icon: Clock, primary: true, isExternal: false },
+          { label: t('hero.cta_whatsapp'), href: siteConfig.links.whatsapp(siteConfig.contact.cleaningPhone, ''), icon: Phone, primary: false, isExternal: true },
         ],
       };
     } else if (variant === 'cleaning') {
@@ -51,7 +51,7 @@ const HeroSection = ({ variant = 'landing' }: HeroSectionProps) => {
         <div className="relative flex flex-col md:flex-row items-center gap-6 z-10">
           <Link to="/cleaning" className="relative group z-20">
             <div className="w-64 h-64 md:w-72 md:h-72 rounded-3xl overflow-hidden border-4 border-white/20 shadow-2xl animate-float transition-transform group-hover:scale-105 cursor-pointer">
-              <img src="/images/home-cleaning-kuwait.webp" alt={t('nav.cleaning')} className="w-full h-full object-cover" loading="eager" fetchPriority="high" />
+              <img src="/images/home-cleaning-kuwait.webp" alt={t('nav.cleaning')} className="w-full h-full object-cover" loading="eager" fetchPriority="high" decoding="async" />
             </div>
             <div className="absolute -top-4 -right-4 w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl border border-white/20 flex items-center justify-center shadow-lg pointer-events-none">
               <Sparkles className="w-6 h-6 text-white" />
@@ -63,7 +63,7 @@ const HeroSection = ({ variant = 'landing' }: HeroSectionProps) => {
           
           <Link to="/pest" className="relative group md:mt-12 z-20">
             <div className="w-64 h-64 md:w-72 md:h-72 rounded-3xl overflow-hidden border-4 border-white/20 shadow-2xl animate-float transition-transform group-hover:scale-105 cursor-pointer" style={{ animationDelay: '0.7s' }}>
-              <img src="/images/pest-control-kuwait.webp" alt={t('nav.pest')} className="w-full h-full object-cover" loading="eager" fetchPriority="high" />
+              <img src="/images/pest-control-kuwait.webp" alt={t('nav.pest')} className="w-full h-full object-cover" loading="lazy" fetchPriority="low" decoding="async" />
             </div>
             <div className="absolute -bottom-4 -left-4 w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl border border-white/20 flex items-center justify-center shadow-lg pointer-events-none">
               <Bug className="w-6 h-6 text-white" />
@@ -81,7 +81,7 @@ const HeroSection = ({ variant = 'landing' }: HeroSectionProps) => {
     return (
       <div className="relative z-10">
         <div className="w-80 h-80 md:w-96 md:h-96 rounded-full overflow-hidden border-8 border-white/20 shadow-2xl animate-float text-[0]">
-          <img src={imgSrc} alt={t(`nav.${variant}`)} className="w-full h-full object-cover" loading="eager" fetchPriority="high" />
+          <img src={imgSrc} alt={t(`nav.${variant}`)} className="w-full h-full object-cover" loading="eager" fetchPriority="high" decoding="async" />
         </div>
         <div className="absolute -top-6 -right-6 w-24 h-24 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 flex items-center justify-center animate-float shadow-lg pointer-events-none">
           <Icon className="w-12 h-12 text-white" />

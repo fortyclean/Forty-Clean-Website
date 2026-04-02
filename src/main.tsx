@@ -7,6 +7,9 @@ import './i18n'
 import App from './App.tsx'
 import ScrollToTop from './components/ScrollToTop'
 
+document.documentElement.classList.remove('dark');
+localStorage.setItem('theme', 'light');
+
 // Register Service Worker for PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

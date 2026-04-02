@@ -1,9 +1,10 @@
 import { MapPin, CheckCircle, Navigation } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
+import { useReveal } from '../../hooks/useReveal';
 
 const CoverageAreasSection = () => {
   const { t } = useTranslation();
+  const { sectionRef } = useReveal();
 
   const areas = [
     { name: t('coverage.areas.asima.name'), sub: t('coverage.areas.asima.sub') },
@@ -14,69 +15,29 @@ const CoverageAreasSection = () => {
     { name: t('coverage.areas.jahra.name'), sub: t('coverage.areas.jahra.sub') },
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-    }
-  };
-
   return (
-    <section className="py-24 bg-gray-50 overflow-hidden relative">
+    <section ref={sectionRef} className="py-24 bg-gray-50 overflow-hidden relative">
       {/* Background Decorative Circles */}
       <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[600px] h-[600px] bg-blue-100/30 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-cyan-100/30 rounded-full blur-3xl pointer-events-none"></div>
       
       <div className="container mx-auto px-4 relative">
         <div className="text-center mb-16">
-          <motion.div 
-            initial={{ width: 0 }}
-            whileInView={{ width: 64 }}
-            viewport={{ once: true }}
-            className="h-1 bg-gradient-to-r from-blue-600 to-cyan-500 mx-auto mb-6 rounded-full"
-          ></motion.div>
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-black text-blue-900 mb-4"
-          >
+          <div className="reveal h-1 w-16 bg-gradient-to-r from-blue-600 to-cyan-500 mx-auto mb-6 rounded-full"></div>
+          <h2 className="reveal text-4xl md:text-5xl font-black text-blue-900 mb-4">
             {t('coverage.title')}
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-gray-500 text-lg max-w-2xl mx-auto font-medium"
-          >
+          </h2>
+          <p className="reveal text-gray-500 text-lg max-w-2xl mx-auto font-medium" style={{ transitionDelay: '0.1s' }}>
             {t('coverage.subtitle')}
-          </motion.p>
+          </p>
         </div>
 
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {areas.map((area, index) => (
-            <motion.div 
+            <div 
               key={index} 
-              variants={itemVariants}
-              className="bg-white p-8 rounded-[2.5rem] shadow-xl hover:shadow-2xl transition-all border border-blue-50/50 group hover:-translate-y-2 duration-500"
+              className="reveal bg-white p-8 rounded-[2.5rem] shadow-xl hover:shadow-2xl transition-all border border-blue-50/50 group hover:-translate-y-2 duration-500"
+              style={{ transitionDelay: `${0.08 * (index + 1)}s` }}
             >
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500 shadow-sm group-hover:shadow-blue-200">
@@ -94,17 +55,11 @@ const CoverageAreasSection = () => {
                 </div>
                 <Navigation className="w-5 h-5 text-blue-200 group-hover:text-blue-600 group-hover:rotate-12 transition-all duration-500" />
               </div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="mt-20 bg-gradient-to-br from-blue-900 to-blue-800 rounded-[3rem] p-12 text-center text-white shadow-2xl overflow-hidden relative group"
-        >
+        <div className="reveal mt-20 bg-gradient-to-br from-blue-900 to-blue-800 rounded-[3rem] p-12 text-center text-white shadow-2xl overflow-hidden relative group" style={{ transitionDelay: '0.15s' }}>
           {/* Abstract background shapes */}
           <div className="absolute -top-24 -right-24 w-64 h-64 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors duration-700"></div>
           <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-cyan-400/5 rounded-full blur-3xl group-hover:bg-cyan-400/10 transition-colors duration-700"></div>
@@ -122,7 +77,7 @@ const CoverageAreasSection = () => {
               <span>{t('coverage.inquire')}</span>
             </a>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

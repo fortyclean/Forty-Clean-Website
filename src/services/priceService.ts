@@ -14,9 +14,16 @@ export interface PestOptions {
   bathrooms: number;
 }
 
+type PriceOptions = CleaningOptions | PestOptions;
+
+const isPestOptions = (options: PriceOptions): options is PestOptions => {
+  return 'pestType' in options;
+};
+
 export const calculateCleaningPrice = (options: CleaningOptions): number => {
   const { area, floors, bathrooms, kitchens } = options;
-  let price = 110;
+  const basePrice = Number(import.meta.env.VITE_CLEANING_BASE_PRICE) || 110;
+  let price = basePrice;
   
   if (area > 200) {
     price += Math.ceil((area - 200) / 50) * 15;
@@ -31,7 +38,8 @@ export const calculateCleaningPrice = (options: CleaningOptions): number => {
 
 export const calculatePestPrice = (options: PestOptions): number => {
   const { pestType, rooms, halls, bathrooms } = options;
-  let price = 25;
+  const basePrice = Number(import.meta.env.VITE_PEST_BASE_PRICE) || 25;
+  let price = basePrice;
   
   price += (rooms - 1) * 5;
   price += (halls - 1) * 5;
@@ -44,9 +52,9 @@ export const calculatePestPrice = (options: PestOptions): number => {
   return price;
 };
 
-export const calculatePrice = (type: ServiceType, options: any): number => {
-  if (type === 'pest') {
-    return calculatePestPrice(options as PestOptions);
+export const calculatePrice = (type: ServiceType, options: PriceOptions): number => {
+  if (type === 'pest' && isPestOptions(options)) {
+    return calculatePestPrice(options);
   }
   return calculateCleaningPrice(options as CleaningOptions);
 };

@@ -1,0 +1,102 @@
+*** Begin Patch
+*** Update File: src/lib/firebase.ts
+@@
+-// Replace these placeholders with your actual Firebase config
+-const firebaseConfig = {
+-  apiKey: "YOUR_API_KEY",
+-  authDomain: "YOUR_AUTH_DOMAIN",
+-  projectId: "YOUR_PROJECT_ID",
+-  storageBucket: "YOUR_STORAGE_BUCKET",
+-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+-  appId: "YOUR_APP_ID"
+-};
++/**
++ * Firebase configuration is now pulled from environment variables.
++ * Using Vite's import.meta.env ensures keys are not committed to source control.
++ * Define these variables in a local `.env` file (see `.env.example`).
++ */
++const firebaseConfig = {
++  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
++  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
++  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
++  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
++  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
++  appId: import.meta.env.VITE_FIREBASE_APP_ID,
++};
+*** End Patch
+
+*** Begin Patch
+*** Update File: src/config/site.ts
+@@
+-  admin: {
+-    // This is a simple password for local storage lead management
+-    // In a real production with a backend, this would be handled via proper Auth
+-    accessPassword: 'Forty@987',
+-  }
++  admin: {
++    /**
++     * Access password for the admin dashboard is now read from the environment.
++     * Define VITE_ADMIN_ACCESS_PASSWORD in your .env file.
++     */
++    accessPassword: import.meta.env.VITE_ADMIN_ACCESS_PASSWORD ?? '',
++  }
+*** End Patch
+
+*** Begin Patch
+*** Update File: src/i18n.ts
+@@
+-     resources,
+-     fallbackLng: 'ar',
+-     interpolation: {
++     resources,
++     /**
++      * Set fallback language to English. Previously Arabic was used which caused
++      * untranslated keys to display as raw translation keys when English content
++      * was missing or misconfigured.
++      */
++     fallbackLng: 'en',
++     interpolation: {
+*** End Patch
+
+*** Begin Patch
+*** Update File: src/services/priceService.ts
+@@
+-export const calculateCleaningPrice = (options: CleaningOptions): number => {
+-  const { area, floors, bathrooms, kitchens } = options;
+-  let price = 110;
++export const calculateCleaningPrice = (options: CleaningOptions): number => {
++  const { area, floors, bathrooms, kitchens } = options;
++  // Base price and increments are configurable via environment variables.
++  const basePrice = Number(import.meta.env.VITE_CLEANING_BASE_PRICE) || 110;
++  let price = basePrice;
+@@
+-export const calculatePestPrice = (options: PestOptions): number => {
+-  const { pestType, rooms, halls, bathrooms } = options;
+-  let price = 25;
++export const calculatePestPrice = (options: PestOptions): number => {
++  const { pestType, rooms, halls, bathrooms } = options;
++  const basePrice = Number(import.meta.env.VITE_PEST_BASE_PRICE) || 25;
++  let price = basePrice;
+*** End Patch
+
+*** Begin Patch
+*** Add File: .env.example
++# Example environment variables for Forty Clean website
++#
++# Copy this file to `.env` and populate the values for your environment.
++#
++# Firebase configuration
++VITE_FIREBASE_API_KEY=
++VITE_FIREBASE_AUTH_DOMAIN=
++VITE_FIREBASE_PROJECT_ID=
++VITE_FIREBASE_STORAGE_BUCKET=
++VITE_FIREBASE_MESSAGING_SENDER_ID=
++VITE_FIREBASE_APP_ID=
++
++# Admin password for the leads dashboard
++VITE_ADMIN_ACCESS_PASSWORD=
++
++# Base prices for services
++VITE_CLEANING_BASE_PRICE=110
++VITE_PEST_BASE_PRICE=25
+*** End Patch

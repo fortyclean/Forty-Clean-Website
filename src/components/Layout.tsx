@@ -10,7 +10,7 @@ interface LayoutProps {
 
 const Layout = ({ children, variant = 'landing' }: LayoutProps) => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gray-light transition-colors duration-300">
       <Header variant={variant === 'offers' || variant === 'blog' ? 'landing' : variant} />
       <main>
         {children}

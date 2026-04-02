@@ -1,4 +1,11 @@
 {
+  "common": {
+    "error_saving": "An error occurred while saving. Please try again or contact us via WhatsApp.",
+    "trust_safe": "Secure Booking",
+    "trust_rating": "4.9/5 Rating",
+    "trust_support": "24/7 Support",
+    "trust_team": "Certified Team"
+  },
   "seo": {
     "home": {
       "title": "Forty - Cleaning & Pest Control Services in Kuwait",
@@ -29,9 +36,101 @@
     "blog": "Blog",
     "contact": "Contact Us"
   },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about our services in one place",
+    "items": [
+      {
+        "question": "Do you provide a guarantee on pest control services?",
+        "answer": "Yes, we provide a real 6-month guarantee on all pest and rodent control services. If any pests reappear during the guarantee period, we re-spray for free."
+      },
+      {
+        "question": "Which areas do you cover in Kuwait?",
+        "answer": "We cover all areas and governorates of Kuwait (Capital, Hawally, Farwaniya, Ahmadi, Mubarak Al-Kabeer, Jahra) and reach you as quickly as possible."
+      },
+      {
+        "question": "Are the materials used in cleaning and control safe?",
+        "answer": "Absolutely, we use cleaning materials and pesticides approved by the Kuwaiti Ministry of Health, which are completely safe for children and pets and environmentally friendly."
+      },
+      {
+        "question": "How can I book an appointment?",
+        "answer": "You can easily book through our website using the smart booking system, or contact us directly via WhatsApp or phone call."
+      }
+    ]
+  },
+  "booking": {
+      "steps": {
+        "service": "Service",
+        "datetime": "Appointment",
+        "info": "Information"
+      },
+      "titles": {
+        "select_service": "Select Your Preferred Service",
+        "select_subtitle": "We offer the best cleaning and control services in Kuwait",
+        "details_title": "Schedule & Details",
+        "details_subtitle": "Choose what suits you best",
+        "contact_title": "Contact Information",
+        "contact_subtitle": "To confirm your request immediately",
+        "success_title": "Your request is being processed!",
+        "success_subtitle": "Thank you for trusting Forty. Booking details have been sent via WhatsApp and we will contact you now."
+      },
+      "services": {
+        "cleaning": "Full Cleaning",
+        "pest": "Pest Control",
+        "price_from": "From"
+      },
+      "summary": {
+        "title": "Booking Summary",
+        "service_label": "Service",
+        "guarantee_label": "Guarantee",
+        "guarantee_value": "6 Months",
+        "estimated_price": "Estimated Price",
+        "confirm_date": "Confirm Appointment",
+        "confirm_final": "Final Booking Confirmation",
+        "response_time": "We will respond in less than 5 minutes",
+        "customize": "Customize Service",
+        "approx_area": "Approximate Area"
+      },
+      "fields": {
+        "name": "Name",
+        "name_placeholder": "Example: Ahmed Mohamed",
+        "phone": "Phone Number",
+        "phone_placeholder": "5xxxxxxx",
+        "address": "Detailed Address",
+        "address_placeholder": "Area, Block, Street, House number...",
+        "back_home": "Back to Home"
+      },
+      "whatsapp": {
+        "new_booking": "New booking request from website:",
+        "service": "Service",
+        "cleaning": "Cleaning",
+        "pest": "Pest Control",
+        "details": "Details",
+        "appointment": "Appointment",
+        "name": "Name",
+        "phone": "Phone",
+        "address": "Address",
+        "price": "Estimated Price",
+        "selected_time": "Selected Time",
+        "at_time": "at"
+      }
+    },
+    "tracking": {
+    "title": "Track Your Orders",
+    "subtitle": "Enter your registered phone number to follow your booking status",
+    "phone_placeholder": "Phone Number (8 digits)",
+    "search_button": "Search",
+    "no_orders": "No orders registered for this number",
+    "status_new": "New Order",
+    "status_contacted": "Contacted",
+    "status_completed": "Completed",
+    "status_review": "Under Review"
+  },
   "hero": {
     "title": "Forty - Integrated Cleaning & Control Solutions",
     "subtitle": "Pest & Rodent Control – Home & Office Cleaning with Highest Quality Standards",
+    "cta_booking": "Book Now",
+    "cta_whatsapp": "Contact WhatsApp",
     "cta_cleaning": "Cleaning Services",
     "cta_pest": "Pest Control"
   },
@@ -101,6 +200,10 @@
     "quick_links": "Quick Links",
     "our_services": "Our Services",
     "contact_info": "Contact Information",
+    "settings": "Settings",
+    "dark_mode": "Dark Mode",
+    "light_mode": "Light Mode",
+    "system_status": "System is running efficiently",
     "address": "Al-Mirqab - Block 1 - Al-Wazzan St - Al-Adala Tower - 5th Floor - Office 1",
     "rights": "© 2025 Forty Company. All rights reserved."
   },

@@ -3,22 +3,18 @@ import { Phone, MapPin, Mail, Send, MessageCircle, AlertCircle } from 'lucide-re
 import { useTranslation } from 'react-i18next';
 import { useReveal } from '../../hooks/useReveal';
 import { siteConfig } from '../../config/site';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { useLeads } from '../../hooks/useLeads';
 
-// Kuwait Phone Regex: 8 digits, starts with 2, 5, 6, or 9
 const kuwaitPhoneRegex = /^[2569]\d{7}$/;
 
-const contactSchema = z.object({
-  name: z.string().min(2, { message: 'name_min' }),
-  phone: z.string().regex(kuwaitPhoneRegex, { message: 'invalid_phone' }),
-  service: z.string().min(1, { message: 'select_service' }),
-  message: z.string().optional(),
-});
+type ContactFormData = {
+  name: string;
+  phone: string;
+  service: string;
+  message: string;
+};
 
-type ContactFormData = z.infer<typeof contactSchema>;
+type ContactErrors = Partial<Record<keyof ContactFormData, 'name_min' | 'invalid_phone' | 'select_service'>>;
 
 interface ContactSectionProps {
   variant?: 'landing' | 'cleaning' | 'pest';
@@ -27,99 +23,113 @@ interface ContactSectionProps {
 const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
   const { sectionRef } = useReveal();
   const { t } = useTranslation();
-  const { saveLead } = useLeads();
+  const { saveLead } = useLeads({ subscribe: false });
+  const [formData, setFormData] = useState<ContactFormData>(() => {
+    if (typeof window === 'undefined') {
+      return { name: '', phone: '', service: '', message: '' };
+    }
+
+    const savedDraft = localStorage.getItem('contact_form_draft');
+    if (!savedDraft) {
+      return { name: '', phone: '', service: '', message: '' };
+    }
+
+    try {
+      const draft = JSON.parse(savedDraft) as Partial<ContactFormData>;
+      return {
+        name: draft.name ?? '',
+        phone: draft.phone ?? '',
+        service: draft.service ?? '',
+        message: draft.message ?? '',
+      };
+    } catch {
+      return { name: '', phone: '', service: '', message: '' };
+    }
+  });
+  const [errors, setErrors] = useState<ContactErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    reset,
-    formState: { errors },
-  } = useForm<ContactFormData>({
-    resolver: zodResolver(contactSchema),
-    defaultValues: {
-      name: '',
-      phone: '',
-      service: '',
-      message: '',
-    },
-  });
-
-  // Load draft from localStorage on mount
   useEffect(() => {
-    const savedDraft = localStorage.getItem('contact_form_draft');
-    if (savedDraft) {
-      const draft = JSON.parse(savedDraft);
-      Object.keys(draft).forEach((key) => {
-        setValue(key as keyof ContactFormData, draft[key]);
-      });
+    localStorage.setItem('contact_form_draft', JSON.stringify({
+      name: formData.name || '',
+      phone: formData.phone || '',
+      service: formData.service || '',
+      message: formData.message || '',
+    }));
+  }, [formData]);
+
+  const validateForm = () => {
+    const nextErrors: ContactErrors = {};
+
+    if (formData.name.trim().length < 2) {
+      nextErrors.name = 'name_min';
     }
-  }, [setValue]);
 
-  const onSubmit = (data: ContactFormData) => {
+    if (!kuwaitPhoneRegex.test(formData.phone.trim())) {
+      nextErrors.phone = 'invalid_phone';
+    }
+
+    if (!formData.service.trim()) {
+      nextErrors.service = 'select_service';
+    }
+
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
     setIsSubmitting(true);
-    
-    // Construct WhatsApp Message
-    const serviceLabel = getServices().find(s => s.value === data.service)?.label || data.service;
-    const whatsappText = `${t('contact.whatsapp_message.title')}\n\n*${t('contact.whatsapp_message.name')}* ${data.name}\n*${t('contact.whatsapp_message.phone')}* ${data.phone}\n*${t('contact.whatsapp_message.service')}* ${serviceLabel}\n*${t('contact.whatsapp_message.message')}* ${data.message || t('contact.whatsapp_message.no_message')}`;
-    
-    // Construct Lead Details for database
-    const leadDetails = `الخدمة: ${serviceLabel} | الرسالة: ${data.message || 'بدون رسالة'}`;
 
-    // Save to backup lead capture using hook
-    saveLead({
-      name: data.name,
-      phone: data.phone,
-      service: data.service,
+    const serviceLabel = getServices().find((service) => service.value === formData.service)?.label || formData.service;
+    let whatsappText = `${t('contact.whatsapp_message.title')}\n\n*${t('contact.whatsapp_message.name')}* ${formData.name.trim()}\n*${t('contact.whatsapp_message.phone')}* ${formData.phone.trim()}\n*${t('contact.whatsapp_message.service')}* ${serviceLabel}\n*${t('contact.whatsapp_message.message')}* ${formData.message || t('contact.whatsapp_message.no_message')}`;
+    const leadDetails = `الخدمة: ${serviceLabel} | الرسالة: ${formData.message || 'بدون رسالة'}`;
+
+    const savedLead = await saveLead({
+      name: formData.name.trim(),
+      phone: formData.phone.trim(),
+      service: formData.service,
       details: leadDetails,
       source: 'contact_form'
     });
-    
+    whatsappText += `\n*${t('tracking.title')}:* ${savedLead.trackingCode}`;
+
     localStorage.removeItem('contact_form_draft');
 
-    // Trigger Google Conversion Tracking if available
-    if (typeof (window as any).gtag_report_conversion === 'function') {
-      (window as any).gtag_report_conversion();
+    const conversionReporter = (window as Window & { gtag_report_conversion?: () => void }).gtag_report_conversion;
+    if (typeof conversionReporter === 'function') {
+      conversionReporter();
     }
-    
-    // Determine WhatsApp Number based on service
-    const isCleaningService = data.service === 'cleaning' || 
-                             data.service === 'home' || 
-                             data.service === 'office' || 
-                             data.service === 'building' || 
-                             data.service === 'sterilization' ||
-                             variant === 'cleaning';
-    
+
+    const isCleaningService = formData.service === 'cleaning' ||
+      formData.service === 'home' ||
+      formData.service === 'office' ||
+      formData.service === 'building' ||
+      formData.service === 'sterilization' ||
+      variant === 'cleaning';
+
     const whatsappNumber = isCleaningService ? siteConfig.contact.cleaningPhone : siteConfig.contact.pestPhone;
-    
-    // Create WhatsApp Link
     const whatsappUrl = siteConfig.links.whatsapp(whatsappNumber, whatsappText);
-    
-    // Redirect to WhatsApp
+
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitMessage(t('contact.success'));
-      
-      // Open WhatsApp after a brief delay
+
       setTimeout(() => {
         window.open(whatsappUrl, '_blank');
-        reset();
+        setFormData({
+          name: '',
+          phone: '',
+          service: '',
+          message: '',
+        });
+        setErrors({});
         setSubmitMessage('');
       }, 2000);
     }, 1000);
-  };
-
-  const onFieldChange = () => {
-    // Save draft to localStorage
-    const currentValues = {
-      name: (document.getElementsByName('name')[0] as HTMLInputElement).value,
-      phone: (document.getElementsByName('phone')[0] as HTMLInputElement).value,
-      service: (document.getElementsByName('service')[0] as HTMLSelectElement).value,
-      message: (document.getElementsByName('message')[0] as HTMLTextAreaElement).value,
-    };
-    localStorage.setItem('contact_form_draft', JSON.stringify(currentValues));
   };
 
   const getServices = () => {
@@ -131,7 +141,8 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
         { value: 'building', label: t('services.items.building_cleaning.title') },
         { value: 'sterilization', label: t('services.items.sterilization.title') },
       ];
-    } else if (variant === 'pest') {
+    }
+    if (variant === 'pest') {
       return [
         { value: '', label: t('contact.service_placeholder') },
         { value: 'insects', label: t('services.items.pest_control.title') },
@@ -139,19 +150,17 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
         { value: 'termites', label: t('services.items.termite_control.title') },
         { value: 'prevention', label: t('services.items.prevention.title') },
       ];
-    } else {
-      return [
-        { value: '', label: t('contact.service_placeholder') },
-        { value: 'cleaning', label: t('nav.cleaning') },
-        { value: 'pest', label: t('nav.pest') },
-      ];
     }
+    return [
+      { value: '', label: t('contact.service_placeholder') },
+      { value: 'cleaning', label: t('nav.cleaning') },
+      { value: 'pest', label: t('nav.pest') },
+    ];
   };
 
   return (
     <section id="contact" ref={sectionRef} className="section-padding bg-white">
       <div className="container mx-auto px-4">
-        {/* Section Header */}
         <div className="text-center mb-16">
           <div className="reveal w-16 h-1 bg-gradient-to-r from-blue-medium to-cyan-brand mx-auto mb-6 rounded-full"></div>
           <h2 className="reveal text-3xl md:text-4xl font-bold text-blue-dark mb-4" style={{ animationDelay: '0.1s' }}>
@@ -163,41 +172,61 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Form */}
           <div className="reveal" style={{ animationDelay: '0.3s' }}>
-            <form onSubmit={handleSubmit(onSubmit)} onChange={onFieldChange} className="bg-gray-light rounded-3xl p-8">
+            <form onSubmit={onSubmit} className="bg-gray-light rounded-3xl p-8">
               <div className="space-y-6">
                 <div>
                   <input
-                    {...register('name')}
                     type="text"
+                    value={formData.name}
+                    onChange={(e) => {
+                      const name = e.target.value;
+                      setFormData((current) => ({ ...current, name }));
+                      if (errors.name) {
+                        setErrors((current) => ({ ...current, name: undefined }));
+                      }
+                    }}
                     placeholder={t('contact.name')}
                     className={`form-input ${errors.name ? 'border-red-500' : ''}`}
                   />
                   {errors.name && (
                     <div className="flex items-center gap-1 mt-1 text-red-500 text-sm">
                       <AlertCircle className="w-4 h-4" />
-                      <span>{t(`contact.errors.${errors.name.message}`)}</span>
+                      <span>{t(`contact.errors.${errors.name}`)}</span>
                     </div>
                   )}
                 </div>
                 <div>
                   <input
-                    {...register('phone')}
                     type="tel"
+                    value={formData.phone}
+                    onChange={(e) => {
+                      const phone = e.target.value;
+                      setFormData((current) => ({ ...current, phone }));
+                      if (errors.phone) {
+                        setErrors((current) => ({ ...current, phone: undefined }));
+                      }
+                    }}
                     placeholder={t('contact.phone')}
                     className={`form-input ${errors.phone ? 'border-red-500' : ''}`}
                   />
                   {errors.phone && (
                     <div className="flex items-center gap-1 mt-1 text-red-500 text-sm">
                       <AlertCircle className="w-4 h-4" />
-                      <span>{t(`contact.errors.${errors.phone.message}`)}</span>
+                      <span>{t(`contact.errors.${errors.phone}`)}</span>
                     </div>
                   )}
                 </div>
                 <div>
                   <select
-                    {...register('service')}
+                    value={formData.service}
+                    onChange={(e) => {
+                      const service = e.target.value;
+                      setFormData((current) => ({ ...current, service }));
+                      if (errors.service) {
+                        setErrors((current) => ({ ...current, service: undefined }));
+                      }
+                    }}
                     className={`form-input ${errors.service ? 'border-red-500' : ''}`}
                   >
                     {getServices().map((service, index) => (
@@ -209,13 +238,17 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
                   {errors.service && (
                     <div className="flex items-center gap-1 mt-1 text-red-500 text-sm">
                       <AlertCircle className="w-4 h-4" />
-                      <span>{t(`contact.errors.${errors.service.message}`)}</span>
+                      <span>{t(`contact.errors.${errors.service}`)}</span>
                     </div>
                   )}
                 </div>
                 <div>
                   <textarea
-                    {...register('message')}
+                    value={formData.message}
+                    onChange={(e) => {
+                      const message = e.target.value;
+                      setFormData((current) => ({ ...current, message }));
+                    }}
                     placeholder={t('contact.message')}
                     rows={4}
                     className="form-input resize-none"
@@ -244,7 +277,6 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
             </form>
           </div>
 
-          {/* Contact Info */}
           <div className="reveal space-y-6" style={{ animationDelay: '0.4s' }}>
             <a href="tel:69988979" className="contact-card group">
               <div className="contact-icon">

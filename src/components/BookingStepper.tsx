@@ -1,34 +1,38 @@
-import { useState, useEffect } from 'react';
+import { lazy, Suspense, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Check, 
-  ChevronRight, 
   ChevronLeft, 
   Sparkles, 
   Bug, 
   Calendar as CalendarIcon, 
   User, 
-  CreditCard, 
   ShieldCheck,
   Star,
   Clock,
-  MapPin,
-  Phone,
   ShoppingCart
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
-import { BookingCalendar } from './BookingCalendar';
 import { calculatePrice } from '../services/priceService';
 import { useLeads } from '../hooks/useLeads';
 import { siteConfig } from '../config/site';
 import { useStore } from '../lib/store';
 
+const BookingCalendar = lazy(() =>
+  import('./BookingCalendar').then((module) => ({ default: module.BookingCalendar }))
+);
+
+const CalendarLoader = () => (
+  <div className="py-10 flex justify-center">
+    <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+  </div>
+);
+
 export const BookingStepper = () => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
-  const { saveLead } = useLeads();
+  const { saveLead } = useLeads({ subscribe: false });
   const { user, setUser, addToCart } = useStore();
   
   const [currentStep, setCurrentStep] = useState(0);
@@ -44,27 +48,25 @@ export const BookingStepper = () => {
   });
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState('');
+  const [bookingReference, setBookingReference] = useState('');
   const [userInfo, setUserInfo] = useState({
     name: user?.name || '',
     phone: user?.phone || '',
     address: user?.address || ''
   });
-  const [price, setPrice] = useState(0);
-
-  useEffect(() => {
-    if (serviceType) {
-      const options = serviceType === 'pest' 
-        ? { pestType: details.pestType, rooms: details.rooms, halls: details.halls, bathrooms: details.bathrooms }
-        : { area: details.area, floors: details.floors, bathrooms: details.bathrooms, kitchens: details.kitchens };
-      setPrice(calculatePrice(serviceType, options));
-    }
+  const price = useMemo(() => {
+    if (!serviceType) return 0;
+    const options = serviceType === 'pest'
+      ? { pestType: details.pestType, rooms: details.rooms, halls: details.halls, bathrooms: details.bathrooms }
+      : { area: details.area, floors: details.floors, bathrooms: details.bathrooms, kitchens: details.kitchens };
+    return calculatePrice(serviceType, options);
   }, [serviceType, details]);
 
   const handleBooking = async () => {
     try {
       const leadDetails = serviceType === 'pest' 
-        ? `نوع الحشرة: ${t(`calculator.pest_types.${details.pestType}`)}, غرف: ${details.rooms}, صالات: ${details.halls}, حمامات: ${details.bathrooms}`
-        : `أدوار: ${details.floors}, مساحة: ${details.area}م, مطابخ: ${details.kitchens}, حمامات: ${details.bathrooms}`;
+        ? `${t('booking.whatsapp.details')}: ${t(`calculator.pest_types.${details.pestType}`)}, ${t('calculator.whatsapp_message.rooms')}: ${details.rooms}, ${t('calculator.whatsapp_message.halls')}: ${details.halls}, ${t('calculator.whatsapp_message.bathrooms')}: ${details.bathrooms}`
+        : `${t('calculator.whatsapp_message.floors')}: ${details.floors}, ${t('calculator.whatsapp_message.area')}: ${details.area}${t('calculator.area_unit')}, ${t('calculator.whatsapp_message.kitchens')}: ${details.kitchens}, ${t('calculator.whatsapp_message.bathrooms')}: ${details.bathrooms}`;
 
       const formattedDate = selectedDate?.toLocaleDateString(isRTL ? 'ar-KW' : 'en-US', {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
@@ -79,16 +81,17 @@ export const BookingStepper = () => {
       });
 
       // Save Lead to Firestore
-      await saveLead({
+      const savedLead = await saveLead({
         name: userInfo.name,
         phone: userInfo.phone,
         service: serviceType!,
         price: price,
-        details: `${leadDetails} | الموعد: ${formattedDate} ${selectedTime} | العنوان: ${userInfo.address}`,
+        details: `${leadDetails} | ${t('booking.whatsapp.appointment')}: ${formattedDate} ${t(`calculator.booking.times.${selectedTime}`)} | ${t('booking.whatsapp.address')}: ${userInfo.address}`,
         source: 'booking_system'
       });
+      setBookingReference(savedLead.trackingCode);
 
-      // Add to global cart for history/reference
+      // Add to global cart
       addToCart({
         id: crypto.randomUUID(),
         service: serviceType!,
@@ -98,13 +101,13 @@ export const BookingStepper = () => {
 
       // Send to WhatsApp
       const whatsappNumber = serviceType === 'cleaning' ? siteConfig.contact.cleaningPhone : siteConfig.contact.pestPhone;
-      const text = `طلب حجز جديد من الموقع:\n\nالخدمة: ${serviceType === 'cleaning' ? 'تنظيف' : 'مكافحة حشرات'}\nالتفاصيل: ${leadDetails}\nالموعد: ${formattedDate} ${selectedTime}\nالاسم: ${userInfo.name}\nالهاتف: ${userInfo.phone}\nالعنوان: ${userInfo.address}\nالسعر التقديري: ${price} د.ك`;
+      const text = `${t('booking.whatsapp.new_booking')}\n\n${t('booking.whatsapp.service')}: ${serviceType === 'cleaning' ? t('booking.whatsapp.cleaning') : t('booking.whatsapp.pest')}\n${t('booking.whatsapp.details')}: ${leadDetails}\n${t('booking.whatsapp.appointment')}: ${formattedDate} ${t(`calculator.booking.times.${selectedTime}`)}\n${t('booking.whatsapp.name')}: ${userInfo.name}\n${t('booking.whatsapp.phone')}: ${userInfo.phone}\n${t('booking.whatsapp.address')}: ${userInfo.address}\n${t('booking.whatsapp.price')}: ${price} ${t('calculator.currency')}\n${isRTL ? 'كود التتبع' : 'Tracking code'}: ${savedLead.trackingCode}`;
       window.open(siteConfig.links.whatsapp(whatsappNumber, text), '_blank');
       
-      setCurrentStep(3); // Final confirmation step
+      setCurrentStep(3);
     } catch (error) {
       console.error("Booking error:", error);
-      alert(isRTL ? "حدث خطأ أثناء حفظ طلبك، يرجى المحاولة مرة أخرى أو الاتصال بنا مباشرة." : "An error occurred while saving your request. Please try again or contact us directly.");
+      alert(t('common.error_saving'));
     }
   };
 
@@ -117,17 +120,15 @@ export const BookingStepper = () => {
     }
   };
 
-  const progress = ((currentStep + 1) / 3) * 100;
-
   return (
     <div className="max-w-4xl mx-auto px-4 py-12" dir={isRTL ? "rtl" : "ltr"}>
       {/* Optimized Stepper Header */}
       <div className="mb-12">
         <div className="flex justify-between items-center max-w-md mx-auto relative">
           {[
-            { id: 'service', title: 'الخدمة', icon: Sparkles },
-            { id: 'datetime', title: 'الموعد', icon: CalendarIcon },
-            { id: 'info', title: 'البيانات', icon: User },
+            { id: 'service', title: t('booking.steps.service'), icon: Sparkles },
+            { id: 'datetime', title: t('booking.steps.datetime'), icon: CalendarIcon },
+            { id: 'info', title: t('booking.steps.info'), icon: User },
           ].map((step, index) => {
             const Icon = step.icon;
             const isActive = index <= currentStep;
@@ -160,94 +161,84 @@ export const BookingStepper = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-[3rem] shadow-2xl border border-gray-100 overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 rounded-[3rem] shadow-2xl border border-gray-100 dark:border-slate-700 overflow-hidden">
         <div className="p-8 md:p-12">
-          <AnimatePresence mode="wait">
-            {currentStep === 0 && (
-              <motion.div
-                key="step0"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="space-y-10"
-              >
+          {currentStep === 0 && (
+              <div key="step0" className="space-y-10 animate-fadeInUp">
                 <div className="text-center space-y-4">
-                  <h2 className="text-4xl font-black text-blue-900">اختر خدمتك المفضلة</h2>
-                  <p className="text-gray-500 text-xl font-bold">نقدم أفضل خدمات النظافة والمكافحة في الكويت</p>
+                  <h2 className="text-4xl font-black text-blue-900 dark:text-white">{t('booking.titles.select_service')}</h2>
+                  <p className="text-gray-500 dark:text-slate-400 text-xl font-bold">{t('booking.titles.select_subtitle')}</p>
                 </div>
                 
                 <div className="grid md:grid-cols-2 gap-8">
                   {[
-                    { id: 'cleaning', title: 'تنظيف شامل', icon: Sparkles, color: 'blue', price: 'من 110 د.ك' },
-                    { id: 'pest', title: 'مكافحة حشرات', icon: Bug, color: 'red', price: 'من 25 د.ك' }
+                    { id: 'cleaning', title: t('booking.services.cleaning'), icon: Sparkles, color: 'blue', price: `${t('booking.services.price_from')} 110 ${t('calculator.currency')}` },
+                    { id: 'pest', title: t('booking.services.pest'), icon: Bug, color: 'red', price: `${t('booking.services.price_from')} 25 ${t('calculator.currency')}` }
                   ].map((s) => (
                     <button
                       key={s.id}
                       onClick={() => {
-                        setServiceType(s.id as any);
+                        setServiceType(s.id as 'cleaning' | 'pest');
                         setCurrentStep(1);
                       }}
                       className={cn(
                         "p-10 rounded-[3rem] border-4 text-right transition-all group relative overflow-hidden",
                         serviceType === s.id 
-                          ? "border-blue-600 bg-blue-50/50 shadow-2xl scale-[1.02]" 
-                          : "border-gray-50 hover:border-blue-200 hover:bg-gray-50 shadow-lg"
+                          ? "border-blue-600 bg-blue-50/50 dark:bg-blue-900/20 shadow-2xl scale-[1.02]" 
+                          : "border-gray-50 dark:border-slate-700 hover:border-blue-200 dark:hover:border-blue-800 hover:bg-gray-50 dark:hover:bg-slate-700/50 shadow-lg"
                       )}
                     >
                       <div className={cn(
                         "w-20 h-20 rounded-[2rem] flex items-center justify-center mb-8 transition-all shadow-lg",
-                        serviceType === s.id ? "bg-blue-600 text-white" : "bg-white text-blue-600 group-hover:scale-110"
+                        serviceType === s.id ? "bg-blue-600 text-white" : "bg-white dark:bg-slate-700 text-blue-600 group-hover:scale-110"
                       )}>
                         <s.icon className="w-10 h-10" />
                       </div>
-                      <h3 className="text-3xl font-black text-blue-900 mb-3">{s.title}</h3>
+                      <h3 className="text-3xl font-black text-blue-900 dark:text-white mb-3">{s.title}</h3>
                       <div className="flex items-center justify-between">
-                        <span className="text-blue-600 font-black text-xl">{s.price}</span>
-                        <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                          <ChevronLeft className="w-6 h-6" />
+                        <span className="text-blue-600 dark:text-blue-400 font-black text-xl">{s.price}</span>
+                        <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                          <ChevronLeft className={cn("w-6 h-6", !isRTL && "rotate-180")} />
                         </div>
                       </div>
                     </button>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             )}
 
-            {currentStep === 1 && (
-              <motion.div
-                key="step1"
-                initial={{ opacity: 0, x: isRTL ? 50 : -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="space-y-10"
-              >
+          {currentStep === 1 && (
+              <div key="step1" className={`space-y-10 ${isRTL ? 'animate-slideInLeft' : 'animate-slideInRight'}`}>
                 <div className="text-center space-y-4">
-                  <h2 className="text-4xl font-black text-blue-900">تحديد الموعد والتفاصيل</h2>
-                  <p className="text-gray-500 text-xl font-bold">اختر ما يناسبك لنقوم بخدمتك</p>
+                  <h2 className="text-4xl font-black text-blue-900 dark:text-white">{t('booking.titles.details_title')}</h2>
+                  <p className="text-gray-500 dark:text-slate-400 text-xl font-bold">{t('booking.titles.details_subtitle')}</p>
                 </div>
 
                 <div className="grid lg:grid-cols-3 gap-10">
                   <div className="lg:col-span-2 space-y-10">
-                    <BookingCalendar 
-                      selectedDate={selectedDate}
-                      onDateSelect={setSelectedDate}
-                      selectedTime={selectedTime}
-                      onTimeSelect={setSelectedTime}
-                    />
+                    <Suspense fallback={<CalendarLoader />}>
+                      <BookingCalendar 
+                        selectedDate={selectedDate}
+                        onDateSelect={setSelectedDate}
+                        selectedTime={selectedTime}
+                        onTimeSelect={setSelectedTime}
+                      />
+                    </Suspense>
                     
                     {/* Compact Details Integration */}
-                    <div className="bg-gray-50 p-8 rounded-[2.5rem] border border-gray-100">
-                      <h4 className="text-xl font-black text-blue-900 mb-6 flex items-center gap-2">
+                    <div className="bg-gray-50 dark:bg-slate-900/50 p-8 rounded-[2.5rem] border border-gray-100 dark:border-slate-700">
+                      <h4 className="text-xl font-black text-blue-900 dark:text-white mb-6 flex items-center gap-2">
                         <ShoppingCart className="w-6 h-6 text-blue-600" />
-                        تخصيص الخدمة
+                        {t('booking.summary.customize')}
                       </h4>
                       {serviceType === 'cleaning' ? (
                         <div className="space-y-6">
-                          <label className="text-blue-900 font-bold block">المساحة التقريبية ({details.area} م²)</label>
+                          <label className="text-blue-900 dark:text-slate-300 font-bold block">{t('booking.summary.approx_area')} ({details.area} {t('calculator.area_unit')})</label>
                           <input 
                             type="range" min="50" max="1000" step="50" 
                             value={details.area}
                             onChange={(e) => setDetails({...details, area: parseInt(e.target.value)})}
-                            className="w-full h-3 bg-white rounded-full appearance-none cursor-pointer accent-blue-600 shadow-inner"
+                            className="w-full h-3 bg-white dark:bg-slate-700 rounded-full appearance-none cursor-pointer accent-blue-600 shadow-inner"
                           />
                         </div>
                       ) : (
@@ -260,7 +251,7 @@ export const BookingStepper = () => {
                                 "p-4 rounded-2xl text-center font-black transition-all border-2 text-sm",
                                 details.pestType === type 
                                   ? "border-blue-600 bg-blue-600 text-white shadow-lg" 
-                                  : "bg-white border-gray-100 hover:border-blue-100 text-gray-500"
+                                  : "bg-white dark:bg-slate-800 border-gray-100 dark:border-slate-700 hover:border-blue-100 dark:hover:border-blue-900 text-gray-500 dark:text-slate-400"
                               )}
                             >
                               {t(`calculator.pest_types.${type}`)}
@@ -272,28 +263,28 @@ export const BookingStepper = () => {
                   </div>
 
                   {/* Pricing Card */}
-                  <div className="bg-blue-900 rounded-[3rem] p-10 text-white space-y-10 shadow-2xl relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-800 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+                  <div className="bg-blue-900 dark:bg-slate-900 rounded-[3rem] p-10 text-white space-y-10 shadow-2xl relative overflow-hidden border border-blue-800 dark:border-slate-700">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-800 dark:bg-slate-800 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
                     <div>
                       <h3 className="text-2xl font-black mb-8 flex items-center gap-3 opacity-90">
                         <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
-                        ملخص الحجز
+                        {t('booking.summary.title')}
                       </h3>
                       <div className="space-y-4 mb-10">
-                        <div className="flex justify-between text-blue-100 font-bold">
-                          <span>الخدمة</span>
-                          <span>{serviceType === 'cleaning' ? 'تنظيف' : 'مكافحة'}</span>
+                        <div className="flex justify-between text-blue-100 dark:text-slate-300 font-bold">
+                          <span>{t('booking.summary.service_label')}</span>
+                          <span>{serviceType === 'cleaning' ? t('booking.whatsapp.cleaning') : t('booking.whatsapp.pest')}</span>
                         </div>
-                        <div className="flex justify-between text-blue-100 font-bold">
-                          <span>الضمان</span>
-                          <span>6 أشهر</span>
+                        <div className="flex justify-between text-blue-100 dark:text-slate-300 font-bold">
+                          <span>{t('booking.summary.guarantee_label')}</span>
+                          <span>{t('booking.summary.guarantee_value')}</span>
                         </div>
                       </div>
-                      <div className="pt-8 border-t border-blue-800">
-                        <span className="text-blue-200 font-bold block mb-2">السعر التقديري</span>
+                      <div className="pt-8 border-t border-blue-800 dark:border-slate-700">
+                        <span className="text-blue-200 dark:text-slate-400 font-bold block mb-2">{t('booking.summary.estimated_price')}</span>
                         <div className="flex items-baseline gap-2">
                           <span className="text-7xl font-black">{price}</span>
-                          <span className="text-3xl font-bold opacity-60">د.ك</span>
+                          <span className="text-3xl font-bold opacity-60">{t('calculator.currency')}</span>
                         </div>
                       </div>
                     </div>
@@ -301,59 +292,54 @@ export const BookingStepper = () => {
                     <Button
                       onClick={() => setCurrentStep(2)}
                       disabled={!selectedDate || !selectedTime}
-                      className="w-full bg-white text-blue-900 hover:bg-blue-50 py-10 rounded-[2rem] text-2xl font-black shadow-xl transition-all active:scale-95 disabled:opacity-50"
+                      className="w-full bg-white dark:bg-blue-600 text-blue-900 dark:text-white hover:bg-blue-50 dark:hover:bg-blue-500 py-10 rounded-[2rem] text-2xl font-black shadow-xl transition-all active:scale-95 disabled:opacity-50"
                     >
-                      تأكيد الموعد
-                      <ChevronLeft className="mr-2 w-8 h-8" />
+                      {t('booking.summary.confirm_date')}
+                      <ChevronLeft className={cn("mr-2 w-8 h-8", !isRTL && "rotate-180")} />
                     </Button>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )}
 
-            {currentStep === 2 && (
-              <motion.div
-                key="step2"
-                initial={{ opacity: 0, x: isRTL ? 50 : -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="space-y-10"
-              >
+          {currentStep === 2 && (
+              <div key="step2" className={`space-y-10 ${isRTL ? 'animate-slideInLeft' : 'animate-slideInRight'}`}>
                 <div className="text-center space-y-4">
-                  <h2 className="text-4xl font-black text-blue-900">بيانات التواصل</h2>
-                  <p className="text-gray-500 text-xl font-bold">لنتمكن من تأكيد طلبك فوراً</p>
+                  <h2 className="text-4xl font-black text-blue-900 dark:text-white">{t('booking.titles.contact_title')}</h2>
+                  <p className="text-gray-500 dark:text-slate-400 text-xl font-bold">{t('booking.titles.contact_subtitle')}</p>
                 </div>
 
                 <div className="max-w-2xl mx-auto space-y-8">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-3">
-                      <label className="text-blue-900 font-black pr-2">الاسم</label>
+                      <label className="text-blue-900 dark:text-slate-300 font-black pr-2">{t('booking.fields.name')}</label>
                       <input 
                         type="text"
-                        placeholder="مثال: أحمد محمد"
+                        placeholder={t('booking.fields.name_placeholder')}
                         value={userInfo.name}
                         onChange={(e) => setUserInfo({...userInfo, name: e.target.value})}
-                        className="w-full px-8 py-5 rounded-3xl bg-gray-50 border-2 border-transparent focus:border-blue-600 focus:bg-white outline-none transition-all text-lg font-bold"
+                        className="w-full px-8 py-5 rounded-3xl bg-gray-50 dark:bg-slate-900/50 border-2 border-transparent focus:border-blue-600 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all text-lg font-bold dark:text-white"
                       />
                     </div>
                     <div className="space-y-3">
-                      <label className="text-blue-900 font-black pr-2">رقم الهاتف</label>
+                      <label className="text-blue-900 dark:text-slate-300 font-black pr-2">{t('booking.fields.phone')}</label>
                       <input 
                         type="tel"
-                        placeholder="5xxxxxxx"
+                        placeholder={t('booking.fields.phone_placeholder')}
                         value={userInfo.phone}
                         onChange={(e) => setUserInfo({...userInfo, phone: e.target.value})}
-                        className="w-full px-8 py-5 rounded-3xl bg-gray-50 border-2 border-transparent focus:border-blue-600 focus:bg-white outline-none transition-all text-lg font-bold"
+                        className="w-full px-8 py-5 rounded-3xl bg-gray-50 dark:bg-slate-900/50 border-2 border-transparent focus:border-blue-600 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all text-lg font-bold dark:text-white"
                       />
                     </div>
                   </div>
                   <div className="space-y-3">
-                    <label className="text-blue-900 font-black pr-2">العنوان بالتفصيل</label>
+                    <label className="text-blue-900 dark:text-slate-300 font-black pr-2">{t('booking.fields.address')}</label>
                     <textarea 
-                      placeholder="المنطقة، القطعة، الشارع، رقم المنزل..."
+                      placeholder={t('booking.fields.address_placeholder')}
                       rows={4}
                       value={userInfo.address}
                       onChange={(e) => setUserInfo({...userInfo, address: e.target.value})}
-                      className="w-full px-8 py-5 rounded-3xl bg-gray-50 border-2 border-transparent focus:border-blue-600 focus:bg-white outline-none transition-all text-lg font-bold resize-none"
+                      className="w-full px-8 py-5 rounded-3xl bg-gray-50 dark:bg-slate-900/50 border-2 border-transparent focus:border-blue-600 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all text-lg font-bold resize-none dark:text-white"
                     />
                   </div>
 
@@ -361,47 +347,49 @@ export const BookingStepper = () => {
                     <Button
                       onClick={handleBooking}
                       disabled={!isStepValid()}
-                      className="w-full bg-blue-600 text-white hover:bg-blue-700 py-12 rounded-[2.5rem] text-3xl font-black shadow-2xl shadow-blue-200 transition-all active:scale-95 disabled:opacity-50"
+                      className="w-full bg-blue-600 text-white hover:bg-blue-700 py-12 rounded-[2.5rem] text-3xl font-black shadow-2xl shadow-blue-200 dark:shadow-blue-900/20 transition-all active:scale-95 disabled:opacity-50"
                     >
-                      تأكيد الحجز النهائي
+                      {t('booking.summary.confirm_final')}
                       <ShieldCheck className="mr-4 w-10 h-10" />
                     </Button>
-                    <p className="text-center text-gray-400 mt-6 font-bold flex items-center justify-center gap-2">
+                    <p className="text-center text-gray-400 dark:text-slate-500 mt-6 font-bold flex items-center justify-center gap-2">
                       <Clock className="w-5 h-5" />
-                      سيتم الرد عليك خلال أقل من 5 دقائق
+                      {t('booking.summary.response_time')}
                     </p>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )}
 
-            {currentStep === 3 && (
-              <motion.div
-                key="step3"
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="text-center py-16 space-y-10"
-              >
-                <div className="w-32 h-32 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-2xl shadow-emerald-100 animate-bounce">
+          {currentStep === 3 && (
+              <div key="step3" className="text-center py-16 space-y-10 animate-fadeInUp">
+                <div className="w-32 h-32 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto shadow-2xl shadow-emerald-100 dark:shadow-none animate-bounce">
                   <Check className="w-16 h-16" />
                 </div>
                 <div className="space-y-4">
-                  <h2 className="text-5xl font-black text-blue-900">طلبك قيد التنفيذ!</h2>
-                  <p className="text-gray-500 text-2xl font-bold max-w-md mx-auto leading-relaxed">
-                    شكراً لثقتك بـ فورتي. تم إرسال تفاصيل الحجز عبر واتساب وسيتم التواصل معك الآن.
+                  <h2 className="text-5xl font-black text-blue-900 dark:text-white">{t('booking.titles.success_title')}</h2>
+                  <p className="text-gray-500 dark:text-slate-400 text-2xl font-bold max-w-md mx-auto leading-relaxed">
+                    {t('booking.titles.success_subtitle')}
                   </p>
+                  {bookingReference && (
+                    <div className="inline-flex flex-col items-center gap-2 bg-blue-50 dark:bg-blue-900/20 rounded-2xl px-6 py-4 border border-blue-100 dark:border-blue-800">
+                      <span className="text-sm font-bold text-blue-700 dark:text-blue-300">
+                        {isRTL ? 'احفظ كود التتبع لاستخدامه في متابعة الطلب' : 'Save this tracking code to follow up your order'}
+                      </span>
+                      <span className="text-2xl font-black text-blue-900 dark:text-white tracking-wider">{bookingReference}</span>
+                    </div>
+                  )}
                 </div>
                 <div className="pt-10">
                   <Button 
                     onClick={() => window.location.href = '/'}
-                    className="bg-blue-900 hover:bg-blue-800 text-white px-16 py-8 rounded-[2rem] text-2xl font-black shadow-2xl"
+                    className="bg-blue-900 dark:bg-blue-600 hover:bg-blue-800 dark:hover:bg-blue-500 text-white px-16 py-8 rounded-[2rem] text-2xl font-black shadow-2xl"
                   >
-                    العودة للرئيسية
+                    {t('booking.fields.back_home')}
                   </Button>
                 </div>
-              </motion.div>
+              </div>
             )}
-          </AnimatePresence>
         </div>
       </div>
 
@@ -409,10 +397,10 @@ export const BookingStepper = () => {
       {currentStep < 3 && (
         <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
           {[
-            { icon: ShieldCheck, text: 'حجز آمن 100%' },
-            { icon: Star, text: 'تقييم 4.9/5' },
-            { icon: Clock, text: 'دعم 24 ساعة' },
-            { icon: Check, text: 'فريق معتمد' }
+            { icon: ShieldCheck, text: t('common.trust_safe') || 'Secure Booking' },
+            { icon: Star, text: t('common.trust_rating') || '4.9/5 Rating' },
+            { icon: Clock, text: t('common.trust_support') || '24/7 Support' },
+            { icon: Check, text: t('common.trust_team') || 'Certified Team' }
           ].map((item, i) => (
             <div key={i} className="flex flex-col items-center text-center gap-3">
               <item.icon className="w-10 h-10 text-blue-900" />

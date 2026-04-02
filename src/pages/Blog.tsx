@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Layout from '../components/Layout';
 import { ArrowRight, CheckCircle2, BookOpen, Clock, User, Sparkles, Shield, Zap, AlertTriangle } from 'lucide-react';
@@ -8,31 +8,11 @@ const Blog = () => {
   const { t, i18n } = useTranslation();
   const [hasError, setHasError] = useState(false);
 
-  useEffect(() => {
-    const script = document.createElement('script');
-    const params = new URLSearchParams(window.location.search);
-    let url = 'https://app.trysoro.com/api/embed/961a0745-9ae5-4dd2-a648-348e12fa7dff';
-    if (params.get('post')) {
-      url += '?post=' + encodeURIComponent(params.get('post') || '');
-    }
-    script.src = url;
-    script.async = true;
-    
-    script.onerror = () => {
-      setHasError(true);
-    };
-
-    const container = document.getElementById('soro-blog-container');
-    if (container) {
-      container.appendChild(script);
-    }
-
-    return () => {
-      if (container && script.parentNode === container) {
-        container.removeChild(script);
-      }
-    };
-  }, []);
+  const params = new URLSearchParams(window.location.search);
+  const post = params.get('post');
+  const blogEmbedUrl = post
+    ? `https://app.trysoro.com/api/embed/961a0745-9ae5-4dd2-a648-348e12fa7dff?post=${encodeURIComponent(post)}`
+    : 'https://app.trysoro.com/api/embed/961a0745-9ae5-4dd2-a648-348e12fa7dff';
 
   const featuredTopics = [
     {
@@ -174,7 +154,17 @@ const Blog = () => {
                     </button>
                   </div>
                 )}
-                <div id="soro-blog"></div>
+                {!hasError && (
+                  <iframe
+                    src={blogEmbedUrl}
+                    title="Forty Blog Embed"
+                    loading="lazy"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    sandbox="allow-scripts allow-same-origin allow-popups"
+                    className="w-full min-h-[640px] rounded-2xl border border-gray-100"
+                    onError={() => setHasError(true)}
+                  />
+                )}
               </div>
               
               <noscript>

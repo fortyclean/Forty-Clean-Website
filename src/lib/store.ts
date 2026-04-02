@@ -8,11 +8,17 @@ interface User {
   address?: string;
 }
 
+interface CartItemDetails {
+  leadDetails: string;
+  date?: string;
+  time?: string;
+}
+
 interface CartItem {
   id: string;
   service: 'cleaning' | 'pest';
   price: number;
-  details: any;
+  details: CartItemDetails;
 }
 
 interface AppState {

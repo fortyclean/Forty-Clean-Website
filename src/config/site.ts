@@ -23,10 +23,5 @@ export const siteConfig = {
     whatsapp: (phone: string, text: string) => `https://wa.me/965${phone}?text=${encodeURIComponent(text)}`,
     phone: (phone: string) => `tel:${phone}`,
     email: (email: string) => `mailto:${email}`,
-  },
-  admin: {
-    // This is a simple password for local storage lead management
-    // In a real production with a backend, this would be handled via proper Auth
-    accessPassword: 'Forty@987',
   }
 };

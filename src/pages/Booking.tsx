@@ -1,5 +1,4 @@
 import { Helmet } from 'react-helmet-async';
-import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
 import { BookingStepper } from '../components/BookingStepper';
 import { ShieldCheck, Star, Clock, Check } from 'lucide-react';

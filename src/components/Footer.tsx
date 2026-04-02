@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { Phone, MapPin, Mail, Moon, Sun } from 'lucide-react';
+import { Phone, MapPin, Mail, Sun } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { siteConfig } from '../config/site';
@@ -10,22 +9,6 @@ interface FooterProps {
 
 const Footer = ({ variant = 'landing' }: FooterProps) => {
   const { t, i18n } = useTranslation();
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    return localStorage.getItem('theme') === 'dark' || 
-      (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  });
-
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDarkMode]);
-
-  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
   const getLogoText = () => {
     const base = i18n.language === 'ar' ? siteConfig.nameAr : siteConfig.name;
@@ -37,11 +20,11 @@ const Footer = ({ variant = 'landing' }: FooterProps) => {
   const getDescription = () => {
     if (variant === 'landing') {
       return t('footer.description');
-    } else if (variant === 'cleaning') {
-      return t('about.cleaning_subtitle');
-    } else {
-      return t('about.pest_subtitle');
     }
+    if (variant === 'cleaning') {
+      return t('about.cleaning_subtitle');
+    }
+    return t('about.pest_subtitle');
   };
 
   const quickLinks = [
@@ -59,31 +42,19 @@ const Footer = ({ variant = 'landing' }: FooterProps) => {
     { label: t('services.items.rodent_control.title'), href: '/pest' },
   ];
 
-  const [clickCount, setClickCount] = useState(0);
-
-  const handleSecretClick = () => {
-    const newCount = clickCount + 1;
-    setClickCount(newCount);
-    if (newCount >= 5) {
-      if ((window as any).showLeads) (window as any).showLeads();
-      setClickCount(0);
-    }
-  };
-
   return (
     <footer className="footer">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
-          {/* Company Info */}
           <div className={`${i18n.language === 'ar' ? 'text-right' : 'text-left'}`}>
-            <div className={`flex items-center gap-3 mb-4 ${i18n.language === 'ar' ? 'flex-row' : 'flex-row'}`}>
+            <div className="flex items-center gap-3 mb-4">
               <img src="/images/forty-clean-logo.png" alt={getLogoText()} className="w-16 h-16 rounded-full" />
               <h3 className="text-2xl font-bold text-white">{getLogoText()}</h3>
             </div>
             <p className="text-gray-400 leading-relaxed mb-6">
               {getDescription()}
             </p>
-            <div className={`flex flex-wrap gap-3 ${i18n.language === 'ar' ? 'justify-start' : 'justify-start'}`}>
+            <div className="flex flex-wrap gap-3 justify-start">
               <a href={`https://facebook.com/${siteConfig.socials.facebook}`} className="social-icon" target="_blank" rel="noopener noreferrer" title={i18n.language === 'ar' ? 'فيسبوك' : 'Facebook'}>
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
               </a>
@@ -108,7 +79,6 @@ const Footer = ({ variant = 'landing' }: FooterProps) => {
             </div>
           </div>
 
-          {/* Quick Links */}
           <div className={`${i18n.language === 'ar' ? 'text-right' : 'text-left'}`}>
             <h4 className="text-lg font-bold text-white mb-4">{t('footer.quick_links')}</h4>
             <ul className="space-y-3">
@@ -123,7 +93,6 @@ const Footer = ({ variant = 'landing' }: FooterProps) => {
             </ul>
           </div>
 
-          {/* Services */}
           <div className={`${i18n.language === 'ar' ? 'text-right' : 'text-left'}`}>
             <h4 className="text-lg font-bold text-white mb-4">{t('footer.our_services')}</h4>
             <ul className="space-y-3">
@@ -138,7 +107,6 @@ const Footer = ({ variant = 'landing' }: FooterProps) => {
             </ul>
           </div>
 
-          {/* Contact Info */}
           <div className={`${i18n.language === 'ar' ? 'text-right' : 'text-left'}`}>
             <h4 className="text-lg font-bold text-white mb-4">{t('footer.contact_info')}</h4>
             <ul className="space-y-4">
@@ -168,27 +136,22 @@ const Footer = ({ variant = 'landing' }: FooterProps) => {
               </li>
             </ul>
           </div>
+
           <div className={`${i18n.language === 'ar' ? 'text-right' : 'text-left'}`}>
             <h4 className="text-lg font-bold text-white mb-4">{t('footer.settings')}</h4>
-            <button 
-              onClick={toggleDarkMode}
-              className="flex items-center gap-3 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all w-full mb-4"
-            >
-              {isDarkMode ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-blue-400" />}
-              <span className="font-bold">{isDarkMode ? 'الوضع النهاري' : 'الوضع الليلي'}</span>
-            </button>
+            <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 w-full mb-4">
+              <Sun className="w-5 h-5 text-yellow-400" />
+              <span className="font-bold">{t('footer.light_mode')}</span>
+            </div>
             <div className="flex items-center gap-3 text-gray-400 text-sm">
-              <div className={`w-3 h-3 rounded-full ${isDarkMode ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]'}`}></div>
-              <span>النظام يعمل بكفاءة</span>
+              <div className="w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+              <span>{t('footer.system_status')}</span>
             </div>
           </div>
         </div>
 
         <div className="border-t border-gray-800 pt-8 text-center">
-          <p 
-            className="text-gray-500 cursor-default select-none"
-            onClick={handleSecretClick}
-          >
+          <p className="text-gray-500 cursor-default select-none">
             {t('footer.rights')}
           </p>
         </div>
