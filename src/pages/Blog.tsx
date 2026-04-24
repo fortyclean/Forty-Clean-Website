@@ -49,16 +49,13 @@ const getBlogFeedUrl = (slug?: string | null) =>
     : `https://app.trysoro.com/api/embed/${BLOG_EMBED_TOKEN}`;
 
 const getCanonicalUrl = (slug?: string | null) => {
-  if (typeof window === 'undefined') {
-    return slug ? `/blog?post=${encodeURIComponent(slug)}` : '/blog';
-  }
+  // Always use the production domain — never localhost
+  const BASE = 'https://www.fortyclean.com/blog';
 
-  const url = new URL(window.location.origin + '/blog');
+  if (!slug) return BASE;
 
-  if (slug) {
-    url.searchParams.set('post', slug);
-  }
-
+  const url = new URL(BASE);
+  url.searchParams.set('post', slug);
   return url.toString();
 };
 
