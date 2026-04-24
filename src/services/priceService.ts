@@ -12,6 +12,7 @@ export interface PestOptions {
   rooms: number;
   halls: number;
   bathrooms: number;
+  kitchens: number;
 }
 
 type PriceOptions = CleaningOptions | PestOptions;
@@ -37,13 +38,14 @@ export const calculateCleaningPrice = (options: CleaningOptions): number => {
 };
 
 export const calculatePestPrice = (options: PestOptions): number => {
-  const { pestType, rooms, halls, bathrooms } = options;
+  const { pestType, rooms, halls, bathrooms, kitchens } = options;
   const basePrice = Number(import.meta.env.VITE_PEST_BASE_PRICE) || 25;
   let price = basePrice;
   
   price += (rooms - 1) * 5;
   price += (halls - 1) * 5;
   price += (bathrooms - 1) * 3;
+  price += (kitchens - 1) * 4;
   
   if (pestType === 'termites') price += 15;
   if (pestType === 'rodents') price += 10;

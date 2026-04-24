@@ -2,9 +2,27 @@ import Layout from '../components/Layout';
 import { MessageCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Seo from '../components/Seo';
+import TrackedContactLink from '../components/TrackedContactLink';
+import { buildWhatsAppMessage, siteConfig } from '../config/site';
 
 const Offers = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isArabic = i18n.language === 'ar';
+  const heroCopy = isArabic
+    ? {
+        eyebrow: 'عروض محدودة لفترة قصيرة',
+        title: 'عروض فورتي الأكثر طلبًا',
+        subtitle: 'باقات واضحة وسريعة للحجز، مع سعر مبدئي مناسب وخيار تواصل مباشر عبر واتساب لتأكيد التفاصيل فورًا.',
+        trust: ['أسعار افتتاحية واضحة', 'تنسيق سريع عبر واتساب', 'مناسبة للمنازل والمكاتب'],
+        cardHint: 'احجز العرض الآن ودع الفريق يؤكد التفاصيل المناسبة لحالتك مباشرة.',
+      }
+    : {
+        eyebrow: 'Limited-time service deals',
+        title: 'Forty’s Most Requested Offers',
+        subtitle: 'Clear starter packages with direct WhatsApp follow-up so you can confirm the right details quickly.',
+        trust: ['Clear starter pricing', 'Fast WhatsApp follow-up', 'Suitable for homes and offices'],
+        cardHint: 'Book this offer now and our team will confirm the right details for your case directly.',
+      };
 
   const offers = [
     {
@@ -17,7 +35,12 @@ const Offers = () => {
       priceUnit: t('offers.items.apt_cleaning.price_unit'),
       subtext: t('offers.items.apt_cleaning.subtext'),
       features: t('offers.items.apt_cleaning.features', { returnObjects: true }) as string[],
-      whatsappText: t('offers.items.apt_cleaning.wa'),
+      whatsappText: buildWhatsAppMessage({
+        language: i18n.language,
+        service: t('offers.items.apt_cleaning.title'),
+        intent: 'offer',
+        details: i18n.language === 'ar' ? `السعر المعلن: 90 ${t('calculator.currency')}` : `Listed price: 90 ${t('calculator.currency')}`,
+      }),
       buttonText: t('offers.items.apt_cleaning.btn'),
       whatsappNumber: '51004910',
     },
@@ -31,7 +54,12 @@ const Offers = () => {
       priceUnit: t('offers.items.office_cleaning.price_unit'),
       subtext: t('offers.items.office_cleaning.subtext'),
       features: t('offers.items.office_cleaning.features', { returnObjects: true }) as string[],
-      whatsappText: t('offers.items.office_cleaning.wa'),
+      whatsappText: buildWhatsAppMessage({
+        language: i18n.language,
+        service: t('offers.items.office_cleaning.title'),
+        intent: 'offer',
+        details: i18n.language === 'ar' ? `السعر المعلن: 100 ${t('calculator.currency')}` : `Listed price: 100 ${t('calculator.currency')}`,
+      }),
       buttonText: t('offers.items.office_cleaning.btn'),
       whatsappNumber: '51004910',
     },
@@ -45,7 +73,12 @@ const Offers = () => {
       priceUnit: t('offers.items.pest_control.price_unit'),
       subtext: t('offers.items.pest_control.subtext'),
       features: t('offers.items.pest_control.features', { returnObjects: true }) as string[],
-      whatsappText: t('offers.items.pest_control.wa'),
+      whatsappText: buildWhatsAppMessage({
+        language: i18n.language,
+        service: t('offers.items.pest_control.title'),
+        intent: 'offer',
+        details: i18n.language === 'ar' ? `السعر المعلن: 25 ${t('calculator.currency')}` : `Listed price: 25 ${t('calculator.currency')}`,
+      }),
       buttonText: t('offers.items.pest_control.btn'),
       whatsappNumber: '69988979',
     },
@@ -53,17 +86,78 @@ const Offers = () => {
 
   return (
     <Layout variant="offers">
-      <Seo title={t('seo.offers.title')} description={t('seo.offers.description')} />
+      <Seo
+        title={t('seo.offers.title')}
+        description={t('seo.offers.description')}
+        canonical="https://www.fortyclean.com/offers"
+        structuredData={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "serviceType": "خدمات التنظيف ومكافحة الحشرات",
+            "name": "عروض فورتي الحصرية",
+            "provider": {
+              "@type": "LocalBusiness",
+              "name": "شركة فورتي للتنظيف ومكافحة الحشرات",
+              "url": "https://www.fortyclean.com",
+              "telephone": "+96569988979"
+            },
+            "areaServed": { "@type": "Country", "name": "الكويت" },
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "عروض فورتي",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "name": "تنظيف الشقق الفارغة والجديدة",
+                  "price": "90",
+                  "priceCurrency": "KWD",
+                  "availability": "https://schema.org/InStock"
+                },
+                {
+                  "@type": "Offer",
+                  "name": "تنظيف المكاتب - 8 زيارات شهرياً",
+                  "price": "100",
+                  "priceCurrency": "KWD",
+                  "availability": "https://schema.org/InStock"
+                },
+                {
+                  "@type": "Offer",
+                  "name": "مكافحة الحشرات",
+                  "price": "25",
+                  "priceCurrency": "KWD",
+                  "availability": "https://schema.org/InStock"
+                }
+              ]
+            }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": "https://www.fortyclean.com/" },
+              { "@type": "ListItem", "position": 2, "name": "العروض", "item": "https://www.fortyclean.com/offers" }
+            ]
+          }
+        ]}
+      />
       <section className="gradient-bg relative overflow-hidden pb-20 pt-32">
         <div className="container relative z-10 mx-auto px-4">
           <div className="mb-16 text-center">
             <div className="mb-4 inline-block rounded-full bg-white/20 px-4 py-1 text-sm font-bold text-white backdrop-blur-md animate-fadeInUp">
-              {t('offers.badge_limited')}
+              {heroCopy.eyebrow}
             </div>
-            <h1 className="mb-6 animate-fadeInUp text-4xl font-black text-white md:text-6xl">{t('offers.title')}</h1>
+            <h1 className="mb-6 animate-fadeInUp text-4xl font-black text-white md:text-6xl">{heroCopy.title}</h1>
             <p className="mx-auto max-w-2xl animate-fadeInUp text-xl font-medium text-white/90" style={{ animationDelay: '0.2s' }}>
-              {t('offers.subtitle')}
+              {heroCopy.subtitle}
             </p>
+            <div className="mx-auto mt-8 flex max-w-3xl flex-wrap justify-center gap-3 text-center">
+              {heroCopy.trust.map((item) => (
+                <div key={item} className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-bold text-white/95 backdrop-blur-md">
+                  {item}
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="grid gap-8 lg:grid-cols-3">
@@ -105,13 +199,22 @@ const Offers = () => {
                   ))}
                 </div>
 
-                <a
-                  href={`https://wa.me/965${offer.whatsappNumber}?text=${encodeURIComponent(offer.whatsappText)}`}
+                <p className="mb-5 text-sm font-bold leading-relaxed text-gray-500 dark:text-slate-400">
+                  {heroCopy.cardHint}
+                </p>
+
+                <TrackedContactLink
+                  href={siteConfig.links.whatsapp(offer.whatsappNumber, offer.whatsappText)}
+                  channel="whatsapp"
+                  section="offers"
+                  service={offer.whatsappNumber === '51004910' ? 'cleaning' : 'pest'}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="gradient-btn flex w-full items-center justify-center gap-3 rounded-2xl py-4 font-black text-white shadow-xl transition-all hover:scale-[1.02]"
                 >
                   <MessageCircle className="h-6 w-6" />
                   <span>{offer.buttonText}</span>
-                </a>
+                </TrackedContactLink>
               </div>
             ))}
           </div>

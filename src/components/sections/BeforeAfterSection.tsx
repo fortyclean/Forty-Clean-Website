@@ -41,31 +41,32 @@ const BeforeAfterSection = () => {
   };
 
   return (
-    <section ref={sectionRef} className="py-24 bg-white dark:bg-slate-900 overflow-hidden">
+    <section ref={sectionRef} className="overflow-hidden bg-white py-16 dark:bg-slate-900 md:py-24">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <div className="reveal h-1 w-16 bg-gradient-to-r from-blue-600 to-cyan-500 mx-auto mb-6 rounded-full"></div>
-          <h2 className="reveal text-3xl md:text-5xl font-black text-blue-900 dark:text-white mb-4">{t('before_after.title')}</h2>
-          <p className="reveal text-gray-500 dark:text-slate-400 text-lg max-w-2xl mx-auto font-medium" style={{ transitionDelay: '0.1s' }}>
+        <div className="text-center mb-12 md:mb-16">
+          <div className="h-1 w-16 bg-gradient-to-r from-blue-600 to-cyan-500 mx-auto mb-6 rounded-full"></div>
+          <h2 className="text-3xl md:text-5xl font-black text-blue-900 dark:text-white mb-4">{t('before_after.title')}</h2>
+          <p className="text-gray-600 dark:text-slate-300 text-base md:text-lg max-w-2xl mx-auto font-medium">
             {t('before_after.subtitle')}
           </p>
         </div>
 
         <div className="max-w-6xl mx-auto grid lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-4 space-y-4">
+          <div className="lg:col-span-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
             {items.map((item, index) => (
               <button
                 key={index}
                 onClick={() => setActiveItem(index)}
-                className={`reveal block w-full text-right p-6 rounded-[2rem] transition-all border-2 ${
+                type="button"
+                aria-pressed={activeItem === index}
+                className={`block w-full text-right p-6 rounded-[2rem] transition-all border-2 ${
                   activeItem === index
-                    ? 'bg-blue-600 text-white border-blue-600 shadow-2xl scale-105 z-10'
-                    : 'bg-gray-50 dark:bg-slate-800 text-gray-500 dark:text-slate-300 border-transparent dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-700'
+                    ? 'relative z-10 bg-blue-600 text-white border-blue-600 shadow-2xl md:scale-[1.02]'
+                    : 'relative z-0 bg-gray-50 dark:bg-slate-800 text-slate-700 dark:text-slate-100 border-gray-100 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-700'
                 }`}
-                style={{ transitionDelay: `${0.08 * (index + 1)}s` }}
               >
-                <h3 className="text-xl font-black mb-2">{item.title}</h3>
-                <p className={`text-sm font-medium ${activeItem === index ? 'text-blue-100 dark:text-slate-100' : 'text-gray-500 dark:text-slate-300'}`}>
+                <h3 className="text-lg md:text-xl font-black mb-2">{item.title}</h3>
+                <p className={`text-sm font-medium leading-6 ${activeItem === index ? 'text-blue-100 dark:text-slate-100' : 'text-slate-600 dark:text-slate-300'}`}>
                   {item.description}
                 </p>
               </button>
@@ -83,7 +84,7 @@ const BeforeAfterSection = () => {
             >
               <img
                 src={items[activeItem].after}
-                alt="After"
+                alt={`${items[activeItem].title} - After`}
                 loading="lazy"
                 decoding="async"
                 className="absolute inset-0 w-full h-full object-cover"
@@ -92,7 +93,7 @@ const BeforeAfterSection = () => {
               <div className="absolute inset-0 w-full h-full" style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}>
                 <img
                   src={items[activeItem].before}
-                  alt="Before"
+                  alt={`${items[activeItem].title} - Before`}
                   loading="lazy"
                   decoding="async"
                   className="absolute inset-0 w-full h-full object-cover grayscale"

@@ -1,6 +1,8 @@
 import { MapPin, CheckCircle, Navigation } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useReveal } from '../../hooks/useReveal';
+import { siteConfig } from '../../config/site';
+import TrackedContactLink from '../TrackedContactLink';
 
 const CoverageAreasSection = () => {
   const { t } = useTranslation();
@@ -69,13 +71,15 @@ const CoverageAreasSection = () => {
             <p className="text-blue-100/90 mb-10 max-w-2xl mx-auto text-lg leading-relaxed font-medium">
               {t('coverage.not_listed_desc')}
             </p>
-            <a 
-              href="tel:69988979" 
+            <TrackedContactLink
+              href={siteConfig.links.phone(siteConfig.contact.primaryPhone)}
+              channel="phone"
+              section="coverage-cta"
               className="inline-flex items-center gap-3 bg-white text-blue-900 px-12 py-5 rounded-[2rem] font-black hover:bg-cyan-brand hover:text-white transition-all shadow-xl hover:shadow-cyan-400/20 active:scale-95 duration-300"
             >
               <MapPin className="w-6 h-6" />
               <span>{t('coverage.inquire')}</span>
-            </a>
+            </TrackedContactLink>
           </div>
         </div>
       </div>

@@ -2,12 +2,13 @@ import { Phone, MessageCircle, ChevronUp } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { siteConfig } from '../config/site';
+import { buildWhatsAppMessage, siteConfig } from '../config/site';
+import TrackedContactLink from './TrackedContactLink';
 
 const FloatingButtons = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const location = useLocation();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,7 +26,11 @@ const FloatingButtons = () => {
   // Determine WhatsApp number based on page
   const isCleaningPage = location.pathname === '/cleaning';
   const whatsappNumber = isCleaningPage ? siteConfig.contact.cleaningPhone : siteConfig.contact.pestPhone;
-  const whatsappText = t('contact.success');
+  const whatsappText = buildWhatsAppMessage({
+    language: i18n.language,
+    service: isCleaningPage ? t('services.title_cleaning') : t('services.title_pest'),
+    intent: 'general',
+  });
 
   return (
     <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-3 md:bottom-6 md:right-6 md:gap-4">
@@ -41,24 +46,30 @@ const FloatingButtons = () => {
       )}
 
       {/* WhatsApp Button */}
-      <a
+      <TrackedContactLink
         href={siteConfig.links.whatsapp(whatsappNumber, whatsappText)}
+        channel="whatsapp"
+        section="floating-buttons"
+        service={isCleaningPage ? 'cleaning' : 'pest'}
         target="_blank"
         rel="noopener noreferrer"
         className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25d366] text-white shadow-lg transition-transform duration-300 hover:scale-110 md:h-14 md:w-14"
         title="WhatsApp Us"
       >
         <MessageCircle className="h-7 w-7 md:h-8 md:w-8" />
-      </a>
+      </TrackedContactLink>
 
       {/* Call Button */}
-      <a
+      <TrackedContactLink
         href={siteConfig.links.phone(whatsappNumber)}
+        channel="phone"
+        section="floating-buttons"
+        service={isCleaningPage ? 'cleaning' : 'pest'}
         className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-medium text-white shadow-lg transition-transform duration-300 hover:scale-110 md:h-14 md:w-14"
         title="Call Us"
       >
         <Phone className="h-6 w-6 md:h-7 md:w-7" />
-      </a>
+      </TrackedContactLink>
     </div>
   );
 };

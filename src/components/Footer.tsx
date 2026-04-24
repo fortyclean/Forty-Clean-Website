@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Mail, MapPin, Moon, Phone, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { siteConfig } from '../config/site';
+import TrackedContactLink from './TrackedContactLink';
 
 interface FooterProps {
   variant?: 'landing' | 'cleaning' | 'pest';
@@ -26,7 +27,7 @@ const Footer = ({ variant = 'landing' }: FooterProps) => {
   );
 
   const getLogoText = () => {
-    const base = isRTL ? siteConfig.nameAr : siteConfig.name;
+    const base = isRTL ? 'فورتي' : siteConfig.name;
     if (variant === 'landing') return base;
     if (variant === 'cleaning') return `${base} - ${t('nav.cleaning')}`;
     return `${base} - ${t('nav.pest')}`;
@@ -42,7 +43,10 @@ const Footer = ({ variant = 'landing' }: FooterProps) => {
     { label: t('nav.home'), href: '/' },
     { label: t('nav.cleaning'), href: '/cleaning' },
     { label: t('nav.pest'), href: '/pest' },
+    { label: isRTL ? 'الحجز السريع' : 'Quick Booking', href: '/booking' },
+    { label: t('nav.pricing'), href: '/pricing' },
     { label: t('nav.offers'), href: '/offers' },
+    { label: isRTL ? 'الباقات والاشتراكات' : 'Plans & Subscriptions', href: '/plans' },
     { label: t('nav.blog'), href: '/blog' },
   ];
 
@@ -129,16 +133,28 @@ const Footer = ({ variant = 'landing' }: FooterProps) => {
                 <span className="text-sm leading-6 text-slate-300">{isRTL ? siteConfig.contact.address : siteConfig.contact.addressEn}</span>
               </li>
               <li>
-                <a href={siteConfig.links.phone(siteConfig.contact.cleaningPhone)} className="flex items-center gap-3 text-slate-300 transition-colors hover:text-cyan-brand">
+                <TrackedContactLink
+                  href={siteConfig.links.phone(siteConfig.contact.cleaningPhone)}
+                  channel="phone"
+                  section="footer"
+                  service="cleaning"
+                  className="flex items-center gap-3 text-slate-300 transition-colors hover:text-cyan-brand"
+                >
                   <Phone className="h-5 w-5 text-cyan-brand" />
                   <span>{siteConfig.contact.cleaningPhone} - {t('nav.cleaning')}</span>
-                </a>
+                </TrackedContactLink>
               </li>
               <li>
-                <a href={siteConfig.links.phone(siteConfig.contact.pestPhone)} className="flex items-center gap-3 text-slate-300 transition-colors hover:text-cyan-brand">
+                <TrackedContactLink
+                  href={siteConfig.links.phone(siteConfig.contact.pestPhone)}
+                  channel="phone"
+                  section="footer"
+                  service="pest"
+                  className="flex items-center gap-3 text-slate-300 transition-colors hover:text-cyan-brand"
+                >
                   <Phone className="h-5 w-5 text-cyan-brand" />
                   <span>{siteConfig.contact.pestPhone} - {t('nav.pest')}</span>
-                </a>
+                </TrackedContactLink>
               </li>
               <li>
                 <a href={siteConfig.links.email(siteConfig.contact.email)} className="flex items-center gap-3 text-slate-300 transition-colors hover:text-cyan-brand">
@@ -170,8 +186,17 @@ const Footer = ({ variant = 'landing' }: FooterProps) => {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 pt-8 text-center">
-          <p className="cursor-default select-none text-sm text-slate-400">{t('footer.rights')}</p>
+        <div className="border-t border-gray-800 pt-8 pb-4 text-center">
+          <div className="mb-4 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-6 text-xs md:text-sm text-slate-400">
+            <span>{isRTL ? siteConfig.legalNameAr : 'Forty General Cleaning Services for Buildings W.L.L'}</span>
+            <span className="hidden md:inline text-slate-600">|</span>
+            <span>{isRTL ? 'سجل تجاري:' : 'CR:'} {siteConfig.crNumber}</span>
+            <span className="hidden md:inline text-slate-600">|</span>
+            <span>{isRTL ? 'ترخيص رقم:' : 'License:'} {siteConfig.licenseNumber}</span>
+            <span className="hidden md:inline text-slate-600">|</span>
+            <span>{isRTL ? `تأسست عام ${siteConfig.establishedYear}` : `Est. ${siteConfig.establishedYear}`}</span>
+          </div>
+          <p className="cursor-default select-none text-sm text-slate-500">© {new Date().getFullYear()} {siteConfig.nameAr}. جميع الحقوق محفوظة.</p>
         </div>
       </div>
     </footer>

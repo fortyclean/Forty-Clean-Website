@@ -1,6 +1,7 @@
 node_modules
 dist
 review-screenshots
+audit-screenshots
 .env
 *.pid
 *.log
@@ -8,3 +9,19 @@ review-screenshots
 review-devserver*
 .ftpquota
 forty-clean-firebase-adminsdk-*.json
+
+# Build artifacts & temp files
+release/
+temp-live-home.html
+live-home.html
+fortyclean-live.html
+write_plans.js
+write_plans.mjs
+write_plans.ps1
+
+# SEO reports (local only)
+forty-seo-plan*.html
+forty-seo-commands*.md
+
+# VS Code
+.vscode/

@@ -8,13 +8,19 @@
     content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://googleads.g.doubleclick.net https://apis.google.com; connect-src 'self' https://app.trysoro.com https://*.google-analytics.com https://www.googletagmanager.com https://www.google.com https://*.google.com https://*.google.com.kw https://www.googleadservices.com https://googleads.g.doubleclick.net https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; frame-src https://app.trysoro.com https://*.google.com https://*.firebaseapp.com; worker-src 'self';"
   >
   <link rel="manifest" href="/manifest.json">
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
   <meta name="theme-color" content="#2563eb">
   <meta name="p:domain_verify" content="b70a1866c78138be75abd124287f220d">
 
-  <title>فورتي | خدمات التنظيف ومكافحة الحشرات في الكويت</title>
+  <!-- Hreflang: ربط النسختين العربية والإنجليزية -->
+  <link rel="alternate" hreflang="ar" href="https://www.fortyclean.com/" />
+  <link rel="alternate" hreflang="en" href="https://www.fortyclean.com/en/" />
+  <link rel="alternate" hreflang="x-default" href="https://www.fortyclean.com/" />
+
+  <title>شركة تنظيف الكويت ومكافحة الحشرات | فورتي</title>
   <meta
     name="description"
-    content="فورتي لخدمات التنظيف ومكافحة الحشرات والقوارض في الكويت. احجز الخدمة المناسبة بسرعة، وتابع طلبك بسهولة، واحصل على تجربة واضحة واحترافية من أول زيارة."
+    content="شركة فورتي للتنظيف ومكافحة الحشرات في الكويت. تنظيف منازل، مكاتب، مكافحة صراصير، قوارض، ونمل أبيض بأفضل الأسعار وضمان 6 أشهر. احجز الآن."
   >
   <meta
     name="keywords"
@@ -23,55 +29,68 @@
 
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ar_KW">
-  <meta property="og:title" content="فورتي | خدمات التنظيف ومكافحة الحشرات في الكويت">
+  <meta property="og:title" content="شركة تنظيف الكويت ومكافحة الحشرات | فورتي">
   <meta
     property="og:description"
-    content="منصة فورتي لحجز خدمات التنظيف ومكافحة الحشرات في الكويت بسرعة ووضوح وتجربة متابعة سهلة."
+    content="شركة فورتي للتنظيف ومكافحة الحشرات في الكويت. تنظيف منازل، مكاتب، مكافحة صراصير، قوارض، ونمل أبيض بأفضل الأسعار وضمان 6 أشهر."
   >
-  <meta property="og:url" content="https://forty-kw.com/">
-  <meta property="og:image" content="https://forty-kw.com/images/circle-logo-111.png">
+  <meta property="og:url" content="https://www.fortyclean.com/">
+  <meta property="og:image" content="https://www.fortyclean.com/images/forty-clean-logo.webp">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="فورتي | خدمات التنظيف ومكافحة الحشرات في الكويت">
+  <meta name="twitter:title" content="شركة تنظيف الكويت ومكافحة الحشرات | فورتي">
   <meta
     name="twitter:description"
-    content="احجز خدمة التنظيف أو مكافحة الحشرات في الكويت مع تجربة واضحة وسريعة من فورتي."
+    content="شركة فورتي للتنظيف ومكافحة الحشرات في الكويت. تنظيف منازل، مكاتب، مكافحة صراصير، قوارض، ونمل أبيض بأفضل الأسعار."
   >
-  <meta name="twitter:image" content="https://forty-kw.com/images/circle-logo-111.png">
+  <meta name="twitter:image" content="https://www.fortyclean.com/images/forty-clean-logo.webp">
 
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BVNQG23CHQ"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-BVNQG23CHQ', { send_page_view: true, transport_type: 'beacon' });
-    gtag('config', 'AW-17620396216', { transport_type: 'beacon' });
-  </script>
-  <script>
-    function gtag_report_conversion(url) {
-      if (typeof gtag !== 'function') return false;
+    window.gtag = function () { dataLayer.push(arguments); };
+    window.gtag_report_conversion = function (url) {
+      if (typeof window.gtag !== 'function') return false;
       var callback = function () {
         if (typeof url !== 'undefined') {
           window.location = url;
         }
       };
-      gtag('event', 'conversion', {
+      window.gtag('event', 'conversion', {
         send_to: 'AW-17620396216/tO5kCPGH6v0bELjRh9JB',
         event_callback: callback
       });
       return false;
-    }
+    };
+
+    window.addEventListener('load', function () {
+      var script = document.createElement('script');
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=G-BVNQG23CHQ';
+      script.async = true;
+      script.onload = function () {
+        window.gtag('js', new Date());
+        window.gtag('config', 'G-BVNQG23CHQ', { send_page_view: true, transport_type: 'beacon' });
+        window.gtag('config', 'AW-17620396216', { transport_type: 'beacon' });
+      };
+      document.head.appendChild(script);
+    });
   </script>
 
+  <!-- Schema.org: LocalBusiness — كامل مع بيانات قانونية + 7 منصات + AdministrativeArea -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "LocalBusiness",
-      "name": "Forty Cleaning & Pest Control",
-      "image": "https://forty-kw.com/images/circle-logo-111.png",
+      "name": "شركة فورتي للتنظيف ومكافحة الحشرات",
+      "alternateName": "Forty Clean",
+      "legalName": "شركة فورتي خدمات التنظيف العامه للمباني ذ.م.م",
+      "taxID": "384145",
+      "foundingDate": "2018",
+      "image": "https://www.fortyclean.com/images/forty-clean-logo.webp",
       "description": "شركة فورتي لخدمات تنظيف المنازل ومكافحة الحشرات في الكويت بخدمة احترافية وتجربة حجز واضحة وسريعة.",
       "address": {
         "@type": "PostalAddress",
-        "addressLocality": "Kuwait City",
+        "streetAddress": "العاصمة - المرقاب - قطعة 15 - شارع الوزان - مبنى بيت التمويل الكويتي - الدور الخامس - مكتب رقم 1",
+        "addressLocality": "مدينة الكويت",
+        "addressRegion": "العاصمة",
         "addressCountry": "KW"
       },
       "geo": {
@@ -79,29 +98,57 @@
         "latitude": "29.3759",
         "longitude": "47.9774"
       },
-      "url": "https://forty-kw.com",
-      "telephone": "+96550000000",
+      "url": "https://www.fortyclean.com",
+      "telephone": ["+96569988979", "+96551004910"],
+      "email": "forty@fortyclean.com",
       "priceRange": "$$",
       "openingHoursSpecification": {
         "@type": "OpeningHoursSpecification",
         "dayOfWeek": [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Saturday",
-          "Sunday"
+          "Monday", "Tuesday", "Wednesday", "Thursday",
+          "Friday", "Saturday", "Sunday"
         ],
-        "opens": "08:00",
-        "closes": "22:00"
-      }
+        "opens": "00:00",
+        "closes": "23:59"
+      },
+      "areaServed": [
+        { "@type": "AdministrativeArea", "name": "محافظة العاصمة" },
+        { "@type": "AdministrativeArea", "name": "محافظة حولي" },
+        { "@type": "AdministrativeArea", "name": "محافظة الفروانية" },
+        { "@type": "AdministrativeArea", "name": "محافظة الأحمدي" },
+        { "@type": "AdministrativeArea", "name": "محافظة مبارك الكبير" },
+        { "@type": "AdministrativeArea", "name": "محافظة الجهراء" }
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "bestRating": "5",
+        "ratingCount": "500"
+      },
+      "sameAs": [
+        "https://facebook.com/FortyClean.kw",
+        "https://instagram.com/fortyclean_kw",
+        "https://x.com/CleanForty",
+        "https://www.tiktok.com/@forty.kw",
+        "https://www.snapchat.com/add/forty.kw",
+        "https://www.pinterest.com/forty0854",
+        "https://www.threads.net/fortyclean_kw"
+      ]
     }
   </script>
 
-  <link rel="icon" type="image/png" href="/images/circle-logo-111.png">
+  <link rel="icon" href="/images/forty-clean-logo.webp" sizes="32x32">
+  <link rel="icon" href="/images/forty-clean-logo.webp" sizes="192x192">
+  <link rel="shortcut icon" href="/images/forty-clean-logo.webp">
+  <link rel="apple-touch-icon" href="/images/forty-clean-logo.webp">
+  <!-- Preconnect لتسريع تحميل الخطوط -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <!-- Preload: صورة الـ Hero الرئيسية لتحسين LCP -->
+  <link rel="preload" as="image" href="/images/home-cleaning-kuwait.webp" type="image/webp">
+  <!-- Google Fonts — non-blocking واحد فقط بدون تكرار -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"></noscript>
 </head>
 <body>
   <div id="root"></div>

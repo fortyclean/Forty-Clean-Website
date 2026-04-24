@@ -84,7 +84,11 @@ const openPage = async (browser, { path, language, theme, viewport = { width: 14
 
   await page.addInitScript(({ nextLanguage, nextTheme }) => {
     window.localStorage.setItem('i18nextLng', nextLanguage);
-    window.localStorage.setItem('theme', nextTheme);
+    if (nextTheme) {
+      window.localStorage.setItem('theme', nextTheme);
+    } else {
+      window.localStorage.removeItem('theme');
+    }
   }, { nextLanguage: language, nextTheme: theme });
 
   await page.goto(`${BASE_URL}${path}`, { waitUntil: 'domcontentloaded' });
@@ -118,15 +122,18 @@ try {
 
   const home = await fetchRoute('/');
   const booking = await fetchRoute('/booking');
+  const pricing = await fetchRoute('/pricing');
   const blog = await fetchRoute('/blog');
   const adminLegacy = await fetchRoute('/admin-leads');
 
   assert(home.response.ok, 'Home route should respond successfully.');
   assert(booking.response.ok, 'Booking route should respond successfully.');
+  assert(pricing.response.ok, 'Pricing route should respond successfully.');
   assert(blog.response.ok, 'Blog route should respond successfully.');
   assert(adminLegacy.response.ok, 'Legacy admin route should respond successfully.');
   assert(home.html.includes('<div id="root"></div>'), 'Home HTML should include the app root.');
   assert(booking.html.includes('<div id="root"></div>'), 'Booking HTML should include the app root.');
+  assert(pricing.html.includes('<div id="root"></div>'), 'Pricing HTML should include the app root.');
   assert(blog.html.includes('<div id="root"></div>'), 'Blog HTML should include the app root.');
 
   const browser = await chromium.launch({ headless: true });
@@ -139,13 +146,41 @@ try {
   assertNoRuntimeErrors('Arabic home page', arabicHome.consoleErrors, arabicHome.pageErrors);
   await arabicHome.page.close();
 
+  const defaultThemeHome = await openPage(browser, { path: '/', language: 'ar', theme: null });
+  assert(
+    !(await defaultThemeHome.page.evaluate(() => document.documentElement.classList.contains('dark'))),
+    'Home page should default to light theme when no stored theme exists.'
+  );
+  assertNoRuntimeErrors('Default theme home page', defaultThemeHome.consoleErrors, defaultThemeHome.pageErrors);
+  await defaultThemeHome.page.close();
+
   const darkEnglishHome = await openPage(browser, { path: '/', language: 'en', theme: 'dark' });
   const englishBodyText = await darkEnglishHome.page.locator('body').innerText();
-  assert(englishBodyText.includes('Home') || englishBodyText.includes('Book Now') || englishBodyText.includes('Forty'), 'English home page should render English copy.');
+  assert(
+    englishBodyText.includes('Home') ||
+      englishBodyText.includes('Book Now') ||
+      englishBodyText.includes('Forty') ||
+      englishBodyText.includes('Cleaning') ||
+      englishBodyText.includes('WhatsApp') ||
+      englishBodyText.includes('quote'),
+    'English home page should render English copy.'
+  );
   assert(await darkEnglishHome.page.evaluate(() => document.documentElement.classList.contains('dark')), 'Dark theme should be applied on home page.');
   assert(await darkEnglishHome.page.evaluate(() => document.documentElement.lang === 'en'), 'English home page should set html lang="en".');
   assertNoRuntimeErrors('Dark English home page', darkEnglishHome.consoleErrors, darkEnglishHome.pageErrors);
   await darkEnglishHome.page.close();
+
+  const pricingPage = await openPage(browser, { path: '/pricing', language: 'ar', theme: 'light' });
+  const pricingText = await pricingPage.page.locator('body').innerText();
+  assert(
+    pricingText.includes('احسب السعر') ||
+      pricingText.includes('السعر التقديري') ||
+      pricingText.includes('حاسبة') ||
+      pricingText.includes('Estimate'),
+    'Pricing page should render calculator-related copy.'
+  );
+  assertNoRuntimeErrors('Pricing page', pricingPage.consoleErrors, pricingPage.pageErrors);
+  await pricingPage.page.close();
 
   const bookingFlow = await openPage(browser, { path: '/booking', language: 'en', theme: 'dark' });
   const bookingRoot = (await bookingFlow.page.locator('#root').innerHTML()).trim();
@@ -153,15 +188,31 @@ try {
   await bookingFlow.page.locator('button').filter({ hasText: 'Full Cleaning' }).first().click();
   await bookingFlow.page.waitForTimeout(500);
 
-  const dateInput = bookingFlow.page.locator('input[type="date"]').first();
-  const minimumDate = await dateInput.getAttribute('min');
-  assert(Boolean(minimumDate), 'Booking date input should expose a valid minimum date.');
-  await dateInput.fill(minimumDate);
+  const quickDateButtons = bookingFlow.page.locator('button').filter({ hasText: /\d/ });
+  if (await quickDateButtons.count()) {
+    await quickDateButtons.nth(0).click();
+  } else {
+    const dateInput = bookingFlow.page.locator('input[type="date"]').first();
+    const minimumDate = await dateInput.getAttribute('min');
+    assert(Boolean(minimumDate), 'Booking date input should expose a valid minimum date.');
+    await dateInput.fill(minimumDate);
+  }
   await bookingFlow.page.waitForTimeout(300);
 
   await bookingFlow.page.locator('button').filter({ hasText: '09:00 AM' }).first().click();
   await bookingFlow.page.waitForTimeout(300);
-  await bookingFlow.page.locator('button').filter({ hasText: 'Confirm Appointment' }).first().click();
+  const confirmAppointmentButton = bookingFlow.page.locator('button').filter({ hasText: 'Confirm Appointment' }).first();
+  await bookingFlow.page.waitForFunction(
+    () => {
+      const button = Array.from(document.querySelectorAll('button')).find((element) =>
+        element.textContent?.includes('Confirm Appointment')
+      );
+      return button ? !button.hasAttribute('disabled') : false;
+    },
+    undefined,
+    { timeout: 5000 }
+  );
+  await confirmAppointmentButton.click();
   await bookingFlow.page.waitForTimeout(500);
 
   await bookingFlow.page.locator('input[placeholder="Example: Ahmed Mohamed"]').fill('Smoke Test');

@@ -3,7 +3,7 @@ const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/images/circle-logo-111.png'
+  '/images/forty-clean-logo.png'
 ];
 
 self.addEventListener('install', (event) => {

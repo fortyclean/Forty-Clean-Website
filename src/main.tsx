@@ -7,13 +7,19 @@ import App from './App.tsx'
 import ScrollToTop from './components/ScrollToTop'
 import { reportAppError } from './lib/appError'
 
+const initialLanguage = localStorage.getItem('i18nextLng') === 'en' ? 'en' : 'ar';
+const initialDirection = initialLanguage === 'ar' ? 'rtl' : 'ltr';
+document.documentElement.lang = initialLanguage;
+document.documentElement.dir = initialDirection;
+document.body.lang = initialLanguage;
+document.body.dir = initialDirection;
+
 const getInitialTheme = () => {
   const storedTheme = localStorage.getItem('theme');
   if (storedTheme === 'dark' || storedTheme === 'light') {
     return storedTheme;
   }
-
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  return 'light';
 };
 
 const initialTheme = getInitialTheme();

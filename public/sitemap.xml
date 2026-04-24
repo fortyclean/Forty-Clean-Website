@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://www.fortyclean.com/</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://www.fortyclean.com/images/home-cleaning-kuwait.webp</image:loc>
+      <image:title>Home Cleaning Kuwait - Forty</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.fortyclean.com/images/pest-control-kuwait.webp</image:loc>
+      <image:title>Pest Control Kuwait - Forty</image:title>
+    </image:image>  </url>
+  <url>
+    <loc>https://www.fortyclean.com/cleaning</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.fortyclean.com/images/professional-cleaning-kuwait.webp</image:loc>
+      <image:title>Professional Cleaning Kuwait</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.fortyclean.com/images/office-cleaning-service.webp</image:loc>
+      <image:title>Office Cleaning Service Kuwait</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.fortyclean.com/images/glass-cleaning-kuwait.webp</image:loc>
+      <image:title>Glass Cleaning Service</image:title>
+    </image:image>  </url>
+  <url>
+    <loc>https://www.fortyclean.com/pest</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.fortyclean.com/images/pest-extermination-service.webp</image:loc>
+      <image:title>Pest Extermination Service Kuwait</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.fortyclean.com/images/pest-control-kuwait.webp</image:loc>
+      <image:title>Pest Control Services</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.fortyclean.com/images/pest-control-services-kuwait.webp</image:loc>
+      <image:title>Specialized Pest Control</image:title>
+    </image:image>  </url>
+  <url>
+    <loc>https://www.fortyclean.com/offers</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.fortyclean.com/pricing</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.fortyclean.com/blog</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.fortyclean.com/booking</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.fortyclean.com/plans</loc>
+    <lastmod>2026-04-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>

@@ -14,9 +14,9 @@ const ReviewsSection = () => {
   const reviews = t('reviews.items', { returnObjects: true }) as ReviewItem[];
 
   return (
-    <section ref={sectionRef} className="py-24 bg-gray-50 dark:bg-slate-950 overflow-hidden">
+    <section ref={sectionRef} className="overflow-hidden bg-gray-50 py-16 dark:bg-slate-950 md:py-24">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12 md:mb-16">
           <div className="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300 text-sm font-bold mb-6">
             <Star className="w-4 h-4 fill-current" />
             <span>{t('reviews.google_rating')}</span>
@@ -67,9 +67,9 @@ const ReviewsSection = () => {
           ))}
         </div>
 
-        <div className="reveal mt-16 text-center" style={{ transitionDelay: '0.2s' }}>
+        <div className="reveal mt-10 text-center md:mt-16" style={{ transitionDelay: '0.2s' }}>
           <a
-            href="https://www.google.com/maps"
+            href="https://maps.google.com/?q=شركة+فورتي+للتنظيف+ومكافحة+الحشرات+الكويت"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex flex-col items-center gap-2 group"

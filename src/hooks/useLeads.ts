@@ -1,13 +1,13 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { reportAppError } from '@/lib/appError';
-import { getDb } from '@/lib/firebase';
+import { getDb, isFirebaseConfigured } from '@/lib/firebase';
 
 export interface Lead {
   id: string;
   name: string;
   phone: string;
-  trackingCode: string;
   service: string;
+  trackingCode: string;
   details?: string;
   price?: number;
   timestamp: string;
@@ -15,110 +15,104 @@ export interface Lead {
   status: 'new' | 'contacted' | 'completed';
 }
 
-interface UseLeadsOptions {
+type UseLeadsOptions = {
   subscribe?: boolean;
-  limitCount?: number;
-}
-
-const generateTrackingCode = () => {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  const randomPart = Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-  return `FT-${randomPart}`;
 };
 
-export const useLeads = ({ subscribe = false, limitCount = 100 }: UseLeadsOptions = {}) => {
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [isFetching, setIsFetching] = useState(true);
-  const loading = isFetching;
+const createTrackingCode = () => {
+  const token = Math.random().toString(36).slice(2, 8).toUpperCase();
+  return `FT-${token}`;
+};
 
-  const loadLeads = useCallback(async () => {
-    setIsFetching(true);
-    try {
-      const db = await getDb();
-      const { collection, getDocs, limit, orderBy, query } = await import('firebase/firestore');
-      const q = query(collection(db, 'leads'), orderBy('timestamp', 'desc'), limit(limitCount));
-      const snapshot = await getDocs(q);
-      const leadsData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Lead[];
-      setLeads(leadsData);
-    } catch (error) {
-      reportAppError({ scope: 'leads-load', error });
-    } finally {
-      setIsFetching(false);
-    }
-  }, [limitCount]);
+export const useLeads = ({ subscribe = true }: UseLeadsOptions = {}) => {
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(subscribe);
 
   useEffect(() => {
-    if (!subscribe) return;
+    if (!subscribe || !isFirebaseConfigured) {
+      setLoading(false);
+      return;
+    }
 
-    let isActive = true;
     let unsubscribe: (() => void) | undefined;
+    let mounted = true;
 
-    setIsFetching(true);
-
-    void (async () => {
+    const setupSubscription = async () => {
       try {
         const db = await getDb();
-        const { collection, limit, onSnapshot, orderBy, query } = await import('firebase/firestore');
-        const q = query(collection(db, 'leads'), orderBy('timestamp', 'desc'), limit(limitCount));
+        const { collection, onSnapshot, orderBy, query } = await import('firebase/firestore');
+        const leadsQuery = query(collection(db, 'leads'), orderBy('timestamp', 'desc'));
 
         unsubscribe = onSnapshot(
-          q,
+          leadsQuery,
           (snapshot) => {
-            if (!isActive) {
-              return;
-            }
-
-            const leadsData = snapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
+            if (!mounted) return;
+            const leadsData = snapshot.docs.map((leadDoc) => ({
+              id: leadDoc.id,
+              ...leadDoc.data(),
             })) as Lead[];
-
             setLeads(leadsData);
-            setIsFetching(false);
+            setLoading(false);
           },
           (error) => {
             reportAppError({ scope: 'leads-subscribe', error });
-            if (isActive) {
-              setIsFetching(false);
+            if (mounted) {
+              setLoading(false);
             }
           }
         );
       } catch (error) {
         reportAppError({ scope: 'leads-subscribe-init', error });
-        if (isActive) {
-          setIsFetching(false);
+        if (mounted) {
+          setLoading(false);
         }
       }
-    })();
+    };
+
+    void setupSubscription();
 
     return () => {
-      isActive = false;
+      mounted = false;
       unsubscribe?.();
     };
-  }, [limitCount, subscribe]);
+  }, [subscribe]);
 
-  const saveLead = useCallback(async (leadData: Omit<Lead, 'id' | 'timestamp' | 'status' | 'trackingCode'>) => {
-    try {
-      const db = await getDb();
-      const { addDoc, collection } = await import('firebase/firestore');
-      const newLead = {
-        ...leadData,
-        trackingCode: generateTrackingCode(),
-        timestamp: new Date().toISOString(),
-        status: 'new',
-      };
-      const docRef = await addDoc(collection(db, 'leads'), newLead);
-      return { id: docRef.id, ...newLead };
-    } catch (error) {
-      reportAppError({ scope: 'leads-save', error });
-      throw error;
-    }
-  }, []);
+  const saveLead = useCallback(
+    async (
+      leadData: Omit<Lead, 'id' | 'timestamp' | 'status' | 'trackingCode'>
+    ): Promise<Pick<Lead, 'id' | 'trackingCode'>> => {
+      const timestamp = new Date().toISOString();
+      const trackingCode = createTrackingCode();
+
+      if (!isFirebaseConfigured) {
+        return {
+          id: crypto.randomUUID(),
+          trackingCode,
+        };
+      }
+
+      try {
+        const db = await getDb();
+        const { addDoc, collection } = await import('firebase/firestore');
+        const docRef = await addDoc(collection(db, 'leads'), {
+          ...leadData,
+          trackingCode,
+          timestamp,
+          status: 'new',
+        });
+
+        return { id: docRef.id, trackingCode };
+      } catch (error) {
+        reportAppError({ scope: 'leads-save', error });
+        throw error;
+      }
+    },
+    []
+  );
 
   const deleteLead = useCallback(async (id: string) => {
+    if (!isFirebaseConfigured) return;
+
     try {
       const db = await getDb();
       const { deleteDoc, doc } = await import('firebase/firestore');
@@ -130,9 +124,11 @@ export const useLeads = ({ subscribe = false, limitCount = 100 }: UseLeadsOption
   }, []);
 
   const updateLeadStatus = useCallback(async (id: string, status: Lead['status']) => {
+    if (!isFirebaseConfigured) return;
+
     try {
       const db = await getDb();
-      const { updateDoc, doc } = await import('firebase/firestore');
+      const { doc, updateDoc } = await import('firebase/firestore');
       await updateDoc(doc(db, 'leads', id), { status });
     } catch (error) {
       reportAppError({ scope: 'leads-status', error });
@@ -143,7 +139,6 @@ export const useLeads = ({ subscribe = false, limitCount = 100 }: UseLeadsOption
   return {
     leads,
     loading,
-    loadLeads,
     saveLead,
     deleteLead,
     updateLeadStatus,

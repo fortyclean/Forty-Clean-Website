@@ -61,6 +61,15 @@ export type AdminClaims = {
   role: string | null;
 };
 
+export type ContactInteractionInput = {
+  type: 'whatsapp' | 'phone';
+  page: string;
+  section: string;
+  language: 'ar' | 'en';
+  deviceType: 'mobile' | 'tablet' | 'desktop' | 'unknown';
+  service?: 'cleaning' | 'pest';
+};
+
 export async function getAdminClaims(user?: import('firebase/auth').User | null): Promise<AdminClaims> {
   const auth = await getFirebaseAuth();
   const targetUser = user ?? auth.currentUser;
@@ -77,6 +86,23 @@ export async function getAdminClaims(user?: import('firebase/auth').User | null)
     isAdmin: tokenResult.claims.admin === true || role === 'admin',
     role,
   };
+}
+
+export async function saveContactInteraction(input: ContactInteractionInput) {
+  if (!isFirebaseConfigured) {
+    return;
+  }
+
+  try {
+    const db = await getDb();
+    const { addDoc, collection } = await import('firebase/firestore');
+    await addDoc(collection(db, 'contact_clicks'), {
+      ...input,
+      createdAt: new Date().toISOString(),
+    });
+  } catch (error) {
+    reportAppError({ scope: 'firebase-save-contact-click', error });
+  }
 }
 
 export async function createCustomer(name: string, phone: string) {

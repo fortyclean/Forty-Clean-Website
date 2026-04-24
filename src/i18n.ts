@@ -19,15 +19,6 @@ const normalizeLanguage = (value?: string | null): SupportedLanguage => {
     : DEFAULT_LANGUAGE;
 };
 
-const detectInitialLanguage = () => {
-  if (typeof window === 'undefined') {
-    return DEFAULT_LANGUAGE;
-  }
-
-  const storedLanguage = window.localStorage.getItem('i18nextLng');
-  return normalizeLanguage(storedLanguage ?? document.documentElement.lang ?? navigator.language);
-};
-
 const loadTranslations = async (language: SupportedLanguage) => {
   if (language === 'en') {
     const module = await import('./locales/en.json');
@@ -53,7 +44,7 @@ const ensureLanguageLoaded = async (language: SupportedLanguage) => {
   return translations;
 };
 
-const initialLanguage = detectInitialLanguage();
+const initialLanguage = 'ar';
 const initialTranslations = (await ensureLanguageLoaded(initialLanguage)) ?? {};
 const initialResources = {
   [initialLanguage]: {
@@ -65,7 +56,7 @@ await i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    lng: initialLanguage,
+    lng: 'ar',
     fallbackLng: DEFAULT_LANGUAGE,
     supportedLngs: SUPPORTED_LANGUAGES,
     resources: initialResources,
@@ -77,6 +68,10 @@ await i18n
       caches: ['localStorage'],
     },
   });
+
+if (typeof window !== 'undefined' && !window.localStorage.getItem('i18nextLng')) {
+  window.localStorage.setItem('i18nextLng', DEFAULT_LANGUAGE);
+}
 
 const baseChangeLanguage = i18n.changeLanguage.bind(i18n);
 

@@ -2,24 +2,60 @@ import { Phone, ArrowLeft, Sparkles, Bug, Clock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useReveal } from '../../hooks/useReveal';
-import { siteConfig } from '../../config/site';
+import { buildWhatsAppMessage, siteConfig } from '../../config/site';
+import TrackedContactLink from '../TrackedContactLink';
 
 interface HeroSectionProps {
   variant?: 'landing' | 'cleaning' | 'pest';
 }
 
+type HeroButton = {
+  label: string;
+  href: string;
+  icon: typeof Phone;
+  primary: boolean;
+  isExternal: boolean;
+  channel?: 'whatsapp' | 'phone';
+  service?: 'cleaning' | 'pest';
+};
+
 const HeroSection = ({ variant = 'landing' }: HeroSectionProps) => {
   const { sectionRef } = useReveal();
   const { t, i18n } = useTranslation();
+  const lang = i18n.language;
+  const isArabic = lang === 'ar';
 
-  const getContent = () => {
+  const getContent = (): { title: string; subtitle: string; buttons: HeroButton[] } => {
     if (variant === 'landing') {
       return {
-        title: t('hero.title'),
-        subtitle: t('hero.subtitle'),
+        title: isArabic ? 'شركة تنظيف الكويت ومكافحة الحشرات' : 'Professional cleaning and pest control in Kuwait',
+        subtitle: isArabic
+          ? 'نقدم أفضل خدمات تنظيف منازل بالكويت، مكاتب، ومكافحة القوارض والحشرات باحترافية وضمان حقيقي. ابدأ الآن.'
+          : 'A trusted team, clear scheduling, and clean results from the first visit. Choose the right service and start instantly through WhatsApp or quick booking.',
         buttons: [
-          { label: t('hero.cta_booking'), href: '/booking', icon: Clock, primary: true, isExternal: false },
-          { label: t('hero.cta_whatsapp'), href: siteConfig.links.whatsapp(siteConfig.contact.cleaningPhone, ''), icon: Phone, primary: false, isExternal: true },
+          {
+            label: isArabic ? 'احجز موعدك الآن' : 'Book your appointment',
+            href: '/booking',
+            icon: Clock,
+            primary: true,
+            isExternal: false,
+          },
+          {
+            label: isArabic ? 'واتساب للحصول على السعر' : 'WhatsApp for pricing',
+            href: siteConfig.links.whatsapp(
+              siteConfig.contact.cleaningPhone,
+              buildWhatsAppMessage({
+                language: lang,
+                service: isArabic ? 'خدمات التنظيف' : 'Cleaning services',
+                intent: 'quote',
+              })
+            ),
+            icon: Phone,
+            primary: false,
+            isExternal: true,
+            channel: 'whatsapp',
+            service: 'cleaning',
+          },
         ],
       };
     }
@@ -30,8 +66,31 @@ const HeroSection = ({ variant = 'landing' }: HeroSectionProps) => {
         title: t('services.title_cleaning'),
         subtitle: t('services.subtitle_cleaning'),
         buttons: [
-          { label: t('contact.submit'), href: siteConfig.links.whatsapp(phone, t('contact.success')), icon: Phone, primary: true, isExternal: true },
-          { label: t('contact.info.phone'), href: siteConfig.links.phone(phone), icon: Phone, primary: false, isExternal: true },
+          {
+            label: t('contact.submit'),
+            href: siteConfig.links.whatsapp(
+              phone,
+              buildWhatsAppMessage({
+                language: lang,
+                service: t('services.title_cleaning'),
+                intent: 'quote',
+              })
+            ),
+            icon: Phone,
+            primary: true,
+            isExternal: true,
+            channel: 'whatsapp',
+            service: 'cleaning',
+          },
+          {
+            label: t('contact.info.phone'),
+            href: siteConfig.links.phone(phone),
+            icon: Phone,
+            primary: false,
+            isExternal: true,
+            channel: 'phone',
+            service: 'cleaning',
+          },
         ],
       };
     }
@@ -41,8 +100,31 @@ const HeroSection = ({ variant = 'landing' }: HeroSectionProps) => {
       title: t('services.title_pest'),
       subtitle: t('services.subtitle_pest'),
       buttons: [
-        { label: t('contact.submit'), href: siteConfig.links.whatsapp(phone, t('contact.success')), icon: Phone, primary: true, isExternal: true },
-        { label: t('contact.info.phone'), href: siteConfig.links.phone(phone), icon: Phone, primary: false, isExternal: true },
+        {
+          label: t('contact.submit'),
+          href: siteConfig.links.whatsapp(
+            phone,
+            buildWhatsAppMessage({
+              language: lang,
+              service: t('services.title_pest'),
+              intent: 'quote',
+            })
+          ),
+          icon: Phone,
+          primary: true,
+          isExternal: true,
+          channel: 'whatsapp',
+          service: 'pest',
+        },
+        {
+          label: t('contact.info.phone'),
+          href: siteConfig.links.phone(phone),
+          icon: Phone,
+          primary: false,
+          isExternal: true,
+          channel: 'phone',
+          service: 'pest',
+        },
       ],
     };
   };
@@ -50,27 +132,43 @@ const HeroSection = ({ variant = 'landing' }: HeroSectionProps) => {
   const getVisual = () => {
     if (variant === 'landing') {
       return (
-        <div className="relative z-10 flex flex-col items-center gap-6 md:flex-row">
+        <div className="relative z-10 flex flex-row items-end justify-center gap-3 md:gap-6">
           <Link to="/cleaning" className="group relative z-20">
-            <div className="h-64 w-64 overflow-hidden rounded-3xl border-4 border-white/20 shadow-2xl transition-transform group-hover:scale-105 dark:border-slate-700 md:h-72 md:w-72">
-              <img src="/images/home-cleaning-kuwait.webp" alt={t('nav.cleaning')} className="h-full w-full object-cover" loading="eager" fetchPriority="high" decoding="async" />
+            <div className="h-44 w-44 overflow-hidden rounded-3xl border-4 border-white/20 shadow-2xl transition-transform group-hover:scale-105 dark:border-slate-700 md:h-72 md:w-72">
+              <img
+                src="/images/home-cleaning-kuwait.webp"
+                alt={t('nav.cleaning')}
+                className="h-full w-full object-cover"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+                sizes="(max-width: 768px) 176px, 288px"
+              />
             </div>
-            <div className="pointer-events-none absolute -right-4 -top-4 flex h-12 w-12 items-center justify-center rounded-xl border border-white/20 bg-white/20 shadow-lg backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/70">
-              <Sparkles className="h-6 w-6 text-white dark:text-cyan-200" />
+            <div className="pointer-events-none absolute -right-3 -top-3 flex h-10 w-10 items-center justify-center rounded-xl border border-white/20 bg-white/20 shadow-lg backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/70 md:-right-4 md:-top-4 md:h-12 md:w-12">
+              <Sparkles className="h-5 w-5 text-white dark:text-cyan-200 md:h-6 md:w-6" />
             </div>
-            <div className="pointer-events-none absolute bottom-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-blue-900 shadow-sm dark:bg-slate-950/90 dark:text-slate-100">
+            <div className="pointer-events-none absolute bottom-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold text-blue-900 shadow-sm dark:bg-slate-950/90 dark:text-slate-100 md:bottom-4 md:left-4 md:px-3 md:text-xs">
               {t('nav.cleaning')}
             </div>
           </Link>
 
-          <Link to="/pest" className="group relative z-20 md:mt-12">
-            <div className="h-64 w-64 overflow-hidden rounded-3xl border-4 border-white/20 shadow-2xl transition-transform group-hover:scale-105 dark:border-slate-700 md:h-72 md:w-72">
-              <img src="/images/pest-control-kuwait.webp" alt={t('nav.pest')} className="h-full w-full object-cover" loading="lazy" fetchPriority="low" decoding="async" />
+          <Link to="/pest" className="group relative z-20 mb-2 self-end md:mb-0 md:mt-12">
+            <div className="h-32 w-32 overflow-hidden rounded-3xl border-4 border-white/20 shadow-2xl transition-transform group-hover:scale-105 dark:border-slate-700 md:h-72 md:w-72">
+              <img
+                src="/images/pest-control-kuwait.webp"
+                alt={t('nav.pest')}
+                className="h-full w-full object-cover"
+                loading="lazy"
+                fetchPriority="low"
+                decoding="async"
+                sizes="(max-width: 768px) 128px, 288px"
+              />
             </div>
-            <div className="pointer-events-none absolute -bottom-4 -left-4 flex h-12 w-12 items-center justify-center rounded-xl border border-white/20 bg-white/20 shadow-lg backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/70">
-              <Bug className="h-6 w-6 text-white dark:text-cyan-200" />
+            <div className="pointer-events-none absolute -bottom-3 -left-3 flex h-10 w-10 items-center justify-center rounded-xl border border-white/20 bg-white/20 shadow-lg backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/70 md:-bottom-4 md:-left-4 md:h-12 md:w-12">
+              <Bug className="h-5 w-5 text-white dark:text-cyan-200 md:h-6 md:w-6" />
             </div>
-            <div className="pointer-events-none absolute right-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-red-600 shadow-sm dark:bg-slate-950/90 dark:text-red-300">
+            <div className="pointer-events-none absolute right-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold text-red-600 shadow-sm dark:bg-slate-950/90 dark:text-red-300 md:right-4 md:top-4 md:px-3 md:text-xs">
               {t('nav.pest')}
             </div>
           </Link>
@@ -98,7 +196,7 @@ const HeroSection = ({ variant = 'landing' }: HeroSectionProps) => {
   const content = getContent();
 
   return (
-    <section id="hero" ref={sectionRef} className="gradient-bg relative flex min-h-screen items-center overflow-hidden pt-28 md:pt-20">
+    <section id="hero" ref={sectionRef} className="gradient-bg relative flex min-h-[78svh] items-center overflow-hidden pt-24 md:min-h-screen md:pt-20">
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-50/30 dark:to-slate-950/10" />
       <div className="pointer-events-none absolute inset-0 opacity-10 dark:opacity-20">
         <div className="absolute right-20 top-20 h-64 w-64 rounded-full border-2 border-white dark:border-blue-200/30" />
@@ -107,36 +205,39 @@ const HeroSection = ({ variant = 'landing' }: HeroSectionProps) => {
 
       <div className="container relative z-10 mx-auto px-4">
         <div className="grid items-center gap-12 lg:grid-cols-2">
-          <div className={`${i18n.language === 'ar' ? 'text-right' : 'text-left'} relative z-10 order-2 lg:order-1`}>
-            <h1 className="reveal mb-6 text-4xl font-black leading-tight text-white drop-shadow-[0_4px_18px_rgba(15,23,42,0.35)] dark:text-slate-50 md:text-5xl lg:text-7xl">
+          <div className={`${isArabic ? 'text-right' : 'text-left'} relative z-10 order-2 lg:order-1`}>
+            <h1 className="reveal mb-5 text-3xl font-black leading-tight text-white drop-shadow-[0_4px_18px_rgba(15,23,42,0.35)] dark:text-slate-50 md:mb-6 md:text-5xl lg:text-7xl">
               {content.title}
             </h1>
-            <p className="reveal mb-10 text-xl font-bold leading-relaxed text-white/95 drop-shadow-[0_3px_12px_rgba(15,23,42,0.24)] dark:text-slate-100 md:text-2xl" style={{ animationDelay: '0.2s' }}>
+            <p className="reveal mb-8 text-lg font-bold leading-relaxed text-white/95 drop-shadow-[0_3px_12px_rgba(15,23,42,0.24)] dark:text-slate-100 md:mb-10 md:text-2xl" style={{ animationDelay: '0.2s' }}>
               {content.subtitle}
             </p>
-            <div className="reveal flex flex-wrap gap-6" style={{ animationDelay: '0.4s' }}>
+            <div className="reveal flex flex-wrap gap-4 md:gap-6" style={{ animationDelay: '0.4s' }}>
               {content.buttons.map((button, index) =>
                 button.isExternal ? (
-                  <a
+                  <TrackedContactLink
                     key={index}
                     href={button.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`${button.primary ? 'btn-white scale-110 shadow-2xl dark:shadow-slate-950/40' : 'btn-secondary'} group rounded-2xl px-8 py-5 text-xl font-black transition-all`}
+                    channel={button.channel ?? 'whatsapp'}
+                    section={`hero-${variant}`}
+                    service={button.service}
+                    target={button.channel === 'whatsapp' ? '_blank' : undefined}
+                    rel={button.channel === 'whatsapp' ? 'noopener noreferrer' : undefined}
+                    className={`${button.primary ? 'btn-white shadow-2xl dark:shadow-slate-950/40' : 'btn-secondary'} group rounded-2xl px-6 py-4 text-lg font-black transition-all md:px-8 md:py-5 md:text-xl`}
                   >
                     <button.icon className="h-6 w-6" />
                     <span>{button.label}</span>
-                  </a>
+                  </TrackedContactLink>
                 ) : (
                   <Link
                     key={index}
                     to={button.href}
-                    className={`${button.primary ? 'btn-white scale-110 shadow-2xl dark:shadow-slate-950/40' : 'btn-secondary'} group rounded-2xl px-8 py-5 text-xl font-black transition-all`}
+                    className={`${button.primary ? 'btn-white shadow-2xl dark:shadow-slate-950/40' : 'btn-secondary'} group rounded-2xl px-6 py-4 text-lg font-black transition-all md:px-8 md:py-5 md:text-xl`}
                   >
                     <button.icon className="h-6 w-6" />
                     <span>{button.label}</span>
                     {variant === 'landing' ? (
-                      <ArrowLeft className={`h-6 w-6 transition-transform ${i18n.language === 'ar' ? 'group-hover:-translate-x-2' : 'rotate-180 group-hover:translate-x-2'}`} />
+                      <ArrowLeft className={`h-6 w-6 transition-transform ${isArabic ? 'group-hover:-translate-x-2' : 'rotate-180 group-hover:translate-x-2'}`} />
                     ) : null}
                   </Link>
                 )

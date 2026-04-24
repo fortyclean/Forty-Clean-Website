@@ -22,6 +22,14 @@ service cloud.firestore {
       return request.resource.data.source in ['contact_form', 'price_calculator', 'booking_system'];
     }
 
+    function isValidClickType() {
+      return request.resource.data.type in ['whatsapp', 'phone'];
+    }
+
+    function isValidClickDevice() {
+      return request.resource.data.deviceType in ['mobile', 'tablet', 'desktop', 'unknown'];
+    }
+
     function isValidLeadStatus() {
       return request.resource.data.status in ['new', 'contacted', 'completed'];
     }
@@ -49,6 +57,21 @@ service cloud.firestore {
       allow update: if isAdmin()
       && request.resource.data.diff(resource.data).changedKeys().hasOnly(['status'])
       && isValidLeadStatus();
+    }
+
+    match /contact_clicks/{clickId} {
+      allow create: if request.resource.data.keys().hasOnly([
+        'type', 'page', 'section', 'language', 'deviceType', 'service', 'createdAt'
+      ])
+      && isValidClickType()
+      && isSafeString(request.resource.data.page, 120)
+      && isSafeString(request.resource.data.section, 100)
+      && request.resource.data.language in ['ar', 'en']
+      && isValidClickDevice()
+      && (request.resource.data.createdAt is string || request.resource.data.createdAt is timestamp)
+      && (!('service' in request.resource.data) || request.resource.data.service in ['cleaning', 'pest']);
+
+      allow read, delete: if isAdmin();
     }
     
     match /users/{userId} {

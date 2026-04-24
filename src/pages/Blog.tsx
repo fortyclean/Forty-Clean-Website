@@ -258,7 +258,10 @@ const Blog = () => {
         structuredData={structuredData}
       />
 
-      <section id="hero" className="gradient-bg relative flex min-h-[60vh] items-center overflow-hidden pb-20 pt-32">
+      <section
+        id="hero"
+        className="relative flex min-h-[60vh] items-center overflow-hidden bg-gradient-to-br from-sky-100 via-blue-100 to-white pb-20 pt-32 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950"
+      >
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
           <div className="absolute top-[-10%] right-[-5%] h-[40%] w-[40%] rounded-full bg-white/5 blur-3xl dark:bg-blue-400/10" />
           <div className="absolute bottom-[-10%] left-[-5%] w-[50%] h-[50%] bg-cyan-500/10 rounded-full blur-3xl" />
@@ -267,24 +270,24 @@ const Blog = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-16 items-center">
             <div className={isRTL ? 'text-right' : 'text-left'}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm font-bold mb-6 animate-fadeInUp">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/80 px-4 py-2 text-sm font-bold text-slate-900 shadow-sm backdrop-blur-md animate-fadeInUp dark:border-white/20 dark:bg-white/10 dark:text-white">
                 <BookOpen className="w-4 h-4" />
                 <span>{t('blog.knowledge_tag')}</span>
               </div>
-              <h1 className="text-5xl md:text-7xl font-black text-white leading-tight mb-6 animate-fadeInUp">
+              <h1 className="mb-6 text-5xl font-black leading-tight text-slate-900 animate-fadeInUp dark:text-white md:text-7xl">
                 {selectedArticle ? selectedArticle.title : t('blog.title')}
               </h1>
-              <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed animate-fadeInUp" style={{ animationDelay: '0.15s' }}>
+              <p className="mb-6 text-xl leading-relaxed text-slate-700 animate-fadeInUp dark:text-white/90 md:text-2xl" style={{ animationDelay: '0.15s' }}>
                 {selectedArticle ? selectedArticle.excerpt : t('blog.subtitle')}
               </p>
-              <p className="text-base text-white/70 mb-10 leading-relaxed animate-fadeInUp" style={{ animationDelay: '0.25s' }}>
+              <p className="mb-10 text-base leading-relaxed text-slate-600 animate-fadeInUp dark:text-white/70" style={{ animationDelay: '0.25s' }}>
                 {selectedArticle ? (isRTL ? 'مقالة عملية محدثة ضمن مكتبة فورتي المعرفية.' : 'A practical article from Forty knowledge library.') : t('blog.extra')}
               </p>
 
               <div className="flex flex-wrap gap-4 animate-fadeInUp" style={{ animationDelay: '0.35s' }}>
                 <a
                   href={selectedArticle ? '#article-detail' : '#blog-content'}
-                  className="group inline-flex items-center gap-3 rounded-2xl bg-white px-10 py-4 font-black text-blue-900 transition-all hover:scale-[1.02] hover:shadow-2xl dark:bg-slate-100 dark:text-slate-900"
+                  className="group inline-flex items-center gap-3 rounded-2xl bg-white px-10 py-4 font-black text-blue-900 shadow-sm transition-all hover:scale-[1.02] hover:shadow-2xl dark:bg-slate-100 dark:text-slate-900"
                 >
                   <span>{selectedArticle ? (isRTL ? 'اقرأ المقال' : 'Read article') : t('blog.cta')}</span>
                   <ArrowRight className={`w-5 h-5 transition-transform ${isRTL ? 'rotate-180 group-hover:-translate-x-1' : 'group-hover:translate-x-1'}`} />
@@ -293,7 +296,7 @@ const Blog = () => {
                 {selectedArticle ? (
                   <Link
                     to="/blog"
-                    className="inline-flex items-center gap-3 rounded-2xl border border-white/20 bg-white/10 px-8 py-4 font-black text-white backdrop-blur-md transition hover:bg-white/15 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100 dark:hover:bg-slate-800/80"
+                    className="inline-flex items-center gap-3 rounded-2xl border border-blue-100 bg-white/80 px-8 py-4 font-black text-blue-900 backdrop-blur-md transition hover:bg-white dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100 dark:hover:bg-slate-800/80"
                   >
                     <ArrowLeft className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
                     <span>{isRTL ? 'عودة لجميع المقالات' : 'Back to all posts'}</span>
@@ -303,28 +306,28 @@ const Blog = () => {
             </div>
 
             <div className="flex justify-center">
-              <div className="relative w-full max-w-lg rounded-[2.5rem] border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl dark:border-slate-700 dark:bg-slate-900/55 md:p-12">
-                <div className="absolute -top-6 -left-6 w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center shadow-xl animate-float">
+              <div className="relative w-full max-w-lg rounded-[2.5rem] border border-blue-100 bg-white/80 p-8 shadow-2xl backdrop-blur-xl dark:border-slate-700 dark:bg-slate-900/55 md:p-12">
+                <div className="absolute -top-6 -left-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-blue-600 shadow-xl animate-float">
                   <Clock className="w-10 h-10 text-white" />
                 </div>
 
-                <h2 className="text-3xl font-black text-white mb-6">
+                <h2 className="mb-6 text-3xl font-black text-slate-900 dark:text-white">
                   {selectedArticle ? (isRTL ? 'ملخص سريع' : 'Quick Snapshot') : t('blog.sidebar_title')}
                 </h2>
 
                 {selectedArticle ? (
-                  <div className="space-y-4 text-white/90">
-                    <div className="flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-4">
-                      <CalendarDays className="w-5 h-5 text-cyan-300" />
+                  <div className="space-y-4 text-slate-700 dark:text-white/90">
+                    <div className="flex items-center gap-3 rounded-2xl bg-slate-100 px-4 py-4 dark:bg-white/10">
+                      <CalendarDays className="w-5 h-5 text-blue-600 dark:text-cyan-300" />
                       <span className="font-bold">{selectedArticle.date}</span>
                     </div>
-                    <div className="flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-4">
+                    <div className="flex items-center gap-3 rounded-2xl bg-slate-100 px-4 py-4 dark:bg-white/10">
                       <Clock className="w-5 h-5 text-amber-300" />
                       <span className="font-bold">
                         {estimateReadMinutes(selectedArticle)} {isRTL ? 'دقائق قراءة تقريبًا' : 'min read'}
                       </span>
                     </div>
-                    <div className="flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-4">
+                    <div className="flex items-center gap-3 rounded-2xl bg-slate-100 px-4 py-4 dark:bg-white/10">
                       <Shield className="w-5 h-5 text-emerald-300" />
                       <span className="font-bold">{inferCategory(selectedArticle, isRTL)}</span>
                     </div>
@@ -336,7 +339,7 @@ const Blog = () => {
                         <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-1">
                           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                         </div>
-                        <span className="text-white/90 text-lg font-medium leading-relaxed">{item}</span>
+                        <span className="text-lg font-medium leading-relaxed text-slate-700 dark:text-white/90">{item}</span>
                       </li>
                     ))}
                   </ul>
