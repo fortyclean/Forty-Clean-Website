@@ -94,7 +94,7 @@ const HOME_SCHEMA = [
     "legalName": "شركة فورتي خدمات التنظيف العامه للمباني ذ.م.م",
     "taxID": "384145",
     "foundingDate": "2018",
-    "image": "https://www.fortyclean.com/images/forty-clean-logo.png",
+    "image": "https://www.fortyclean.com/images/forty-clean-logo.webp",
     "url": "https://www.fortyclean.com",
     "telephone": ["+96569988979", "+96551004910"],
     "email": "forty@fortyclean.com",
