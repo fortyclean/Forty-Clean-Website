@@ -211,6 +211,8 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
               <div className="space-y-6">
                 <div>
                   <input
+                    id="contact-name"
+                    name="name"
                     type="text"
                     value={formData.name}
                     onChange={(e) => {
@@ -232,6 +234,8 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
                 </div>
                 <div>
                   <input
+                    id="contact-phone"
+                    name="phone"
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => {
@@ -253,6 +257,8 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
                 </div>
                 <div>
                   <select
+                    id="contact-service"
+                    name="service"
                     value={formData.service}
                     onChange={(e) => {
                       const service = e.target.value;
@@ -278,6 +284,8 @@ const ContactSection = ({ variant = 'landing' }: ContactSectionProps) => {
                 </div>
                 <div>
                   <textarea
+                    id="contact-message"
+                    name="message"
                     value={formData.message}
                     onChange={(e) => {
                       const message = e.target.value;
